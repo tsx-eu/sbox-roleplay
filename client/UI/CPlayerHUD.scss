@@ -1,0 +1,57 @@
+﻿$hud-color: rgba(0, 0, 0, 0.8);
+
+CPlayerHUD {
+    position: absolute;
+    bottom: 0px;
+    padding: 20px;
+    color: white;
+    font-family: Poppins;
+
+    CPlayerAvatar {
+        z-index: 2;
+        .heroPortrait {
+            background-color: black;
+            border: 5px solid black;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+        }
+    }
+
+
+    .status {
+        left: -90px;
+        position: relative;
+
+
+        .title, .bars {
+            position: absolute;
+            flex-direction: column;
+            justify-content: center;
+            background-color: $hud-color;
+            backdrop-filter: blur(10px) saturate(80%);
+            padding-left: 90px;
+        }
+
+        .title {
+            top: 20px;
+            height: 40px;
+            width: 250px;
+            font-size: 18px;
+            border-top-right-radius: 5%;
+            border-top: 2px solid black;
+            border-right: 2px solid black;
+        }
+
+        .bars {
+            top: 60px;
+            border-top-right-radius: 5%;
+            border-bottom-right-radius: 50%;
+            border-top: 2px solid black;
+            border-right: 2px solid black;
+            border-bottom: 2px solid black;
+            height: 50%;
+            width: 290px;
+        }
+    }
+}

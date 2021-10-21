@@ -1,0 +1,4 @@
+.vs/**
+.ideas/**
+obj/**
+Properties/launchSettings.json

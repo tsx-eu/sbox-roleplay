@@ -1,0 +1,8 @@
+﻿.hidden {
+    display: none;
+    opacity: 0;
+}
+
+CPlayerHUD, CPlayerMenu {
+    transition: opacity 0.2s linear;
+}
