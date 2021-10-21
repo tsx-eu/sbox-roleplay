@@ -27,9 +27,10 @@ namespace Charleroi
 
 				heroScene = new ScenePanel {
 					World = world,
-					CameraPosition = new Vector3( 128, 0, 36 ),
+					CameraPosition = new Vector3( 128, 0, 62 ),
 					CameraRotation = Rotation.FromYaw( 180.0f ),
-					FieldOfView = 23.0f
+					FieldOfView = 10.0f,
+					
 				};
 				AddChild( heroScene );
 				heroScene.SetClass( "heroPortrait", true );
@@ -41,13 +42,22 @@ namespace Charleroi
 			CPlayer client = Local.Pawn as CPlayer;
 			if ( client == null ) return;
 
-			if ( playerPreview != null ) {
+			if ( playerPreview != null && heroScene != null ) {
 				if ( client.GetActiveAnimator() is PlayerAnimator animator )
 					CopyParams( animator, playerPreview );
 
 				if ( clothes == false )
 					CopyClothes( client, playerPreview );
 
+				if ( heroScene.ComputedStyle.Width.HasValue && heroScene.ComputedStyle.Height.HasValue ) {
+					float d = 128;
+					float w = heroScene.ComputedStyle.Width.Value.Value;
+					float h = heroScene.ComputedStyle.Height.Value.Value;
+					var fovV = 2 * Math.Atan( Math.Tan( MathX.DegreeToRadian( heroScene.FieldOfView ) / 2 ) * (h / w) );
+					var sizeH = 2 * Math.Tan( fovV / 2 ) * 64;
+
+					heroScene.CameraPosition = new Vector3( d, 0, (float)(64 - sizeH + 9) );
+				}
 				playerPreview.Update( RealTime.Delta );
 			}
 		}
