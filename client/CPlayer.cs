@@ -7,6 +7,14 @@ namespace Charleroi
 	{
 		[Net]
 		public float MaxHealth { get; set; } = 100.0f;
+		[Net]
+		public float MaxThirst { get; set; } = 100.0f;
+		[Net]
+		public float MaxHunger { get; set; } = 100.0f;
+		[Net]
+		public float Thirst { get; set; } = 100.0f;
+		[Net]
+		public float Hunger { get; set; } = 100.0f;
 
 		public string Job { get; set; } = "FC Chomage";
 

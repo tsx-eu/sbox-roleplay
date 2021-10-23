@@ -118,7 +118,7 @@
                 background-repeat: no-repeat;
 
                 .heroPortrait {
-                    border:1px solid red;
+                    border: 1px solid red;
                     width: 400px;
                     height: 600px;
                 }
@@ -184,7 +184,7 @@
                         width: 100%;
                         position: relative;
 
-                        .value {
+                        .life-value {
                             position: absolute;
                             font-size: 10px;
                             width: 100%;
@@ -192,15 +192,30 @@
                             color: black;
                         }
 
-                        .life-value {
+                        .thirst-value {
+                            position: absolute;
+                            font-size: 10px;
+                            width: 100%;
+                            text-align: center;
+                            color: black;
+                        }
+
+                        .hunger-value {
+                            position: absolute;
+                            font-size: 10px;
+                            width: 100%;
+                            text-align: center;
+                            color: black;
+                        }
+
+                        .life-bar-value {
                             background-color: forestgreen;
                             border-radius: 50%;
                             height: 11px;
-                            width: 84%;
                             box-shadow: 0 10px 12px -10px forestgreen;
                         }
 
-                        .water-value {
+                        .thirst-bar-value {
                             background-color: dodgerblue;
                             border-radius: 50%;
                             height: 11px;
@@ -208,7 +223,7 @@
                             box-shadow: 0 10px 12px -10px dodgerblue;
                         }
 
-                        .hunger-value {
+                        .hunger-bar-value {
                             background-color: red;
                             border-radius: 50%;
                             height: 11px;
