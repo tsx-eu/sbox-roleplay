@@ -9,6 +9,7 @@
     flex-direction: row;
     border: 3px solid black;
     width: 100%;
+    pointer-events: all;
 
     .col-gauche {
         width: 40%;
