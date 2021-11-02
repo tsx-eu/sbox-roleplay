@@ -116,7 +116,7 @@ namespace Charleroi
 			}
 			WS = new();
 			Log.Info( "Connecting to websocket." );
-			WS.Connect( $"wss://wsstore.stone.leethium.fr/ws" );
+			WS.Connect( ServerConfig.WSUrl );
 
 			WS.OnDisconnected += ( status, reason ) =>
 			{
@@ -130,8 +130,8 @@ namespace Charleroi
 			Log.Info( "Sending login to websocket." );
 
 			Dictionary<string, string> LoginData = new();
-			LoginData["user"] = "api";
-			LoginData["pass"] = "api";
+			LoginData["user"] = ServerConfig.WSUser;
+			LoginData["pass"] = ServerConfig.WSPass;
 			// LoginData["debug"] = "full";
 			WS.Send( JsonSerializer.Serialize( LoginData, JSONOpt ) );
 		}
