@@ -104,12 +104,16 @@ namespace Charleroi
 
 		private CRUDTools()
 		{
-			InitWs();
+
 		}
 
 
 		private void InitWs()
 		{
+			if(WS != null && WS.IsConnected )
+			{
+				return;
+			}
 			WS = new();
 			Log.Info( "Connecting to websocket." );
 			WS.Connect( $"wss://wsstore.stone.leethium.fr/ws" );
@@ -117,6 +121,7 @@ namespace Charleroi
 			WS.OnDisconnected += ( status, reason ) =>
 			{
 				Log.Error( string.Format( "WS Disconnected with: %d %s", status, reason ) );
+				InitWs();
 				// Empty or resend processing, relog ?
 			};
 
@@ -143,6 +148,7 @@ namespace Charleroi
 
 		public async Task<CRUDResponse> Get( string type, ulong id )
 		{
+			InitWs();
 			CRUDRequest req = new CRUDRequest( "GET", type, id, null );
 			Processing[req.ReqID] = req;
 			var reqJson = JsonSerializer.Serialize( req, JSONOpt );
@@ -152,6 +158,7 @@ namespace Charleroi
 
 		public async Task<CRUDResponse> Set( string type, ulong id, object data )
 		{
+			InitWs();
 			CRUDRequest req = new CRUDRequest( "SET", type, id, data );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
@@ -160,6 +167,7 @@ namespace Charleroi
 
 		public async Task<CRUDResponse> Del( string type, ulong id )
 		{
+			InitWs();
 			CRUDRequest req = new CRUDRequest( "DEL", type, id, null );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
@@ -168,6 +176,7 @@ namespace Charleroi
 
 		public async Task<CRUDResponse> Add( string type, object data )
 		{
+			InitWs();
 			CRUDRequest req = new CRUDRequest( "ADD", type, 0, data );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
@@ -177,6 +186,7 @@ namespace Charleroi
 
 		public async Task<CRUDResponse> GetAll( string type )
 		{
+			InitWs();
 			CRUDRequest req = new CRUDRequest( "GETALL", type, 0, null );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
