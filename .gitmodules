@@ -1,0 +1,3 @@
+[submodule "external/websocket-datastore"]
+	path = external/websocket-datastore
+	url = git@github.com:Hellhium/websocket-datastore.git
