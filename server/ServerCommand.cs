@@ -1,7 +1,6 @@
 ﻿using charleroi.server.DAL;
 using charleroi.server.POCO;
 using Sandbox;
-using System;
 
 namespace Charleroi
 {
@@ -37,6 +36,28 @@ namespace Charleroi
 			else
 			{
 				Log.Info( "Player data loaded" );
+			}
+		}
+
+		[ServerCmd( "rp_delme" )]
+		public static void Cmd_DelMe()
+		{
+			var uow = new UnitofWork();
+			CPlayer client = ConsoleSystem.Caller.Pawn as CPlayer;
+			var steamid = client.Client.SteamId;
+			
+			bool success =  uow.SPlayer.Delete( new SPlayer
+			{
+				SteamID =steamid
+			} );
+
+			if ( success )
+			{
+				Log.Info( "Player data deleted" );
+			}
+			else
+			{
+				Log.Info( "Player not deleted" );
 			}
 		}
 

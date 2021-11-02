@@ -10,6 +10,7 @@ using Sandbox;
 namespace Charleroi
 {
 
+	[Serializable]
 	class CRUDRequest
 	{
 		private static ulong incr = 1;
@@ -37,10 +38,10 @@ namespace Charleroi
 		public ulong ID { get; set; }
 
 		[JsonPropertyName( "data" )]
-		public IDictionary<string, object> Data { get; set; }
+		public object Data { get; set; }
 
 
-		public CRUDRequest( string operation, string datatype, ulong id, IDictionary<string, object> data )
+		public CRUDRequest( string operation, string datatype, ulong id, object data )
 		{
 			ReqID = ReqIncr;
 			ReqType = operation;
@@ -50,33 +51,35 @@ namespace Charleroi
 		}
 
 	}
+
+	[Serializable]
 	class CRUDResponse
 	{
 		[JsonPropertyName( "reqid" )]
 		public ulong ReqID { get; set; }
 
 		[JsonPropertyName( "error" )]
-		public string Error { get; }
+		public string Error { get; set; }
 
 		[JsonPropertyName( "success" )]
-		public bool Success { get; }
+		public bool Success { get; set; }
 
 		[JsonPropertyName( "lastinsertid" )]
-		public ulong LastInsertID { get; }
+		public ulong LastInsertID { get; set; }
 
 		[JsonPropertyName( "data" )]
-		public IDictionary<string, object> Data { get; }
+		public JsonElement Data { get; set; }
 
 		public override string ToString()
 		{
-			return string.Format( "{0} - {1} - {2} - {3} - {4} - {5}", ReqID, Error, Success, LastInsertID, Data );
+			return string.Format( "RID: {0} - Err: {1} - Success: {2} - LID: {3} - Data: {4}", ReqID, Error, Success, LastInsertID, Data );
 		}
 	}
 
 	class CRUDGetAllData
 	{
 		public int count { get; set; }
-		public IDictionary<ulong, IDictionary<string, object>> Data { get; set; }
+		public IDictionary<ulong, JsonElement> Data { get; set; }
 		public CRUDGetAllData()
 		{
 		}
@@ -126,8 +129,7 @@ namespace Charleroi
 
 		private void WsResponseHandler( string message )
 		{
-			Log.Info( message );
-			CRUDResponse resp = JsonSerializer.Deserialize<CRUDResponse>( message );
+			CRUDResponse resp = JsonSerializer.Deserialize<CRUDResponse>( message, JSONOpt );
 			if ( Processing.ContainsKey( resp.ReqID ) )
 			{
 				Processing[resp.ReqID].ResponsePromise.TrySetResult( resp );
@@ -138,7 +140,6 @@ namespace Charleroi
 		public async Task<CRUDResponse> Get( string type, ulong id )
 		{
 			CRUDRequest req = new CRUDRequest( "GET", type, id, null );
-			Log.Info( req.ToString() );
 			Processing[req.ReqID] = req;
 			var reqJson = JsonSerializer.Serialize( req, JSONOpt );
 			await WS.Send( reqJson );
@@ -147,7 +148,7 @@ namespace Charleroi
 
 		public async Task<CRUDResponse> Set( string type, ulong id, object data )
 		{
-			CRUDRequest req = new CRUDRequest( "SET", type, id, data.AsDictionary() );
+			CRUDRequest req = new CRUDRequest( "SET", type, id, data );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
 			return await req.ResponsePromise.Task;
@@ -163,7 +164,7 @@ namespace Charleroi
 
 		public async Task<CRUDResponse> Add( string type, object data )
 		{
-			CRUDRequest req = new CRUDRequest( "ADD", type, 0, data.AsDictionary() );
+			CRUDRequest req = new CRUDRequest( "ADD", type, 0, data );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
 			return await req.ResponsePromise.Task;

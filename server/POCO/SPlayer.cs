@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace charleroi.server.POCO
 {
+	[Serializable]
 	public class SPlayer
 	{
 		// Example

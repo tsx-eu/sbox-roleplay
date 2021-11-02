@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Charleroi;
 using Sandbox;
+using System.Text.Json;
 
 namespace charleroi.server.DAL.Repository
 {
@@ -29,15 +30,16 @@ namespace charleroi.server.DAL.Repository
 
 		public SPlayer Get( ulong id )
 		{
-			var res = CRUDTools.GetInstance().Get( "player", id ).Result;
-			Log.Info( res );
+			var req = CRUDTools.GetInstance().Get( "player", id );
+
+			var res = req.Result;
 			if ( res.Error != "" )
 			{
 				Log.Error( res.Error );
 				return null;
 			}
-			Log.Info( res.Data.ToObject<SPlayer>() );
-			return res.Data.ToObject<SPlayer>();
+			var resPlayer = JsonSerializer.Deserialize<SPlayer>( res.Data.GetRawText() );
+			return resPlayer;
 		}
 
 		public IList<SPlayer> GetAll()
