@@ -44,7 +44,21 @@ namespace charleroi.server.DAL.Repository
 
 		public IList<SPlayer> GetAll()
 		{
-			throw new NotImplementedException();
+			var req = CRUDTools.GetInstance().GetAll( "player" );
+			var res = req.Result;
+			if ( res.Error != "" )
+			{
+				Log.Error( res.Error );
+				return null;
+			}
+			var resMap = JsonSerializer.Deserialize<CRUDGetAllData>( res.Data.GetRawText() );
+			var SPlyList = new List<SPlayer>();
+			foreach (var elem in resMap.Data )
+			{
+				var SPly = JsonSerializer.Deserialize<SPlayer>( elem.Value.GetRawText() );
+				SPlyList.Add( SPly );
+			}
+			return SPlyList;
 		}
 
 		public bool Insert( SPlayer entity )

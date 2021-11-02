@@ -61,5 +61,17 @@ namespace Charleroi
 			}
 		}
 
+		[ServerCmd( "rp_listallplayers" )]
+		public static void Cmd_ListAllPlayers()
+		{
+			var uow = new UnitofWork();
+
+			var SPlys= uow.SPlayer.GetAll();
+			foreach(var SPly in SPlys )
+			{
+				Log.Info( SPly.SteamID );
+			}
+		}
+
 	}
 }

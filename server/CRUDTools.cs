@@ -78,7 +78,11 @@ namespace Charleroi
 
 	class CRUDGetAllData
 	{
-		public int count { get; set; }
+
+		[JsonPropertyName( "count" )]
+		public int Count { get; set; }
+
+		[JsonPropertyName( "list" )]
 		public IDictionary<ulong, JsonElement> Data { get; set; }
 		public CRUDGetAllData()
 		{
