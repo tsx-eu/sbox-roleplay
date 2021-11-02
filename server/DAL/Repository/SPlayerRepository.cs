@@ -74,6 +74,7 @@ namespace charleroi.server.DAL.Repository
 
 		public void Save()
 		{
+			throw new NotImplementedException();
 		}
 
 		public bool Update( SPlayer entity )
