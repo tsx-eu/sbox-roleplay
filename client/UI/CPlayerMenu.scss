@@ -114,14 +114,14 @@
             CPlayerAvatar {
                 z-index: 2;
                 justify-content: center;
-                background-image: url('https://i.gyazo.com/6b795d5103cfc80fddc3aa4c80627469.png');
-                background-size: 100%;
-                background-repeat: no-repeat;
 
                 .heroPortrait {
                     border: 1px solid red;
                     width: 400px;
                     height: 600px;
+                    background-image: url('https://i.gyazo.com/6b795d5103cfc80fddc3aa4c80627469.png');
+                    background-size: 100%;
+                    background-repeat: no-repeat;
                 }
             }
 
@@ -173,21 +173,22 @@
                 }
 
 
-                .status-bar {
-
+                .status-bar {/* TODO centrer la valeur de vie dans la bar*/
+                        
                     .progress {
+                        margin-top: 2%;
+                        height: 20px;
                         background-color: rgba(255,255,255, 0.3 );
                         justify-content: flex-start;
                         align-items: center;
                         border: 2px solid black;
                         border-radius: 50%;
-                        height: 15px;
                         width: 100%;
                         position: relative;
 
                         .life-value {
                             position: absolute;
-                            font-size: 10px;
+                            font-size: 15px;
                             width: 100%;
                             text-align: center;
                             color: black;
@@ -195,7 +196,7 @@
 
                         .thirst-value {
                             position: absolute;
-                            font-size: 10px;
+                            font-size: 15px;
                             width: 100%;
                             text-align: center;
                             color: black;
@@ -203,7 +204,7 @@
 
                         .hunger-value {
                             position: absolute;
-                            font-size: 10px;
+                            font-size: 15px;
                             width: 100%;
                             text-align: center;
                             color: black;
@@ -212,23 +213,21 @@
                         .life-bar-value {
                             background-color: forestgreen;
                             border-radius: 50%;
-                            height: 11px;
+                            height: 16px;
                             box-shadow: 0 10px 12px -10px forestgreen;
                         }
 
                         .thirst-bar-value {
                             background-color: dodgerblue;
                             border-radius: 50%;
-                            height: 11px;
-                            width: 71%;
+                            height: 16px;
                             box-shadow: 0 10px 12px -10px dodgerblue;
                         }
 
                         .hunger-bar-value {
                             background-color: red;
                             border-radius: 50%;
-                            height: 11px;
-                            width: 70%;
+                            height: 16px;
                             box-shadow: 0 10px 12px -10px red;
                         }
                     }
@@ -241,6 +240,7 @@
         width: 40%;
         flex-direction: column;
         align-items: center;
+        border: 2px solid red;
 
         .bag {
             flex-direction: column;
@@ -296,14 +296,14 @@
                 width: 90%;
                 justify-content: space-between;
                 align-content: space-between;
-
-                .vip-line-bag {
+                /*.vip-line-bag {
                     margin-top: 50px;
-                }
+                }*/
 
                 .line-bag, .vip-line-bag {
                     flex-wrap: wrap;
                     justify-content: space-between;
+                    border: 2px solid pink;
 
                     .item-bag {
                         background-color: rgba(0, 0, 0, 0.25);
@@ -329,7 +329,7 @@
         flex-direction: column;
         align-items: center;
         border: 2px solid pink;
-        margin-top: 10%;
+        margin-top: 8%;
 
         .line-nav {
             flex-direction: column;

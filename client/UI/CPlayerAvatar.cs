@@ -29,8 +29,8 @@ namespace Charleroi
 					World = world,
 					CameraPosition = new Vector3( 128, 0, 62 ),
 					CameraRotation = Rotation.FromYaw( 180.0f ),
-					FieldOfView = 10.0f,
-					
+					FieldOfView = 10.0f,/* 25.0f for menu player*/
+
 				};
 				AddChild( heroScene );
 				heroScene.SetClass( "heroPortrait", true );

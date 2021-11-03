@@ -1,5 +1,6 @@
 ﻿using charleroi;
 using Sandbox;
+using System.Collections.Generic;
 
 namespace Charleroi
 {
@@ -17,6 +18,18 @@ namespace Charleroi
 		public float Hunger { get; set; } = 100.0f;
 
 		public string Job { get; set; } = "FC Chomage";
+
+		public struct ItemsInBag {
+			string item;
+			int quantity;
+
+			public ItemsInBag(string aItem, int aQuantity) {
+				item = aItem;
+				quantity = aQuantity;
+			}
+		};
+
+		public List<ItemsInBag> Items = new List<ItemsInBag>();
 
 		public Clothing.Container Clothing = new();
 
@@ -38,6 +51,21 @@ namespace Charleroi
 			EnableDrawing = true;
 			EnableHideInFirstPerson = true;
 			EnableShadowInFirstPerson = false;
+
+			Items.Clear();
+			Items.Add( new ItemsInBag( "Pomme", 42 ) );
+			Items.Add( new ItemsInBag( "Diamant", 1 ) );
+			Items.Add( new ItemsInBag( "Fruit", 9999 ) );
+			Items.Add( new ItemsInBag( "Fer", 10 ) );
+			if ( Rand.Int(0, 1) == 1 )
+				Items.Add( new ItemsInBag( "Poire", 1 ) );
+			if ( Rand.Int( 0, 1 ) == 1 )
+				Items.Add( new ItemsInBag( "Pèche", 2 ) );
+			if ( Rand.Int( 0, 1 ) == 1 )
+				Items.Add( new ItemsInBag( "Pierre", 5 ) );
+			if ( Rand.Int( 0, 1 ) == 1 )
+				Items.Add( new ItemsInBag( "Cuivre", 3 ) );
+
 
 			Health = MaxHealth;
 
