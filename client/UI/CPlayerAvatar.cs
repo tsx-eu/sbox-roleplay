@@ -49,7 +49,7 @@ namespace Charleroi
 				if ( clothes == false )
 					CopyClothes( client, playerPreview );
 
-				if ( heroScene.ComputedStyle.Width.HasValue && heroScene.ComputedStyle.Height.HasValue ) {
+				if ( heroScene.ComputedStyle != null && heroScene.ComputedStyle.Width.HasValue && heroScene.ComputedStyle.Height.HasValue ) {
 					float d = 128;
 					float w = heroScene.ComputedStyle.Width.Value.Value;
 					float h = heroScene.ComputedStyle.Height.Value.Value;
