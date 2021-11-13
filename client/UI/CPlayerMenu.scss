@@ -173,8 +173,8 @@
                 }
 
 
-                .status-bar {/* TODO centrer la valeur de vie dans la bar*/
-                        
+                .status-bar { /* TODO centrer la valeur de vie dans la bar*/
+
                     .progress {
                         margin-top: 2%;
                         height: 20px;
@@ -300,12 +300,12 @@
                     margin-top: 50px;
                 }*/
 
-                .line-bag, .vip-line-bag {
+                CInventory, .vip-line-bag {
                     flex-wrap: wrap;
                     justify-content: space-between;
                     border: 2px solid pink;
 
-                    .item-bag {
+                    CItem, .item-bag {
                         background-color: rgba(0, 0, 0, 0.25);
                         backdrop-filter: blur(10px) saturate(80%);
                         border: 2px solid black;
@@ -314,6 +314,18 @@
                         height: 78px;
                         align-items: center;
                         margin: 3px;
+
+                        .item-name {
+                            color: white;
+                        }
+
+                        .item-quantity {
+                            color: blue;
+                        }
+
+                        .item-description{
+                            display: none;
+                        }
                     }
 
                     .vip-bag {

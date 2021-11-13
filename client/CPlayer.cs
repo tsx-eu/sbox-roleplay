@@ -1,8 +1,10 @@
 ﻿using charleroi;
+using charleroi.server.POCO;
 using Sandbox;
+using System;
 using System.Collections.Generic;
 
-namespace Charleroi
+namespace charleroi
 {
 	partial class CPlayer : Player
 	{
@@ -19,24 +21,20 @@ namespace Charleroi
 
 		public string Job { get; set; } = "FC Chomage";
 
-		public struct ItemsInBag {
-			string item;
-			int quantity;
-
-			public ItemsInBag(string aItem, int aQuantity) {
-				item = aItem;
-				quantity = aQuantity;
-			}
-		};
-
-		public List<ItemsInBag> Items = new List<ItemsInBag>();
+		//New version of Items in Bag
+		public IList<TupleQuantitySItem> ItemsBag { get; set; } = new List<TupleQuantitySItem>();
 
 		public Clothing.Container Clothing = new();
 
-		public CPlayer() {
+		public CPlayer()
+		{
+
+
+
 		}
 
-		public override void Respawn() {
+		public override void Respawn()
+		{
 			Clothing.LoadFromClient( base.Client );
 			Log.Info( "respawn: " + Clothing.Clothing.Count );
 
@@ -52,19 +50,17 @@ namespace Charleroi
 			EnableHideInFirstPerson = true;
 			EnableShadowInFirstPerson = false;
 
-			Items.Clear();
-			Items.Add( new ItemsInBag( "Pomme", 42 ) );
-			Items.Add( new ItemsInBag( "Diamant", 1 ) );
-			Items.Add( new ItemsInBag( "Fruit", 9999 ) );
-			Items.Add( new ItemsInBag( "Fer", 10 ) );
-			if ( Rand.Int(0, 1) == 1 )
-				Items.Add( new ItemsInBag( "Poire", 1 ) );
-			if ( Rand.Int( 0, 1 ) == 1 )
-				Items.Add( new ItemsInBag( "Pèche", 2 ) );
-			if ( Rand.Int( 0, 1 ) == 1 )
-				Items.Add( new ItemsInBag( "Pierre", 5 ) );
-			if ( Rand.Int( 0, 1 ) == 1 )
-				Items.Add( new ItemsInBag( "Cuivre", 3 ) );
+
+
+			//New way of Items in Bag
+			ItemsBag = new List<TupleQuantitySItem>()
+			{
+				new TupleQuantitySItem(6,new SItem(){Id = new Guid(), Name = "Pomme rouge", ShortDescription = "Une pink lady" } ),
+				new TupleQuantitySItem(6,new SItem(){Id = new Guid(), Name = "Diamant", ShortDescription = "Vaut son pesant d'or" } ),
+				new TupleQuantitySItem(6,new SItem(){Id = new Guid(), Name = "Redbull", ShortDescription = "te donne des ailes" } ),
+				new TupleQuantitySItem(6,new SItem(){Id = new Guid(), Name = "Caillou", ShortDescription = "Est une forme de lythothérapie, si lancé très fort sur la tête de quelqu'un" } ),
+				new TupleQuantitySItem(6,new SItem(){Id = new Guid(), Name = "Cuivre", ShortDescription = "On s'en sert principalement pour faire des cables" } )
+			};
 
 
 			Health = MaxHealth;
@@ -85,6 +81,18 @@ namespace Charleroi
 					Camera = new ThirdPersonCamera();
 			}
 
+		}
+	}
+	public class TupleQuantitySItem
+	{
+		// TODO pour John : le rendre [Net] compliant
+		public int Quantity { get; set; }
+		public SItem Item { get; set; }
+
+		public TupleQuantitySItem( int quantity, SItem item )
+		{
+			Quantity = quantity;
+			Item = item;
 		}
 	}
 
