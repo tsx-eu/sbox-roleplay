@@ -30,7 +30,7 @@
 	</ItemGroup>
 
   <ItemGroup>
-<ProjectReference Include="C:\Program Files (x86)\Steam\steamapps\common\sbox\Addons\base\code\base.csproj" />
+<ProjectReference Include="..\..\..\addons\base\code\base.csproj" />
   </ItemGroup>
 
 </Project>
