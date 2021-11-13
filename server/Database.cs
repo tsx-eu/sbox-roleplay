@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http; // HTTP CLIENT;
 
-namespace Charleroi
+namespace charleroi
 {
 	class Database
 	{

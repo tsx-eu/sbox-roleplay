@@ -5,7 +5,7 @@ using Sandbox.UI.Construct;
 using System;
 using System.Linq;
 
-namespace Charleroi.UI
+namespace charleroi.UI
 {
 	class CPlayerHUD : Panel {
 		public string Job { get; set; }

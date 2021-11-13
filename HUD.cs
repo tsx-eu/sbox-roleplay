@@ -1,9 +1,9 @@
-﻿using Charleroi.UI;
+﻿using charleroi.UI;
 using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
 
-namespace Charleroi
+namespace charleroi
 {
 	public class HUD : Sandbox.HudEntity<RootPanel> {
 		public HUD() {

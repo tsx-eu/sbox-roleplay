@@ -1,7 +1,7 @@
 ﻿using Sandbox;
 using System.Threading;
 
-namespace Charleroi
+namespace charleroi
 {
 	public partial class Game : Sandbox.Game {
 		HUD hud;

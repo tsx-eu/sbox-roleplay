@@ -2,7 +2,7 @@
 using charleroi.server.POCO;
 using Sandbox;
 
-namespace Charleroi
+namespace charleroi
 {
 	class ServerCommand
 	{

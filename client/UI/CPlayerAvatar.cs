@@ -4,7 +4,7 @@ using Sandbox.UI;
 using System;
 using System.Collections.Generic;
 
-namespace Charleroi
+namespace charleroi
 {
 	class CPlayerAvatar : Panel {
 		public ScenePanel heroScene;

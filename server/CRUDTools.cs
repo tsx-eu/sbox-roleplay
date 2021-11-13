@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Sandbox;
 
-namespace Charleroi
+namespace charleroi
 {
 
 	[Serializable]
