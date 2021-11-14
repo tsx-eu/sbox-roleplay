@@ -21,7 +21,7 @@ namespace charleroi
 		{
 			var uow = new UnitofWork();
 			CPlayer client = ConsoleSystem.Caller.Pawn as CPlayer;
-			var steamid = client.Client.PlayerId;
+			var steamid = (ulong)client.Client.PlayerId;
 			SPlayer SPly = uow.SPlayer.Get( steamid );
 			if ( SPly == null )
 			{
@@ -43,9 +43,12 @@ namespace charleroi
 		{
 			var uow = new UnitofWork();
 			CPlayer client = ConsoleSystem.Caller.Pawn as CPlayer;
-			var steamid = client.Client.PlayerId;
+			var steamid = (ulong)client.Client.PlayerId;
 
-			bool success =  uow.SPlayer.Delete( uow.SPlayer.Get( steamid ) );
+			bool success =  uow.SPlayer.Delete( new SPlayer
+			{
+				SteamID =steamid
+			} );
 
 			if ( success )
 			{
