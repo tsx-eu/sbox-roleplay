@@ -19,7 +19,7 @@ namespace charleroi.server.DAL.Repository
 
 		public bool Delete( SItem entity )
 		{
-			var res = CRUDTools.GetInstance().Del( "item", entity.Id ).Result;
+			var res = CRUDTools.GetInstance().Del( "item", entity.Id.ToString() ).Result;
 			if(res.Error != "" )
 			{
 				Log.Error( res.Error );
@@ -28,9 +28,9 @@ namespace charleroi.server.DAL.Repository
 			return true;
 		}
 
-		public SItem Get( ulong id )
+		public SItem Get( object id )
 		{
-			var req = CRUDTools.GetInstance().Get( "item", id );
+			var req = CRUDTools.GetInstance().Get( "item", id.ToString() );
 
 			var res = req.Result;
 			if ( res.Error != "" )
@@ -63,7 +63,7 @@ namespace charleroi.server.DAL.Repository
 
 		public bool Insert( SItem entity )
 		{
-			var res = CRUDTools.GetInstance().Set( "item", entity.Id, entity ).Result;
+			var res = CRUDTools.GetInstance().Set( "item", entity.Id.ToString(), entity ).Result;
 			if ( res.Error != "" )
 			{
 				Log.Error( res.Error );
@@ -79,7 +79,7 @@ namespace charleroi.server.DAL.Repository
 
 		public bool Update( SItem entity )
 		{
-			var res = CRUDTools.GetInstance().Set( "item", entity.Id, entity ).Result;
+			var res = CRUDTools.GetInstance().Set( "item", entity.Id.ToString(), entity ).Result;
 			if ( res.Error != "" )
 			{
 				Log.Error( res.Error );

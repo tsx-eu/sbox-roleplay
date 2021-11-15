@@ -21,13 +21,12 @@ namespace charleroi
 		{
 			var uow = new UnitofWork();
 			CPlayer client = ConsoleSystem.Caller.Pawn as CPlayer;
-			var steamid = client.Client.SteamId;
+			var steamid = client.Client.PlayerId;
 			SPlayer SPly = uow.SPlayer.Get( steamid );
 			if ( SPly == null )
 			{
 				SPly = new SPlayer()
 				{
-					SteamID = steamid,
 					Thirst = 50
 				};
 				uow.SPlayer.Insert( SPly );
@@ -44,12 +43,9 @@ namespace charleroi
 		{
 			var uow = new UnitofWork();
 			CPlayer client = ConsoleSystem.Caller.Pawn as CPlayer;
-			var steamid = client.Client.SteamId;
-			
-			bool success =  uow.SPlayer.Delete( new SPlayer
-			{
-				SteamID =steamid
-			} );
+			var steamid = client.Client.PlayerId;
+
+			bool success =  uow.SPlayer.Delete( uow.SPlayer.Get( steamid ) );
 
 			if ( success )
 			{
@@ -58,18 +54,6 @@ namespace charleroi
 			else
 			{
 				Log.Info( "Player not deleted" );
-			}
-		}
-
-		[ServerCmd( "rp_listallplayers" )]
-		public static void Cmd_ListAllPlayers()
-		{
-			var uow = new UnitofWork();
-
-			var SPlys= uow.SPlayer.GetAll();
-			foreach(var SPly in SPlys )
-			{
-				Log.Info( SPly.SteamID );
 			}
 		}
 

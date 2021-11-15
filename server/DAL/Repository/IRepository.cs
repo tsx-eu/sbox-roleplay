@@ -8,7 +8,7 @@ namespace charleroi.server.DAL.Repository
 {
 	public interface IRepository<T> where T : class
 	{
-		T Get(ulong id);
+		T Get(object id);
 
 		IList<T> GetAll();
 

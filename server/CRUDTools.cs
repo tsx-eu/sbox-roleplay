@@ -35,13 +35,13 @@ namespace charleroi
 		public string DataType { get; set; }
 
 		[JsonPropertyName( "id" )]
-		public ulong ID { get; set; }
+		public object ID { get; set; }
 
 		[JsonPropertyName( "data" )]
 		public object Data { get; set; }
 
 
-		public CRUDRequest( string operation, string datatype, ulong id, object data )
+		public CRUDRequest( string operation, string datatype, object id, object data )
 		{
 			ReqID = ReqIncr;
 			ReqType = operation;
@@ -146,7 +146,7 @@ namespace charleroi
 			}
 		}
 
-		public async Task<CRUDResponse> Get( string type, ulong id )
+		public async Task<CRUDResponse> Get( string type, object id )
 		{
 			InitWs();
 			CRUDRequest req = new CRUDRequest( "GET", type, id, null );
@@ -156,7 +156,7 @@ namespace charleroi
 			return await req.ResponsePromise.Task;
 		}
 
-		public async Task<CRUDResponse> Set( string type, ulong id, object data )
+		public async Task<CRUDResponse> Set( string type, object id, object data )
 		{
 			InitWs();
 			CRUDRequest req = new CRUDRequest( "SET", type, id, data );
@@ -165,7 +165,7 @@ namespace charleroi
 			return await req.ResponsePromise.Task;
 		}
 
-		public async Task<CRUDResponse> Del( string type, ulong id )
+		public async Task<CRUDResponse> Del( string type, object id )
 		{
 			InitWs();
 			CRUDRequest req = new CRUDRequest( "DEL", type, id, null );

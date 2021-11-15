@@ -28,7 +28,7 @@ namespace charleroi.server.DAL.Repository
 			return true;
 		}
 
-		public SPlayer Get( ulong id )
+		public SPlayer Get( object id )
 		{
 			var req = CRUDTools.GetInstance().Get( "player", id );
 
