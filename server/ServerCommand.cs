@@ -45,9 +45,9 @@ namespace charleroi
 			CPlayer client = ConsoleSystem.Caller.Pawn as CPlayer;
 			var steamid = (ulong)client.Client.PlayerId;
 
-			bool success =  uow.SPlayer.Delete( new SPlayer
+			bool success = uow.SPlayer.Delete( new SPlayer
 			{
-				SteamID =steamid
+				SteamID = steamid
 			} );
 
 			if ( success )
