@@ -83,7 +83,7 @@ namespace charleroi
 		public int Count { get; set; }
 
 		[JsonPropertyName( "list" )]
-		public IDictionary<ulong, JsonElement> Data { get; set; }
+		public IDictionary<string, JsonElement> Data { get; set; }
 		public CRUDGetAllData()
 		{
 		}
@@ -132,7 +132,7 @@ namespace charleroi
 			Dictionary<string, string> LoginData = new();
 			LoginData["user"] = ServerConfig.WSUser;
 			LoginData["pass"] = ServerConfig.WSPass;
-			// LoginData["debug"] = "full";
+			LoginData["debug"] = "full";
 			WS.Send( JsonSerializer.Serialize( LoginData, JSONOpt ) );
 		}
 
