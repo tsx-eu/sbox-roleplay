@@ -132,7 +132,7 @@ namespace charleroi
 			Dictionary<string, string> LoginData = new();
 			LoginData["user"] = ServerConfig.WSUser;
 			LoginData["pass"] = ServerConfig.WSPass;
-			LoginData["debug"] = "full";
+			//LoginData["debug"] = "full";
 			WS.Send( JsonSerializer.Serialize( LoginData, JSONOpt ) );
 		}
 
