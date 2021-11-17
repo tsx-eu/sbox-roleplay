@@ -5,6 +5,29 @@
     backdrop-filter: blur(10px);
 }
 
+icon {
+    font-size: 50px;
+    color: white;
+    font-family: MaterialIcons;
+    padding: 10px;
+
+    &.outline {
+        font-family: MaterialIconsOutlined;
+    }
+
+    &.round {
+        font-family: MaterialIconsRound;
+    }
+
+    &.sharp {
+        font-family: MaterialIconsSharp;
+    }
+
+    &.twotone {
+        font-family: MaterialIconsTwoTone;
+    }
+}
+
 .main-menu {
     flex-direction: row;
     border: 3px solid black;
