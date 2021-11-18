@@ -19,7 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Using Include="Sandbox.Internal.Game.GlobalNamespace" Static="true" />
+		<Using Include="Sandbox.Internal.GlobalGameNamespace" Static="true" />
 	</ItemGroup>
 
   <PropertyGroup>
@@ -28,7 +28,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<Analyzer Include="..\..\..\bin\managed\Sandbox.Generator.dll"/>
+		<Analyzer Include="..\..\..\bin\managed\Sandbox.Generator.dll" />
 		<Reference Include="..\..\..\bin\managed/Sandbox.System.dll" />
 		<Reference Include="..\..\..\bin\managed/Sandbox.Engine.dll" />
 		<Reference Include="..\..\..\bin\managed/Sandbox.Game.dll" />
@@ -37,6 +37,12 @@
 
   <ItemGroup>
 <ProjectReference Include="..\..\..\addons\base\code\base.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="client\UI\CPlayerMenu.scss">
+      <DependentUpon>%(Filename).cs</DependentUpon>
+    </None>
   </ItemGroup>
 
 </Project>
