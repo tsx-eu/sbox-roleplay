@@ -21,7 +21,6 @@ namespace charleroi.UI
 			NavigationPanel = menuPanel.Add.Panel( "navbar" );
 
 			Panel mainArea = menuPanel.Add.Panel( "mainarea" );
-
 			// Pages
 			Panel homePage = mainArea.Add.Panel( "page" );
 			homePage.Add.Label( "Page persso + inventaire" );
