@@ -1,8 +1,7 @@
-﻿using charleroi.server.DAL;
-using charleroi.server.POCO;
-using Sandbox;
+﻿using Sandbox;
 
-namespace charleroi
+using charleroi.server.DAL;
+namespace charleroi.server
 {
 	class ServerCommand
 	{
