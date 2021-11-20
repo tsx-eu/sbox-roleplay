@@ -1,6 +1,8 @@
 ﻿using Sandbox;
 
 using charleroi.server.DAL;
+using charleroi.client;
+
 namespace charleroi.server
 {
 	class ServerCommand
