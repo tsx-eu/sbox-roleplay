@@ -45,8 +45,7 @@ namespace charleroi.client
 			EnableAllCollisions = true;
 			EnableDrawing = true;
 			EnableHideInFirstPerson = true;
-			EnableShadowInFirstPerson = false;
-
+			EnableShadowInFirstPerson = true;
 
 
 			//New way of Items in Bag

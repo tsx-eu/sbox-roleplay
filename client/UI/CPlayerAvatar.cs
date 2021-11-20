@@ -28,7 +28,7 @@ namespace charleroi.client.UI
 					World = world,
 					CameraPosition = new Vector3( 128, 0, 62 ),
 					CameraRotation = Rotation.FromYaw( 180.0f ),
-					FieldOfView = 10.0f,/* 25.0f for menu player*/
+					FieldOfView = 10.0f,
 
 				};
 				AddChild( heroScene );
@@ -48,6 +48,9 @@ namespace charleroi.client.UI
 				if ( clothes == false )
 					CopyClothes( client, playerPreview );
 
+				bool isBig = HasClass( "big" );
+				heroScene.FieldOfView = isBig ? 25.0f : 10.0f;
+
 				if ( heroScene.ComputedStyle != null && heroScene.ComputedStyle.Width.HasValue && heroScene.ComputedStyle.Height.HasValue ) {
 					float d = 128;
 					float w = heroScene.ComputedStyle.Width.Value.Value;
@@ -55,8 +58,11 @@ namespace charleroi.client.UI
 					var fovV = 2 * Math.Atan( Math.Tan( MathX.DegreeToRadian( heroScene.FieldOfView ) / 2 ) * (h / w) );
 					var sizeH = 2 * Math.Tan( fovV / 2 ) * 64;
 
-					heroScene.CameraPosition = new Vector3( d, 0, (float)(64 - sizeH + 9) );
+					float f = isBig ? 0.0f : 9.0f;
+
+					heroScene.CameraPosition = new Vector3( d, 0, (float)(64 - sizeH + f) );
 				}
+
 				playerPreview.Update( RealTime.Delta );
 				playerClothesPreview.ForEach( i => i.Update( RealTime.Delta ) );
 			}
