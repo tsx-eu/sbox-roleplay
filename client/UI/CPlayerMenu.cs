@@ -1,88 +1,75 @@
 ﻿using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace charleroi.UI
 {
+	//[Library]
+	//[NavigatorTarget( "/client/menu/" )]
 	public partial class CPlayerMenu : Panel
 	{
 		private bool IsOpen = false;
 		private TimeSince LastOpen;
-		private List<(Panel, Panel)> Pages = new();
-		private int ActivePage = -1;
-		private Panel NavigationPanel;
+		public Panel Inner { get; set; }
+		public Panel PageList { get; set; }
+		public Panel PageContainer { get; set; }
+
+		Dictionary<string, Sandbox.UI.Button> Buttons;
 
 		public CPlayerMenu()
 		{
-			StyleSheet.Load( "/client/ui/CPlayerMenu.scss" );
+			StyleSheet.Load( "/client/UI/CPlayerMenu.scss" );
+			Buttons = new Dictionary<string, Sandbox.UI.Button>();
+			Inner = Add.Panel( "inner" );
 
-			Panel menuPanel = Add.Panel( "menu" );
-			NavigationPanel = menuPanel.Add.Panel( "navbar" );
 
-			Panel mainArea = menuPanel.Add.Panel( "mainarea" );
-			// Pages
-			Panel homePage = mainArea.Add.Panel( "page" );
-			homePage.Add.Label( "Page persso + inventaire" );
-			AddPage( homePage, "Inventaire", new Color( 1f, 0.3f, 0.3f ) );
+			PageList = Inner.Add.Panel( "pagelist" );
+			PageContainer = Inner.Add.Panel( "pagecontainer" );
 
-			Panel jobsPage = mainArea.Add.Panel( "page" );
-			jobsPage.Add.Label( "Récap métier + LvL" );
-			AddPage( jobsPage, "Métiers", new Color( 1f, 0.3f, 0.3f ) );
+			AddPage( "user_content", "Inventaire", () => PageContainer.AddChild<CPlayerContent> () );
+			AddPage( "user_job", "Métiers", () => PageContainer.AddChild<CPlayerJob>() );
+			AddPage( "user_skill", "Compétences", () => PageContainer.AddChild<CPlayerSkill>() );
+			AddPage( "user_family", "Famille", () => PageContainer.AddChild<CPlayerFamily>() );
+			AddPage( "user_shop", "Boutique", () => PageContainer.AddChild<CPlayerShop>() );
+			AddPage( "user_mail", "Courriers", () => PageContainer.AddChild<CPlayerMail>() );
+			AddPage( "user_option", "Options", () => PageContainer.AddChild<CPlayerOption>() );
 
-			Panel specilityPage = mainArea.Add.Panel( "page" );
-			specilityPage.Add.Label( "Récap compétence secondaire + craft" );
-			AddPage( specilityPage, "Compétences", new Color( 1f, 0.3f, 0.3f ) );
 
-			Panel familyPage = mainArea.Add.Panel( "page" );
-			familyPage.Add.Label( "Page de gang" );
-			AddPage( familyPage, "Famille", new Color( 1f, 0.3f, 0.3f ) );
-
-			Panel shopPage = mainArea.Add.Panel( "page" );
-			shopPage.Add.Label( "Page du shop" );
-			AddPage( shopPage, "Boutique", new Color( 1f, 0.3f, 0.3f ) );
-
-			Panel mailPage = mainArea.Add.Panel( "page" );
-			mailPage.Add.Label( "Mail / sms ?" );
-			AddPage( mailPage, "Courriers", new Color( 1f, 0.3f, 0.3f ) );
-
-			Panel optionPage = mainArea.Add.Panel( "page" );
-			optionPage.Add.Label( "Réglage mais quoi ?" );
-			AddPage( optionPage, "Options", new Color( 1f, 0.3f, 0.3f ) );
+			Buttons.First().Value.CreateEvent( "onclick" );
 		}
 
-		private void AddPage( Panel panel, string name, Color buttonColor )
+		void AddPage( string icon, string name, Func<Panel> act = null )
 		{
-			int pageKey = Pages.Count;
+			var button = PageList.Add.Button( name, () => { SwitchPage( name ); act?.Invoke().AddClass( "page" ); } );
+			button.Icon = icon;
 
-			Panel button = NavigationPanel.Add.Label( name, "navbutton" );
-			button.Style.BorderBottomColor = buttonColor;
-			button.AddEventListener( "onclick", () => {
-				SetActivePage( pageKey );
-			} );
+			Buttons[name] = button;
+		}
 
-			Pages.Add( (panel, button) );
+		void SwitchPage( string name )
+		{
+			PageContainer.DeleteChildren();
 
-			if ( Pages.Count <= 1 )
+			foreach ( var button in Buttons )
 			{
-				SetActivePage( pageKey );
+				button.Value.SetClass( "active", button.Key == name );
 			}
 		}
 
-		private void SetActivePage( int pageKey )
+		public override void OnHotloaded()
 		{
-			if ( ActivePage >= 0 )
+			base.OnHotloaded();
+
+			var activePage = Buttons.Where( x => x.Value.HasClass( "active" ) ).FirstOrDefault();
+			if ( activePage.Value != null )
 			{
-				(Panel, Panel) activeInfo = Pages[ActivePage];
-				activeInfo.Item1.SetClass( "active", false );
-				activeInfo.Item2.SetClass( "active", false );
+				activePage.Value.CreateEvent( "onclick" );
 			}
-
-			ActivePage = pageKey;
-
-			(Panel, Panel) pageInfo = Pages[pageKey];
-			pageInfo.Item1.SetClass( "active", true );
-			pageInfo.Item2.SetClass( "active", true );
 		}
 
 		public override void Tick()
@@ -94,8 +81,6 @@ namespace charleroi.UI
 				IsOpen = !IsOpen;
 				LastOpen = 0;
 			}
-
-			// IsOpen = true;
 
 			SetClass( "open", IsOpen );
 		}
