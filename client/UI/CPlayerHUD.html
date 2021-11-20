@@ -1,11 +1,29 @@
 ﻿<link rel="stylesheet" href="/client/UI/CPlayerHUD.scss">
 
 <body>
-    <CPlayerAvatar></CPlayerAvatar>
-    <div class="status">
-        <div class="title">
-            <label @text="Job"></label>
+    <div class="hudgauche">
+        <div class="hudplayer">
+            <CPlayerAvatar></CPlayerAvatar>
+            <div class="status">
+                <div class="title">
+                    <label @text="Job"></label>
+                </div>
+                <div class="bars"></div>
+            </div>
         </div>
-        <div class="bars"></div>
+        <div class="chatbox">
+            <div class="tchat">
+                <label>[14:25 - Global] ~ Muffin : Messorem est super cool !</label>
+                <label>[14:27 - Global] ~ KoSSoLaX : Grave, c'est le meilleur =)</label>
+            </div>
+            <div class="tchatentry">
+                <div class="channel">
+                    <label>Global</label><label class="arrow">▼</label>
+                </div>
+                <div class="textentry">
+                    <label class="entry">...</label>
+                </div>
+            </div>
+        </div>
     </div>
 </body>

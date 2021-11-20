@@ -1,69 +1,89 @@
-﻿using Sandbox;
+using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 
 namespace charleroi.UI
 {
-	class CPlayerMenu : Panel
+	[Library]
+	[NavigatorTarget( "/client/MenuNav/" )]
+	public partial class CPlayerMenu : Panel
 	{
-		IDictionary<string,Panel> tabs;
-		string currentTab;
+		private bool IsOpen = false;
+		private TimeSince LastOpen;
+		public Panel Inner { get; set; }
+		public Panel PageList { get; set; }
+		public Panel PageContainer { get; set; }
 
-		public CPlayerMenu() {
-			tabs = new Dictionary<string,Panel>();
+		Dictionary<string, Sandbox.UI.Button> Buttons;
 
-			tabs.Add( "main", AddChild<CPlayerMenuMain>() );
-			tabs.Add( "craft", AddChild<CPlayerMenuCraft>() );
+		public CPlayerMenu()
+		{
+			StyleSheet.Load( "/client/UI/CPlayerMenu.scss" );
+			Buttons = new Dictionary<string, Sandbox.UI.Button>();
+			Inner = Add.Panel( "inner" );
 
-			foreach(var t in tabs) {
-				t.Value.Style.Display = DisplayMode.None;
-			}
-			changeTab();
 
-			StyleSheet.Parse( "/client/UI/CPlayerMenu.scss" );
-			SetClass( "hidden", true );
+			PageList = Inner.Add.Panel( "pagelist" );
+			PageContainer = Inner.Add.Panel( "pagecontainer" );
+
+			AddPage( "user_content", "Inventaire", () => PageContainer.AddChild<CPlayerContent> () );
+			AddPage( "user_job", "Métiers", () => PageContainer.AddChild<CPlayerJob>() );
+			AddPage( "user_skill", "Compétences", () => PageContainer.AddChild<CPlayerSkill>() );
+			AddPage( "user_family", "Famille", () => PageContainer.AddChild<CPlayerFamily>() );
+			AddPage( "user_shop", "Boutique", () => PageContainer.AddChild<CPlayerShop>() );
+			AddPage( "user_mail", "Courriers", () => PageContainer.AddChild<CPlayerMail>() );
+			AddPage( "user_option", "Options", () => PageContainer.AddChild<CPlayerOption>() );
+
+
+			Buttons.First().Value.CreateEvent( "onclick" );
 		}
 
-		public void changeTab(string newTab = "main") {
-			if ( newTab == currentTab )
-				return;
+		void AddPage( string icon, string name, Func<Panel> act = null )
+		{
+			var button = PageList.Add.Button( name, () => { SwitchPage( name ); act?.Invoke().AddClass( "page" ); } );
+			button.Icon = icon;
 
-			if( !tabs.ContainsKey(newTab) ) {
-				Log.Error( String.Format( "tabs {0} doesn't exist", newTab ) );
-				return;
-			}
-
-			tabs[currentTab].Style.Display = DisplayMode.None;
-			tabs[newTab].Style.Display = DisplayMode.Flex;
-			currentTab = newTab;
+			Buttons[name] = button;
 		}
-		public override void Tick() {
+
+		void SwitchPage( string name )
+		{
+			PageContainer.DeleteChildren();
+
+			foreach ( var button in Buttons )
+			{
+				button.Value.SetClass( "active", button.Key == name );
+			}
+		}
+
+		public override void OnHotloaded()
+		{
+			base.OnHotloaded();
+
+			var activePage = Buttons.Where( x => x.Value.HasClass( "active" ) ).FirstOrDefault();
+			if ( activePage.Value != null )
+			{
+				activePage.Value.CreateEvent( "onclick" );
+			}
+		}
+
+		public override void Tick()
+		{
 			base.Tick();
 
-			if ( Input.Pressed( InputButton.Menu ) ) {
-				var avatar = Parent.ChildrenOfType<CPlayerHUD>().SingleOrDefault();
-				bool status = HasClass( "hidden" );
-
-				Style.PointerEvents = status ? "" : "all";
-				AcceptsFocus = !status;
-				SetClass( "hidden", !status );
-				avatar.SetClass( "hidden", status );
+			if ( Input.Pressed( InputButton.Menu ) && LastOpen >= .1f )
+			{
+				IsOpen = !IsOpen;
+				LastOpen = 0;
 			}
 
-			if( Input.Pressed( InputButton.Slot1 ) )
-				changeTab( "main" );
-
-			if ( Input.Pressed( InputButton.Slot2 ) )
-				changeTab( "craft" );
-
-			if ( Input.Pressed( InputButton.Slot3 ) )
-				changeTab( "bite" );
+			SetClass( "open", IsOpen );
 		}
 	}
-
-
 }

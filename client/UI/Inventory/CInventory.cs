@@ -64,7 +64,7 @@ namespace charleroi.client.UI.Inventory
 					cItems.Add( new CItem( TupleItem, this ) );
 				}
 				// Add empty slots
-				for ( int i = 0; i < 64- currentPlayer.ItemsBag.Count; i++ )
+				for ( int i = 0; i < 40- currentPlayer.ItemsBag.Count; i++ )
 				{
 					cItems.Add( new CItem(this) );
 				}
