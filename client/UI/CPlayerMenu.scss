@@ -1,34 +1,3 @@
-﻿/*$primary: #3472e6;
-$primary-fg: #f5f8fe;
-
-$secondary: #edcd24;
-$secondary-fg: #494638;
-
-$danger: #edcd24;
-$danger-fg: #494638;
-
-$header-height: 120px;
-$header-spacing-top: 40px;
-$header-spacing-bottom: 32px;
-
-$button-inactive: #0b0d12;
-$button-inactive-top: #161923;
-$button-inactive-fg: #7f8186;
-
-$button-active: $primary;
-$button-active-fg: $primary-fg;
-
-$background: #0F131A;
-$content-border: 100px;
-
-$card-background: #262a32;
-$card-foreground: #abb8cf;
-
-$font-title: Poppins;
-
-$padding-head: 130px;
-$padding-edge: 100px;*/
-
 CPlayerMenu {
     position: relative;
     width: 100%;
@@ -117,39 +86,5 @@ CPlayerMenu {
             }
         }
     }
-    /*.form {
-        background-color: rgba( #1b2023, 0.95 );
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 450px;
-        padding: 0px;
-        padding-top: $padding-head;
-        backdrop-filter: blur( 60px );
 
-        .form-row {
-            flex-direction: column;
-            border-radius: 0;
-            padding: 5px 20px;
-        }
-
-        .form-row .form-label {
-            font-weight: 500;
-            padding: 0px;
-            margin-bottom: 10px;
-        }
-
-        .form-row .form-value {
-            padding: 0px;
-
-            .textentry, .button {
-                border: 3px solid rgba( $primary, 0.3 );
-
-                &:hover {
-                    border: 3px solid $primary;
-                }
-            }
-        }
-    }*/
 }
