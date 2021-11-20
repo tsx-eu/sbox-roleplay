@@ -7,12 +7,12 @@ using System.Linq;
 
 namespace charleroi.UI
 {
-	class CPlayerJob: Panel
+	class CPlayerShop : Panel
 	{
 
-		public CPlayerJob()
+		public CPlayerShop()
 		{
-			SetTemplate( "/client/UI/CPlayerJob.html" );
+			SetTemplate( "/client/UI/MenuNav/CPlayerShop.html" );
 		}
 
 		public override void Tick()

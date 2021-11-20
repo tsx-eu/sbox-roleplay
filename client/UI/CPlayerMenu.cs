@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace charleroi.UI
 {
-	//[Library]
-	//[NavigatorTarget( "/client/menu/" )]
+	[Library]
+	[NavigatorTarget( "/client/MenuNav/" )]
 	public partial class CPlayerMenu : Panel
 	{
 		private bool IsOpen = false;

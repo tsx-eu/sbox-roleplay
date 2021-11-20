@@ -1,4 +1,4 @@
-﻿$primary: #3472e6;
+﻿/*$primary: #3472e6;
 $primary-fg: #f5f8fe;
 
 $secondary: #edcd24;
@@ -27,7 +27,7 @@ $card-foreground: #abb8cf;
 $font-title: Poppins;
 
 $padding-head: 130px;
-$padding-edge: 100px;
+$padding-edge: 100px;*/
 
 CPlayerMenu {
     position: relative;
@@ -36,8 +36,8 @@ CPlayerMenu {
     opacity: 0;
     transition: all 0.5s ease-out;
     pointer-events: all;
-    backdrop-filter: blur( 10px);
-    background-color: rgba (50,100,150, 0.5);
+    //backdrop-filter: blur( 10px);
+    //background-color: rgba (50,100,150, 0.5);
     justify-content: center;
     align-items: center;
     font-family: Roboto;
@@ -49,13 +49,10 @@ CPlayerMenu {
     }
 
     .inner {
-        position: relative;
         width: 90%;
         height: 90%;
         background-color: rgba (30, 30, 30, 0.8);
         border-radius: 10px;
-        flex-wrap: wrap;
-        display: flex;
         flex-direction: column;
 
         > .pagelist {

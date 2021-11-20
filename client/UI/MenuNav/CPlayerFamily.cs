@@ -5,14 +5,14 @@ using Sandbox.UI.Construct;
 using System;
 using System.Linq;
 
-namespace charleroi.client.UI.MenuNav
+namespace charleroi.UI
 {
 	class CPlayerFamily : Panel
 	{
 
 		public CPlayerFamily()
 		{
-			SetTemplate( "/client/UI/CPlayerFamily.html" );
+			SetTemplate( "/client/UI/MenuNav/CPlayerFamily.html" );
 		}
 
 		public override void Tick()

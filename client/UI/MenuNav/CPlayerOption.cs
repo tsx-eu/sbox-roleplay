@@ -12,7 +12,7 @@ namespace charleroi.UI
 
 		public CPlayerOption()
 		{
-			SetTemplate( "/client/UI/CPlayerOption.html" );
+			SetTemplate( "/client/UI/MenuNav/CPlayerOption.html" );
 		}
 
 		public override void Tick()
