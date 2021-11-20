@@ -1,4 +1,4 @@
-﻿using charleroi.UI;
+﻿using charleroi.client.UI;
 using Sandbox.UI;
 
 namespace charleroi

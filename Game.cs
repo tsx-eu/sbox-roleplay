@@ -1,5 +1,6 @@
 ﻿using Sandbox;
 
+using charleroi.client;
 namespace charleroi
 {
 	public partial class Game : Sandbox.Game {
