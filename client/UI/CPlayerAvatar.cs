@@ -58,26 +58,24 @@ namespace charleroi.client.UI
 					heroScene.CameraPosition = new Vector3( d, 0, (float)(64 - sizeH + 9) );
 				}
 				playerPreview.Update( RealTime.Delta );
+				playerClothesPreview.ForEach( i => i.Update( RealTime.Delta ) );
 			}
 		}
 
 		private void CopyClothes( CPlayer from, AnimSceneObject to ) {
-
 			Clothing.Container Clothing = new();
-			Clothing.LoadFromClient( Local.Client ); 
+			Clothing.Deserialize( from.Clothes );
 
 			using ( SceneWorld.SetCurrent( world ) ) {
 				playerClothesPreview.Clear();
 
-				foreach ( var c in from.Clothing.Clothing ) {
+				foreach ( var c in Clothing.Clothing ) {
 					if ( c.Model == "models/citizen/citizen.vmdl" ) {
 						to.SetMaterialGroup( c.MaterialGroup );
 						continue;
 					}
 
-					Log.Info( c.Model );
-
-					var anim = new AnimSceneObject( Model.Load( c.Model ), Transform.Zero );
+					var anim = new AnimSceneObject( Model.Load( c.Model ), Transform.Zero);
 					to.AddChild( "clothes", anim );
 
 					if ( !string.IsNullOrEmpty( c.MaterialGroup ) )
@@ -93,8 +91,6 @@ namespace charleroi.client.UI
 
 			clothes = true;
 
-			Log.Info( "clothing done for client " + from.Client.Name + " " + Clothing.Clothing.Count);
-
 		}
 
 		private void CopyParams( PlayerAnimator from, AnimSceneObject to )
@@ -107,12 +103,12 @@ namespace charleroi.client.UI
 				{
 					if ( animParam.Value is int intAnimValue )
 						to.SetAnimInt( animParam.Key, intAnimValue );
-					else if ( animParam.Value is float floatAnimValue )
-						to.SetAnimFloat( animParam.Key, floatAnimValue );
-					else if ( animParam.Value is Vector3 vector3AnimValue )
-						to.SetAnimVector( animParam.Key, vector3AnimValue );
-					else if ( animParam.Value is bool boolAnimValue )
-						to.SetAnimBool( animParam.Key, boolAnimValue );
+//					if ( animParam.Value is float floatAnimValue )
+//						to.SetAnimFloat( animParam.Key, floatAnimValue );
+//					if ( animParam.Value is Vector3 vector3AnimValue )
+//						to.SetAnimVector( animParam.Key, vector3AnimValue );
+//					if ( animParam.Value is bool boolAnimValue )
+//						to.SetAnimBool( animParam.Key, boolAnimValue );
 				}
 			}
 			catch ( Exception e ) { }

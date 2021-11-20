@@ -22,22 +22,21 @@ namespace charleroi.client
 		//New version of Items in Bag
 		public IList<TupleQuantitySItem> ItemsBag { get; set; } = new List<TupleQuantitySItem>();
 
+		[Net]
+		public string Clothes { get; set; }
 		public Clothing.Container Clothing = new();
 
-		public CPlayer()
-		{
-
-
+		public CPlayer() {
 
 		}
 
 		public override void Respawn()
 		{
 			Clothing.LoadFromClient( base.Client );
-			Log.Info( "respawn: " + Clothing.Clothing.Count );
 
 			SetModel( "models/citizen/citizen.vmdl" );
 			Clothing.DressEntity( this );
+			Clothes = Clothing.Serialize();
 
 			Controller = new WalkController();
 			Animator = new PlayerAnimator();
