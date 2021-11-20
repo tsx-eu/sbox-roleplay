@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Sandbox;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Sandbox.UI
+namespace charleroi.client
 {
 	/// <summary>
 	/// Mark a Panel with this class for it to be navigatable

@@ -1,10 +1,9 @@
-﻿using charleroi;
-using Sandbox;
+﻿using Sandbox;
 using Sandbox.UI;
 using System;
 using System.Collections.Generic;
 
-namespace charleroi
+namespace charleroi.client.UI
 {
 	class CPlayerAvatar : Panel {
 		public ScenePanel heroScene;

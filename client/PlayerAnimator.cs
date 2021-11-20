@@ -1,14 +1,9 @@
-﻿using System;
+﻿using Sandbox;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace charleroi
+
+namespace charleroi.client
 {
-	using Sandbox;
-	using System.Collections.Generic;
-
 	// Yoinked from https://github.com/xezno/sbox-extraction
 	/// <summary>
 	/// Player animator that keeps track of state so that you can use it for SceneWorlds / AnimEntity clones / etc.

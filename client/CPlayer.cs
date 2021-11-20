@@ -1,10 +1,8 @@
-﻿using charleroi;
-using charleroi.server.POCO;
-using Sandbox;
+﻿using Sandbox;
 using System;
 using System.Collections.Generic;
 
-namespace charleroi
+namespace charleroi.client
 {
 	partial class CPlayer : Player
 	{

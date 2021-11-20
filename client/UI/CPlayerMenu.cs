@@ -3,12 +3,10 @@ using Sandbox.UI;
 using Sandbox.UI.Construct;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
-
-namespace charleroi.UI
+using charleroi.client.UI.MenuNav;
+namespace charleroi.client.UI
 {
 	[Library]
 	[NavigatorTarget( "/client/MenuNav/" )]

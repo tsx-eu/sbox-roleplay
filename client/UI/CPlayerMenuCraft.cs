@@ -1,7 +1,7 @@
 ﻿using Sandbox;
 using Sandbox.UI;
 
-namespace charleroi.UI
+namespace charleroi.client.UI
 {
 	class CPlayerMenuCraft : Panel {
 		public CPlayerMenuCraft() {

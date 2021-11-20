@@ -1,11 +1,7 @@
-﻿using charleroi;
-using Sandbox;
+﻿using Sandbox;
 using Sandbox.UI;
-using Sandbox.UI.Construct;
-using System;
-using System.Linq;
 
-namespace charleroi.UI
+namespace charleroi.client.UI
 {
 	class CPlayerHUD : Panel {
 		public string Job { get; set; }
