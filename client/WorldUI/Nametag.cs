@@ -28,7 +28,7 @@ namespace charleroi.client.WorldUI
 			if ( !entity.IsValid() )
 				Delete();
 
-			if ( owner.Transform.Position.Distance( Transform.Position ) > 512.0f )
+			if ( owner.Transform.Position.Distance( Transform.Position ) > 100.0f )
 				Delete();
 
 			if ( Input.Released( InputButton.Use ) )
