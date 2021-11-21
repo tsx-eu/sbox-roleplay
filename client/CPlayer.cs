@@ -77,14 +77,6 @@ namespace charleroi.client
 				else
 					Camera = new ThirdPersonCamera();
 			}
-			
-			if ( IsClient && Input.Pressed( InputButton.Use ) ) {
-				var nearEntities = Trace.Sphere( 512.0f, Transform.Position, Transform.Position ).EntitiesOnly().WithTag( "show" ).RunAll();
-
-				foreach(var ent in nearEntities ) {
-					var tag = new Nametag( this, ent.Entity );
-				}
-			}
 		}
 	}
 	public class TupleQuantitySItem

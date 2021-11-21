@@ -7,39 +7,28 @@ namespace charleroi.client.WorldUI
 	partial class Nametag : WorldPanel
 	{
 		public string name { get; set; }
-		private CPlayer owner;
 		private Entity entity;
-		private Transform baseTransform;
 
-		public Nametag( CPlayer client, Entity ent )
+		public Nametag( Entity ent, string text )
 		{
-			name = ent.Name;
-			owner = client;
+			name = text;
 			entity = ent;
-			baseTransform = new Transform( ent.Position + Vector3.Up * 32, ent.Rotation );
-
-			Transform = baseTransform;
 
 			SetTemplate( "/client/WorldUI/Nametag.html" );
 		}
 
 		public override void Tick()
 		{
-			if ( !entity.IsValid() )
+			if ( !entity.IsValid() ) {
 				Delete();
-
-			if ( owner.Transform.Position.Distance( Transform.Position ) > 100.0f )
-				Delete();
-
-			if ( Input.Released( InputButton.Use ) )
-				Delete();
-
+				return;
+			}
 
 			var playerPosition = CurrentView.Position;
 			playerPosition.z = Position.z;
 
 			var targetRotation = Rotation.LookAt( playerPosition - Position );
-			var transform = baseTransform;
+			var transform = new Transform( entity.Position + Vector3.Up * 32, entity.Rotation );
 			transform.Rotation = Rotation.Lerp( transform.Rotation, targetRotation, 0.6f );
 
 			Transform = transform;
