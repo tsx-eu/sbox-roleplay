@@ -1,7 +1,5 @@
 ﻿using Sandbox;
 using Sandbox.UI;
-using Sandbox.UI.Construct;
-using System.Collections.Generic;
 
 
 namespace charleroi.client.WorldUI
@@ -9,16 +7,19 @@ namespace charleroi.client.WorldUI
 	partial class Nametag : WorldPanel
 	{
 		public string name { get; set; }
-		public CPlayer owner { get; set; }
-		public Entity entity { get; set; }
+		private CPlayer owner;
+		private Entity entity;
+		private Transform baseTransform;
 
 		public Nametag( CPlayer client, Entity ent )
 		{
 			name = ent.Name;
 			owner = client;
 			entity = ent;
+			baseTransform = new Transform( ent.Position + Vector3.Up * 32, ent.Rotation );
 
-			Transform = new Transform( ent.Position + Vector3.Up * 32, ent.Rotation );
+			Transform = baseTransform;
+
 			SetTemplate( "/client/WorldUI/Nametag.html" );
 		}
 
@@ -32,6 +33,16 @@ namespace charleroi.client.WorldUI
 
 			if ( Input.Released( InputButton.Use ) )
 				Delete();
+
+
+			var playerPosition = CurrentView.Position;
+			playerPosition.z = Position.z;
+
+			var targetRotation = Rotation.LookAt( playerPosition - Position );
+			var transform = baseTransform;
+			transform.Rotation = Rotation.Lerp( transform.Rotation, targetRotation, 0.6f );
+
+			Transform = transform;
 		}
 	}
 }

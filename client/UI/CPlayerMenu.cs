@@ -75,7 +75,7 @@ namespace charleroi.client.UI
 		{
 			base.Tick();
 
-			if ( Input.Pressed( InputButton.Menu ) && LastOpen >= .1f )
+			if ( Input.Pressed( InputButton.Menu ) && LastOpen >= 0.5f )
 			{
 				IsOpen = !IsOpen;
 				LastOpen = 0;

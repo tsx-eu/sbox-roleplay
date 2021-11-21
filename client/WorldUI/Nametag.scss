@@ -1,1 +1,20 @@
 ﻿
+Nametag {
+    justify-content: center;
+
+    div {
+        display: flex;
+        border: 1px solid rgba (30, 30, 30, 0.5);
+        border-radius: 50px;
+        backdrop-filter: blur( 10px);
+        background-color: rgba (30, 30, 30, 0.8);
+        align-self: flex-start;
+
+
+        label {
+            padding: 5px;
+            align-self: center;
+            border: 1px solid red;
+        }
+    }
+}
