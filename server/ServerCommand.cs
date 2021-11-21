@@ -65,7 +65,7 @@ namespace charleroi.server
 		[ServerCmd( "rp_spawn" )]
 		public static void Cmd_spawn()
 		{
-			string model = "models/tsx/table_craft.vmdl";
+			string model = "models/tsx/table_craft3.vmdl";
 			string tagname = "Table de craft";
 
 			var client = ConsoleSystem.Caller?.Pawn;
@@ -82,6 +82,16 @@ namespace charleroi.server
 			ent.Position = tr.EndPos - Vector3.Up * ent.CollisionBounds.Mins.z;
 			ent.Name = tagname;
 			ent.Tags.Add( "show" );
+
+			var mavariable = ent.GetAttachment( "light" ); // recup de la position de l'attache sur le props
+			var light = new OrthoLightEntity(  ); // création de la lumiere
+			light.Transform = mavariable.Value; // encapsulation de la position
+			light.SetParent( ent ); // attache lumiere avec l'attache du props
+			light.SetLightBrightness(0.008f); // réglage luminosité
+			light.SetLightColor( new Color( 0xF2, 0xBE, 0x5C ) ); // réglage couleur
+			//float OrthoLightHeight { 0.1f };
+			//float OrthoLightWidth {  };
+
 		}
 	}
 }
