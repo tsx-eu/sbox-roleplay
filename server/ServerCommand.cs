@@ -36,7 +36,7 @@ namespace charleroi.server
 				Log.Info( "Player data created" );
 			}
 			else {
-//				ConsoleSystem.Caller.Pawn = SPly;
+				client.Load( SPly );
 				Log.Info( "Player data loaded" );
 			}
 

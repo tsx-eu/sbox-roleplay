@@ -27,6 +27,17 @@ namespace charleroi.client
 
 		}
 
+		public void Load(SPlayer data) {
+			foreach ( var childProp in typeof( SPlayer ).GetProperties() ) {
+				var parentProp = typeof( CPlayer ).GetProperty( childProp.Name );
+				var childValue = childProp.GetValue( data, null );
+
+				Log.Info( String.Format( "{0}={1}", childProp.Name, childValue ) );
+
+				parentProp.SetValue( this, childValue, null );
+			}
+		}
+
 		public override void Respawn()
 		{
 			Clothing.LoadFromClient( base.Client );
