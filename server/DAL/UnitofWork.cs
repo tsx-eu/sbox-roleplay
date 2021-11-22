@@ -1,4 +1,5 @@
 ﻿using charleroi.server.DAL.Repository;
+using Sandbox;
 
 namespace charleroi.server.DAL
 {
@@ -7,9 +8,8 @@ namespace charleroi.server.DAL
 		private IRepository<SPlayer> _SPlayer;
 		private IRepository<SItem> _SItem;
 
-		public UnitofWork()
-		{
-
+		public UnitofWork() {
+			Host.AssertServer();
 		}
 
 		public IRepository<SPlayer> SPlayer => _SPlayer ?? new SPlayerRepository();

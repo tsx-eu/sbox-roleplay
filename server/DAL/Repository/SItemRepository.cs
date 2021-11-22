@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sandbox;
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
 
@@ -8,7 +9,7 @@ namespace charleroi.server.DAL.Repository
 	{
 		public SItemRepository()
 		{
-
+			Host.AssertServer();
 		}
 
 		public bool Delete( SItem entity )
