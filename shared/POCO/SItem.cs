@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Sandbox;
+using System;
 
 namespace charleroi
 {
-	[Serializable]
-	public class SItem
+	public interface SItem
 	{
-		public Guid Id { get; set; }
+		public ulong Id { get; set; }
 		public string Name { get; set; }
 		public string ShortDescription { get; set; }
-		public float MaxCarry { get; private set; } = 64;
+		public float MaxCarry { get; set; }
 	}
 }

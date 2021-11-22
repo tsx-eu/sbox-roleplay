@@ -20,12 +20,12 @@ namespace charleroi.client.UI
 		public Panel PageList { get; set; }
 		public Panel PageContainer { get; set; }
 
-		Dictionary<string, Sandbox.UI.Button> Buttons;
+		Dictionary<string, Button> Buttons;
 
 		public CPlayerMenu()
 		{
 			StyleSheet.Load( "/client/UI/CPlayerMenu.scss" );
-			Buttons = new Dictionary<string, Sandbox.UI.Button>();
+			Buttons = new Dictionary<string, Button>();
 			Inner = Add.Panel( "inner" );
 
 
@@ -74,8 +74,7 @@ namespace charleroi.client.UI
 			}
 		}
 
-		public override void Tick()
-		{
+		public override void Tick() {
 			base.Tick();
 
 			if ( Input.Pressed( InputButton.Menu ) && LastOpen >= 0.5f )

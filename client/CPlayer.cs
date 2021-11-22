@@ -5,26 +5,21 @@ using System.Collections.Generic;
 
 namespace charleroi.client
 {
-	partial class CPlayer : Player
+	partial class CPlayer : Player, SPlayer
 	{
-		[Net]
-		public float MaxHealth { get; set; } = 100.0f;
-		[Net]
-		public float MaxThirst { get; set; } = 100.0f;
-		[Net]
-		public float MaxHunger { get; set; } = 100.0f;
-		[Net]
-		public float Thirst { get; set; } = 100.0f;
-		[Net]
-		public float Hunger { get; set; } = 100.0f;
-
-		public string Job { get; set; } = "FC Chomage";
+		public ulong SteamID { get; set; }
+		[Net, Local, Predicted]
+		public float Thirst { get; set; }
+		[Net, Local, Predicted]
+		public float Hunger { get; set; }
+		[Net, Local]
+		public string Job { get; set; }
+		[Net, Local]
+		public string Clothes { get; set; }
 
 		//New version of Items in Bag
-		public IList<TupleQuantitySItem> ItemsBag { get; set; } = new List<TupleQuantitySItem>();
+		public IList<CItemQuantity> ItemsBag { get; set; } = new List<CItemQuantity>();
 
-		[Net]
-		public string Clothes { get; set; }
 		public Clothing.Container Clothing = new();
 
 		public CPlayer() {
@@ -50,17 +45,16 @@ namespace charleroi.client
 
 
 			//New way of Items in Bag
-			ItemsBag = new List<TupleQuantitySItem>()
-			{
-				new TupleQuantitySItem(6,new SItem(){Id = new Guid(), Name = "Pomme rouge", ShortDescription = "Une pink lady" } ),
-				new TupleQuantitySItem(6,new SItem(){Id = new Guid(), Name = "Diamant", ShortDescription = "Vaut son pesant d'or" } ),
-				new TupleQuantitySItem(6,new SItem(){Id = new Guid(), Name = "Redbull", ShortDescription = "te donne des ailes" } ),
-				new TupleQuantitySItem(6,new SItem(){Id = new Guid(), Name = "Caillou", ShortDescription = "Est une forme de lythothérapie, si lancé très fort sur la tête de quelqu'un" } ),
-				new TupleQuantitySItem(6,new SItem(){Id = new Guid(), Name = "Cuivre", ShortDescription = "On s'en sert principalement pour faire des cables" } )
+			ItemsBag = new List<CItemQuantity>() {
+				new CItemQuantity(6,new CItem(){Name = "Pomme rouge", ShortDescription = "Une pink lady" } ),
+				new CItemQuantity(6,new CItem(){Name = "Diamant", ShortDescription = "Vaut son pesant d'or" } ),
+				new CItemQuantity(6,new CItem(){Name = "Redbull", ShortDescription = "te donne des ailes" } ),
+				new CItemQuantity(6,new CItem(){Name = "Caillou", ShortDescription = "Est une forme de lythothérapie, si lancé très fort sur la tête de quelqu'un" } ),
+				new CItemQuantity(6,new CItem(){Name = "Cuivre", ShortDescription = "On s'en sert principalement pour faire des cables" } )
 			};
 
 
-			Health = MaxHealth;
+			Health = 100;
 
 			base.Respawn();
 		}
@@ -79,18 +73,6 @@ namespace charleroi.client
 			}
 
 			TickPlayerUse();
-		}
-	}
-	public class TupleQuantitySItem
-	{
-		// TODO pour John : le rendre [Net] compliant
-		public int Quantity { get; set; }
-		public SItem Item { get; set; }
-
-		public TupleQuantitySItem( int quantity, SItem item )
-		{
-			Quantity = quantity;
-			Item = item;
 		}
 	}
 

@@ -17,7 +17,7 @@ namespace charleroi.server
 			CPlayer client = ConsoleSystem.Caller.Pawn as CPlayer;
 			if ( client == null ) return;
 
-			client.Health = Rand.Float( 1.0f, client.MaxHealth );
+			client.Health = Rand.Float( 1.0f, 100.0f );
 		}
 
 		[ServerCmd( "rp_loadme" )]
@@ -25,21 +25,23 @@ namespace charleroi.server
 		{
 			var uow = new UnitofWork();
 			CPlayer client = ConsoleSystem.Caller.Pawn as CPlayer;
+
 			var steamid = (ulong)client.Client.PlayerId;
-			SPlayer SPly = uow.SPlayer.Get( steamid );
-			if ( SPly == null )
-			{
-				SPly = new SPlayer()
-				{
-					Thirst = 50
-				};
-				uow.SPlayer.Insert( SPly );
+			Log.Info( "Your StemID:" + steamid );
+
+			CPlayer SPly = uow.SPlayer.Get( steamid ) as CPlayer;
+
+			if ( SPly == null ) {
+				uow.SPlayer.Insert( client );
 				Log.Info( "Player data created" );
 			}
 			else
 			{
+//				ConsoleSystem.Caller.Pawn = SPly;
 				Log.Info( "Player data loaded" );
 			}
+
+
 		}
 
 		[ServerCmd( "rp_delme" )]
@@ -47,12 +49,7 @@ namespace charleroi.server
 		{
 			var uow = new UnitofWork();
 			CPlayer client = ConsoleSystem.Caller.Pawn as CPlayer;
-			var steamid = (ulong)client.Client.PlayerId;
-
-			bool success = uow.SPlayer.Delete( new SPlayer
-			{
-				SteamID = steamid
-			} );
+			bool success = uow.SPlayer.Delete( client );
 
 			if ( success )
 			{
@@ -61,6 +58,23 @@ namespace charleroi.server
 			else
 			{
 				Log.Info( "Player not deleted" );
+			}
+		}
+
+		[ServerCmd( "rp_saveme" )]
+		public static void Cmd_SaveMe()
+		{
+			var uow = new UnitofWork();
+			CPlayer client = ConsoleSystem.Caller.Pawn as CPlayer;
+			bool success = uow.SPlayer.Update( client );
+
+			if ( success )
+			{
+				Log.Info( "Player data saved" );
+			}
+			else
+			{
+				Log.Info( "Player not saved" );
 			}
 		}
 
