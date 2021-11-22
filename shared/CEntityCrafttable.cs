@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace charleroi
 {
 	[Library( "tsx_crafttable" )]
-	partial class CEntityCrafttable : Prop
+	partial class CEntityCrafttable : Prop, IUse
 	{
 		public static class Type {
 			public static string none = "models/tsx/table_craft3.vmdl";
@@ -16,9 +16,9 @@ namespace charleroi
 
 		[Net]
 		public string description { get; set; } = "Table de craft V3";
-		public string model { get; set; } = Type.none;
-		public Color color { get; set; } = new Color( 255, 200, 32 );
-		public float brightness { get; set; } = 0.8f;
+		public string model = Type.none;
+		public Color color = new Color( 255, 200, 32 );
+		public float brightness = 0.8f;
 		private Nametag tag = null;
 
 		public CEntityCrafttable()  {
@@ -78,6 +78,15 @@ namespace charleroi
 				if ( ent is PointLightEntity point )
 					point.TurnOff();
 			}
+		}
+
+		public virtual bool OnUse( Entity user ) {
+			var player = user as CPlayer;
+			Log.Error( "used" );
+			return true;
+		}
+		public virtual bool IsUsable( Entity user ) {
+			return user is Player;
 		}
 
 		[Event.Tick.Client]

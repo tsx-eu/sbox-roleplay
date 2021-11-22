@@ -77,6 +77,8 @@ namespace charleroi.client
 				else
 					Camera = new ThirdPersonCamera();
 			}
+
+			TickPlayerUse();
 		}
 	}
 	public class TupleQuantitySItem
