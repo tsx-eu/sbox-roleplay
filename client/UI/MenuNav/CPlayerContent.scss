@@ -1,5 +1,7 @@
-﻿CPlayerContent {
-    color: white;
+﻿@import '/theme.scss';
+
+CPlayerContent {
+color: white;
     font-family: Poppins;
 
     .main-menu {
