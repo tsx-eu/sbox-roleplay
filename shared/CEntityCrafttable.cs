@@ -86,7 +86,7 @@ namespace charleroi
 			float dist = 128.0f;
 
 			if ( tag == null && cl.Pawn.Transform.Position.Distance( Position ) <= dist ) {
-				tag = new Nametag( this, description );
+				tag = new CraftableTAG( this, description );
 			}
 			if ( tag != null && cl.Pawn.Transform.Position.Distance( Position ) > dist ) {
 				tag.Delete();

@@ -28,7 +28,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<Analyzer Include="..\..\..\bin\managed\Sandbox.Generator.dll"/>
+		<Analyzer Include="..\..\..\bin\managed\Sandbox.Generator.dll" />
 		<Reference Include="..\..\..\bin\managed/Sandbox.System.dll" />
 		<Reference Include="..\..\..\bin\managed/Sandbox.Engine.dll" />
 		<Reference Include="..\..\..\bin\managed/Sandbox.Game.dll" />
@@ -37,6 +37,15 @@
 
   <ItemGroup>
 <ProjectReference Include="..\..\..\addons\base\code\base.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="client\WorldUI\Craftable.html">
+      <DependentUpon>Craftable.cs</DependentUpon>
+    </None>
+    <None Update="client\WorldUI\Craftable.scss">
+      <DependentUpon>Craftable.cs</DependentUpon>
+    </None>
   </ItemGroup>
 
 </Project>

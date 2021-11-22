@@ -7,7 +7,7 @@ namespace charleroi.client.WorldUI
 	partial class Nametag : WorldPanel
 	{
 		public string name { get; set; }
-		private Entity entity;
+		protected Entity entity;
 
 		public Nametag( Entity ent, string text )
 		{
