@@ -12,6 +12,8 @@ namespace charleroi.client.UI
 	[NavigatorTarget( "/client/MenuNav/" )]
 	public partial class CPlayerMenu : Panel
 	{
+		public static CPlayerMenu Instance { get; private set; }
+
 		private bool IsOpen = false;
 		private TimeSince LastOpen;
 		public Panel Inner { get; set; }
@@ -40,6 +42,7 @@ namespace charleroi.client.UI
 
 
 			Buttons.First().Value.CreateEvent( "onclick" );
+			Instance = this;
 		}
 
 		void AddPage( string icon, string name, Func<Panel> act = null )
@@ -77,11 +80,25 @@ namespace charleroi.client.UI
 
 			if ( Input.Pressed( InputButton.Menu ) && LastOpen >= 0.5f )
 			{
-				IsOpen = !IsOpen;
+				SetOpen( !IsOpen );
 				LastOpen = 0;
 			}
 
+		}
+
+		private void SetOpen(bool status) {
+			IsOpen = status;
 			SetClass( "open", IsOpen );
+		}
+
+		[ClientRpc]
+		public static void Show( ) {
+			Instance.SetOpen( true );
+		}
+
+		[ClientRpc]
+		public static void Hide() {
+			Instance.SetOpen( false );
 		}
 	}
 }
