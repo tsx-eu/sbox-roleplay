@@ -18,6 +18,7 @@ namespace charleroi.client
 		public string Clothes { get; set; }
 
 		//New version of Items in Bag
+		[Net]
 		public IList<CItemQuantity> ItemsBag { get; set; } = new List<CItemQuantity>();
 
 		public Clothing.Container Clothing = new();
@@ -46,11 +47,11 @@ namespace charleroi.client
 
 			//New way of Items in Bag
 			ItemsBag = new List<CItemQuantity>() {
-				new CItemQuantity(6,new CItem(){Name = "Pomme rouge", ShortDescription = "Une pink lady" } ),
-				new CItemQuantity(6,new CItem(){Name = "Diamant", ShortDescription = "Vaut son pesant d'or" } ),
-				new CItemQuantity(6,new CItem(){Name = "Redbull", ShortDescription = "te donne des ailes" } ),
-				new CItemQuantity(6,new CItem(){Name = "Caillou", ShortDescription = "Est une forme de lythothérapie, si lancé très fort sur la tête de quelqu'un" } ),
-				new CItemQuantity(6,new CItem(){Name = "Cuivre", ShortDescription = "On s'en sert principalement pour faire des cables" } )
+				new CItemQuantity { Quantity = 6, Item = new CItem() { Name = "Pomme rouge", ShortDescription = "Une pink lady" } },
+				new CItemQuantity { Quantity = 6, Item = new CItem() { Name = "Diamant", ShortDescription = "Vaut son pesant d'or" } },
+				new CItemQuantity { Quantity = 6, Item = new CItem() { Name = "Redbull", ShortDescription = "te donne des ailes" } },
+				new CItemQuantity { Quantity = 6, Item = new CItem() { Name = "Caillou", ShortDescription = "Est une forme de lythothérapie, si lancé très fort sur la tête de quelqu'un" } },
+				new CItemQuantity { Quantity = 6, Item = new CItem() { Name = "Cuivre", ShortDescription = "On s'en sert principalement pour faire des cables" } },
 			};
 
 

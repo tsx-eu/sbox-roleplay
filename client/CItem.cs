@@ -1,14 +1,17 @@
-﻿using charleroi.client.WorldUI;
+﻿using System;
 using Sandbox;
-using System;
 
 namespace charleroi.client
 {
-	public partial class CItem : SItem, IUse
+	public partial class CItem : BaseNetworkable, SItem, IUse
 	{
+		[Net]
 		public ulong Id { get; set; }
+		[Net]
 		public string Name { get; set; }
+		[Net]
 		public string ShortDescription { get; set; }
+		[Net]
 		public float MaxCarry { get; set; }
 
 		public bool IsUsable( Entity user ) {
@@ -21,14 +24,12 @@ namespace charleroi.client
 	}
 
 
-	public class CItemQuantity
+	public partial class CItemQuantity : BaseNetworkable
 	{
-		public int Quantity { get; set; }
-		public CItem Item { get; set; }
+		[Net]
+		public int Quantity { get; set; } = 0;
 
-		public CItemQuantity(int qt, CItem it) {
-			Quantity = qt;
-			Item = it;
-		}
+		[Net]
+		public CItem Item { get; set; } = null;
 	}
 }

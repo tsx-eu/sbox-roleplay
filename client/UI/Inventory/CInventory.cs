@@ -20,11 +20,13 @@ namespace charleroi.client.UI.Inventory
 		}
 
 		public void Initialize() {
-			var client = Local.Client as CPlayer;
+			var client = Local.Pawn as CPlayer;
 
 			cItems.Clear();
-			foreach ( var item in client.ItemsBag ) {
-				cItems.Add( new CInventoryItem( this, item ) );
+			if ( client.ItemsBag != null ) {
+				foreach ( var item in client.ItemsBag ) {
+					cItems.Add( new CInventoryItem( this, item ) );
+				}
 			}
 
 			while( cItems.Count < MaxItem ) {

@@ -29,14 +29,13 @@ namespace charleroi.server
 			var steamid = (ulong)client.Client.PlayerId;
 			Log.Info( "Your StemID:" + steamid );
 
-			CPlayer SPly = uow.SPlayer.Get( steamid ) as CPlayer;
+			SPlayer SPly = uow.SPlayer.Get( steamid );
 
 			if ( SPly == null ) {
 				uow.SPlayer.Insert( client );
 				Log.Info( "Player data created" );
 			}
-			else
-			{
+			else {
 //				ConsoleSystem.Caller.Pawn = SPly;
 				Log.Info( "Player data loaded" );
 			}
