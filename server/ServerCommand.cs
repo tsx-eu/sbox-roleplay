@@ -1,9 +1,10 @@
-﻿using Sandbox;
+﻿using System;
+using System.Linq;
+
+using Sandbox;
 
 using charleroi.server.DAL;
 using charleroi.client;
-using charleroi.client.WorldUI;
-using System.Linq;
 
 namespace charleroi.server
 {
@@ -63,10 +64,10 @@ namespace charleroi.server
 			}
 		}
 
-		[ServerCmd( "rp_spawn_old" )]
-		public static void Cmd_spawnold()
+		[ServerCmd( "rp_spawn2" )]
+		public static void Cmd_spawn2()
 		{
-			string model = "models/tsx/table_craft3.vmdl";
+			string model = "models/tsx/dab2.vmdl";
 			string tagname = "Table de craft";
 
 			var client = ConsoleSystem.Caller?.Pawn;
@@ -81,19 +82,6 @@ namespace charleroi.server
 			ent.Rotation = Rotation.From( new Angles( 0, client.EyeRot.Angles().yaw, 0 ) ) * Rotation.FromAxis( Vector3.Up, 180 );
 			ent.SetModel( model );
 			ent.Position = tr.EndPos - Vector3.Up * ent.CollisionBounds.Mins.z;
-			ent.Name = tagname;
-			ent.Tags.Add( "show" );
-
-			var lightPosition = ent.GetAttachment( "light" ); // recup de la position de l'attache sur le props
-			if ( lightPosition.HasValue )
-			{
-				var light = new SpotLightEntity();                      // création de la lumiere
-				light.Transform = lightPosition.Value;                  // encapsulation de la position
-				light.SetParent( ent );                                 // attache lumiere avec l'attache du props
-				light.SetLightBrightness( 0.8f );                       // réglage luminosité
-				light.SetLightColor( new Color( 0xF2, 0xBE, 0x5C ) );   // réglage couleur
-				light.Range = 128.0f;
-			}
 		}
 
 		[ServerCmd( "rp_spawn" )]
