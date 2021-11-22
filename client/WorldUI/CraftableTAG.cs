@@ -6,9 +6,10 @@ namespace charleroi.client.WorldUI
 {
 	partial class CraftableTAG : Nametag
 	{
-
-		public CraftableTAG( Entity ent, string text ) : base( ent, text )
+		public CraftableTAG( Entity ent, string text )
 		{
+			Name = text;
+			entity = ent;
 			SetTemplate( "/client/WorldUI/CraftableTAG.html" );
 		}
 

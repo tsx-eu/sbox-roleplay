@@ -6,12 +6,14 @@ namespace charleroi.client.WorldUI
 {
 	partial class Nametag : WorldPanel
 	{
-		public string name { get; set; }
+		public string Name { get; set; }
 		protected Entity entity;
+
+		protected Nametag() { }
 
 		public Nametag( Entity ent, string text )
 		{
-			name = text;
+			Name = text;
 			entity = ent;
 
 			SetTemplate( "/client/WorldUI/Nametag.html" );
