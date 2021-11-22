@@ -96,7 +96,9 @@ namespace charleroi.server
 				.Run();
 
 			var ent = new CEntityCrafttable {
-				description = "CECI EST UNE TABLE"
+				description = "CECI EST UNE TABLE",
+				model = CEntityCrafttable.Type.none,
+				color = new Color( 0xF2, 0xBE, 0x5C )
 			};
 
 			ent.Rotation = Rotation.From( new Angles( 0, client.EyeRot.Angles().yaw, 0 ) ) * Rotation.FromAxis( Vector3.Up, 180 );

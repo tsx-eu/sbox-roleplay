@@ -9,13 +9,16 @@ namespace charleroi
 	[Library( "tsx_crafttable" )]
 	partial class CEntityCrafttable : Prop
 	{
-		public static class CEntityCrafttableType {
+		public static class Type {
 			public static string none = "models/tsx/table_craft3.vmdl";
 		}
 		private IList<Entity> lightings { get; set; } = new List<Entity>();
 
 		[Net]
 		public string description { get; set; } = "Table de craft V3";
+		public string model { get; set; } = Type.none;
+		public Color color { get; set; } = new Color( 255, 200, 32 );
+		public float brightness { get; set; } = 0.8f;
 		private Nametag tag = null;
 
 		public CEntityCrafttable()  {
@@ -23,7 +26,7 @@ namespace charleroi
 		}
 
 		public override void Spawn() {
-			SetModel( CEntityCrafttableType.none );
+			SetModel( model );
 			Tags.Add( "show" );
 
 			for(int i=0; i<8; i++) {
@@ -33,8 +36,8 @@ namespace charleroi
 					var light = new SpotLightEntity();
 					light.Transform = pos.Value;
 					light.SetParent( this );
-					light.SetLightBrightness( 0.8f );
-					light.SetLightColor( new Color( 255, 255, 64 ) );
+					light.SetLightBrightness( brightness );
+					light.SetLightColor( color );
 					light.Range = (Math.Abs( CollisionBounds.Mins.z ) + Math.Abs( CollisionBounds.Maxs.z )) * 2;
 					lightings.Add( light );
 				}
@@ -44,8 +47,8 @@ namespace charleroi
 					var light = new PointLightEntity();
 					light.Transform = pos.Value;
 					light.SetParent( this );
-					light.SetLightBrightness( 0.8f );
-					light.SetLightColor( new Color( 255, 255, 64 ) );
+					light.SetLightBrightness( brightness );
+					light.SetLightColor( color );
 					light.Range = (Math.Abs( CollisionBounds.Mins.z ) + Math.Abs( CollisionBounds.Maxs.z )) * 2;
 					lightings.Add( light );
 				}
