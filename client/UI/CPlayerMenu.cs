@@ -32,13 +32,13 @@ namespace charleroi.client.UI
 			PageList = Inner.Add.Panel( "pagelist" );
 			PageContainer = Inner.Add.Panel( "pagecontainer" );
 
-			AddPage( "user_content", "Inventaire", () => PageContainer.AddChild<CPlayerContent> () );
-			AddPage( "user_job", "Métiers", () => PageContainer.AddChild<CPlayerJob>() );
-			AddPage( "user_skill", "Compétences", () => PageContainer.AddChild<CPlayerSkill>() );
-			AddPage( "user_family", "Famille", () => PageContainer.AddChild<CPlayerFamily>() );
-			AddPage( "user_shop", "Boutique", () => PageContainer.AddChild<CPlayerShop>() );
-			AddPage( "user_mail", "Courriers", () => PageContainer.AddChild<CPlayerMail>() );
-			AddPage( "user_option", "Options", () => PageContainer.AddChild<CPlayerOption>() );
+			AddPage( "price_change", "Inventaire", () => PageContainer.AddChild<CPlayerContent> () );
+			AddPage( "card_travel", "Métiers", () => PageContainer.AddChild<CPlayerJob>() );
+			AddPage( "science", "Compétences", () => PageContainer.AddChild<CPlayerSkill>() );
+			AddPage( "groups", "Famille", () => PageContainer.AddChild<CPlayerFamily>() );
+			AddPage( "shopping_cart", "Boutique", () => PageContainer.AddChild<CPlayerShop>() );
+			AddPage( "mail_outline", "Courriers", () => PageContainer.AddChild<CPlayerMail>() );// transform en mark_email_read ou mark_email_unread si courrier ?
+			AddPage( "miscellaneous_services", "Options", () => PageContainer.AddChild<CPlayerOption>() );
 
 
 			Buttons.First().Value.CreateEvent( "onclick" );

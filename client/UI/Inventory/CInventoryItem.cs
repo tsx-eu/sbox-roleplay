@@ -17,7 +17,7 @@ namespace charleroi.client.UI.Inventory
 			item = tupleItem;
 
 			if ( tupleItem == null ) {
-				_Name = Add.Label( "empty", "item-name" );
+				_Name = Add.Label( "", "item-name" );
 			}
 			else
 			{
@@ -25,10 +25,11 @@ namespace charleroi.client.UI.Inventory
 				this.Style.BackgroundSizeX = Length.Percent( 95.0f );
 				this.Style.BackgroundSizeY = Length.Percent( 95.0f );
 
-				_Name = Add.Label( tupleItem.Item.Name, "item-name" );
+				_Name = Add.Label( tupleItem.Item.Name, "item-name" ); // deplacer le nom de l'item dans le pop over avec la desc
 				_Quantity = Add.Label( tupleItem.Quantity.ToString(), "item-quantity" );
-				_ShortDescription = Add.Label( tupleItem.Item.ShortDescription, "item-description" );
+				_ShortDescription = Add.Label( tupleItem.Item.ShortDescription, "item-description" );// prévoir un z-index 7
 
+				// TODO: ajouter un delais de 2secondes avant affichage
 				this.AddEventListener( "onmouseover", () => {
 					_Name.Style.Display = DisplayMode.None;
 					_Quantity.Style.Display = DisplayMode.None;

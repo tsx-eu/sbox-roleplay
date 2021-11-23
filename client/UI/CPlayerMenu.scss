@@ -55,8 +55,16 @@ CPlayerMenu {
 
                 .iconpanel {
                     position: absolute;
-                    left: 8px;
-                    opacity: 0;
+                    left: 0px;
+                    color: white;
+                    font-family: MaterialIcons;
+                    padding: 6px;
+                    font-size: 30px; 
+                }
+
+                label {
+                    height: 30%;
+                    left: 10%;
                 }
 
                 &:hover {
@@ -88,5 +96,4 @@ CPlayerMenu {
             }
         }
     }
-
 }

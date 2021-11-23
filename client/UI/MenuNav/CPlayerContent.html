@@ -52,28 +52,27 @@
                 </div>
             </div>
             <div class="footer">
-                <!-- info player-->
                 <div class="infoplayer">
-                    <!-- LIFE / Water / Hunger-->
                     <div class="value">
-                        <div class="param">
-                            <label class="type">Vie</label>
-                            <label class="type">Soif</label>
-                            <label class="type">Faim</label>
-                            <label class="type">Money</label>
-                        </div>
-                        <div class="status-bar">
-                            <div class="progress">
-                                <CPlayerHealth></CPlayerHealth>
+                        <div class="leftinfo">
+                            <div class="param">
+                                <icon>favorite</icon>
+                                <icon>water_drop</icon>
                             </div>
-                            <div class="progress">
+                            <div class="status-bar">
+                                <CPlayerHealth></CPlayerHealth>
                                 <CPlayerThrist></CPlayerThrist>
                             </div>
-                            <div class="progress">
-                                <CPlayerHunger></CPlayerHunger>
+                        </div>
+
+                        <div class="rightinfo">
+                            <div class="param">
+                                <icon>restaurant_menu</icon>
+                                <icon>savings</icon>
                             </div>
-                            <div class="progress">
-                                <CPlayerMoney></CPlayerMoney>
+                            <div class="status-bar">
+                                <CPlayerHunger></CPlayerHunger>
+                                <label>10 548€</label><!--<CPlayerMoney></CPlayerMoney>-->
                             </div>
                         </div>
                     </div>
