@@ -59,7 +59,7 @@ CPlayerMenu {
                     color: white;
                     font-family: MaterialIcons;
                     padding: 6px;
-                    font-size: 30px; 
+                    font-size: 30px;
                 }
 
                 label {
@@ -71,11 +71,16 @@ CPlayerMenu {
                     background-color: #0583F2;
                     color: black;
                     font-size: 15px;
+
+                    &:not( .active ) {
+                        sound-in: ui.button.over;
+                    }
                 }
 
                 &.active {
                     background-color: #0583F2;
                     color: rgb(0, 0, 0 );
+                    sound-in: ui.button.press;
                 }
 
                 &.active:hover, &.active {
