@@ -1,6 +1,8 @@
 ﻿using Sandbox;
 
 using charleroi.client;
+using charleroi.server.DAL;
+
 namespace charleroi
 {
 	public partial class Game : Sandbox.Game {
@@ -28,6 +30,18 @@ namespace charleroi
 
 			var player = new CPlayer();
 			client.Pawn = player;
+
+			if ( IsServer ) {
+				var steamid = (ulong)client.PlayerId;
+
+				var uow = new UnitofWork();
+				SPlayer SPly = uow.SPlayer.Get( steamid );
+				if( SPly == null )
+					uow.SPlayer.Insert( player );
+				else
+					player.Load( SPly );
+			}
+
 			player.Respawn();
 		}
 	}
