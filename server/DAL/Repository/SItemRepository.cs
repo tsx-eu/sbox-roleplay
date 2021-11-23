@@ -1,4 +1,5 @@
-﻿using Sandbox;
+﻿using charleroi.client;
+using Sandbox;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -33,7 +34,7 @@ namespace charleroi.server.DAL.Repository
 				Log.Error( res.Error );
 				return null;
 			}
-			var resPlayer = JsonSerializer.Deserialize<SItem>( res.Data.GetRawText() );
+			var resPlayer = JsonSerializer.Deserialize<CItem>( res.Data.GetRawText() );
 			return resPlayer;
 		}
 
@@ -50,7 +51,7 @@ namespace charleroi.server.DAL.Repository
 			var SPlyList = new List<SItem>();
 			foreach (var elem in resMap.Data )
 			{
-				var SPly = JsonSerializer.Deserialize<SItem>( elem.Value.GetRawText() );
+				var SPly = JsonSerializer.Deserialize<CItem>( elem.Value.GetRawText() );
 				SPlyList.Add( SPly );
 			}
 			return SPlyList;
@@ -58,7 +59,8 @@ namespace charleroi.server.DAL.Repository
 
 		public bool Insert( SItem entity )
 		{
-			var res = CRUDTools.GetInstance().Set( "item", entity.Id.ToString(), entity ).Result;
+			JsonDocument toast = JsonSerializer.SerializeToDocument<SItem>( entity );
+			var res = CRUDTools.GetInstance().Set( "item", entity.Id.ToString(), toast ).Result;
 			if ( res.Error != "" )
 			{
 				Log.Error( res.Error );
@@ -74,7 +76,8 @@ namespace charleroi.server.DAL.Repository
 
 		public bool Update( SItem entity )
 		{
-			var res = CRUDTools.GetInstance().Set( "item", entity.Id.ToString(), entity ).Result;
+			JsonDocument toast = JsonSerializer.SerializeToDocument<SItem>( entity );
+			var res = CRUDTools.GetInstance().Set( "item", entity.Id.ToString(), toast ).Result;
 			if ( res.Error != "" )
 			{
 				Log.Error( res.Error );

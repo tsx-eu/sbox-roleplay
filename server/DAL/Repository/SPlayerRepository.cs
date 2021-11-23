@@ -1,4 +1,5 @@
-﻿using Sandbox;
+﻿using charleroi.client;
+using Sandbox;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -39,7 +40,7 @@ namespace charleroi.server.DAL.Repository
 				Log.Error( res.Error );
 				return null;
 			}
-			var resPlayer = JsonSerializer.Deserialize<SPlayer>( res.Data.GetRawText() );
+			var resPlayer = JsonSerializer.Deserialize<CPlayer>( res.Data.GetRawText() );
 			return resPlayer;
 		}
 
@@ -56,7 +57,7 @@ namespace charleroi.server.DAL.Repository
 			var SPlyList = new List<SPlayer>();
 			foreach (var elem in resMap.Data )
 			{
-				var SPly = JsonSerializer.Deserialize<SPlayer>( elem.Value.GetRawText() );
+				var SPly = JsonSerializer.Deserialize<CPlayer>( elem.Value.GetRawText() );
 				SPlyList.Add( SPly );
 			}
 			return SPlyList;
@@ -67,7 +68,8 @@ namespace charleroi.server.DAL.Repository
 			if ( entity.SteamID == 0 )
 				throw new Exception( "SteamID is unknown" );
 
-			var res = CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), entity ).Result;
+			JsonDocument toast = JsonSerializer.SerializeToDocument<SPlayer>( entity );
+			var res = CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), toast ).Result;
 			if ( res.Error != "" )
 			{
 				Log.Error( res.Error );
@@ -86,9 +88,8 @@ namespace charleroi.server.DAL.Repository
 			if ( entity.SteamID == 0 )
 				throw new Exception( "SteamID is unknown" );
 
-			var toast = JsonSerializer.Serialize<SPlayer>( entity );
-			Log.Info( toast );
-			var res = CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), entity ).Result;
+			JsonDocument toast = JsonSerializer.SerializeToDocument<SPlayer>( entity );
+			var res = CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), toast ).Result;
 			if ( res.Error != "" )
 			{
 				Log.Error( res.Error );

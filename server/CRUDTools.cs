@@ -34,10 +34,10 @@ namespace charleroi.server
 		public string ID { get; set; }
 
 		[JsonPropertyName( "data" )]
-		public object Data { get; set; }
+		public JsonDocument Data { get; set; }
 
 
-		public CRUDRequest( string operation, string datatype, string id, object data )
+		public CRUDRequest( string operation, string datatype, string id, JsonDocument data )
 		{
 			ReqID = ReqIncr;
 			ReqType = operation;
@@ -154,7 +154,7 @@ namespace charleroi.server
 			return await req.ResponsePromise.Task;
 		}
 
-		public async Task<CRUDResponse> Set( string type, string id, object data )
+		public async Task<CRUDResponse> Set( string type, string id, JsonDocument data )
 		{
 			InitWs();
 			CRUDRequest req = new CRUDRequest( "SET", type, id, data );
@@ -172,7 +172,7 @@ namespace charleroi.server
 			return await req.ResponsePromise.Task;
 		}
 
-		public async Task<CRUDResponse> Add( string type, object data )
+		public async Task<CRUDResponse> Add( string type, JsonDocument data )
 		{
 			InitWs();
 			CRUDRequest req = new CRUDRequest( "ADD", type, "", data );
