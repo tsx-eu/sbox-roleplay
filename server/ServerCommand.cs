@@ -32,6 +32,7 @@ namespace charleroi.server
 			SPlayer SPly = uow.SPlayer.Get( steamid );
 
 			if ( SPly == null ) {
+				client.SteamID = (ulong)client.Client.PlayerId;
 				uow.SPlayer.Insert( client );
 				Log.Info( "Player data created" );
 			}

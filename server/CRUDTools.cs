@@ -12,10 +12,8 @@ namespace charleroi.server
 	class CRUDRequest
 	{
 		private static ulong incr = 1;
-		private static ulong ReqIncr
-		{
-			get
-			{
+		private static ulong ReqIncr {
+			get {
 				return incr++;
 			}
 		}
@@ -33,13 +31,13 @@ namespace charleroi.server
 		public string DataType { get; set; }
 
 		[JsonPropertyName( "id" )]
-		public object ID { get; set; }
+		public string ID { get; set; }
 
 		[JsonPropertyName( "data" )]
 		public object Data { get; set; }
 
 
-		public CRUDRequest( string operation, string datatype, object id, object data )
+		public CRUDRequest( string operation, string datatype, string id, object data )
 		{
 			ReqID = ReqIncr;
 			ReqType = operation;
@@ -93,8 +91,10 @@ namespace charleroi.server
 
 		private JsonSerializerOptions JSONOpt = new()
 		{
-			IncludeFields = true
+			IncludeFields = true,
+			IgnoreReadOnlyFields = true
 		};
+
 
 		private WebSocket WS;
 
@@ -144,7 +144,7 @@ namespace charleroi.server
 			}
 		}
 
-		public async Task<CRUDResponse> Get( string type, object id )
+		public async Task<CRUDResponse> Get( string type, string id )
 		{
 			InitWs();
 			CRUDRequest req = new CRUDRequest( "GET", type, id, null );
@@ -154,7 +154,7 @@ namespace charleroi.server
 			return await req.ResponsePromise.Task;
 		}
 
-		public async Task<CRUDResponse> Set( string type, object id, object data )
+		public async Task<CRUDResponse> Set( string type, string id, object data )
 		{
 			InitWs();
 			CRUDRequest req = new CRUDRequest( "SET", type, id, data );
@@ -163,7 +163,7 @@ namespace charleroi.server
 			return await req.ResponsePromise.Task;
 		}
 
-		public async Task<CRUDResponse> Del( string type, object id )
+		public async Task<CRUDResponse> Del( string type, string id )
 		{
 			InitWs();
 			CRUDRequest req = new CRUDRequest( "DEL", type, id, null );
@@ -175,7 +175,7 @@ namespace charleroi.server
 		public async Task<CRUDResponse> Add( string type, object data )
 		{
 			InitWs();
-			CRUDRequest req = new CRUDRequest( "ADD", type, 0, data );
+			CRUDRequest req = new CRUDRequest( "ADD", type, "", data );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
 			return await req.ResponsePromise.Task;
@@ -185,7 +185,7 @@ namespace charleroi.server
 		public async Task<CRUDResponse> GetAll( string type )
 		{
 			InitWs();
-			CRUDRequest req = new CRUDRequest( "GETALL", type, 0, null );
+			CRUDRequest req = new CRUDRequest( "GETALL", type, "", null );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
 			return await req.ResponsePromise.Task;

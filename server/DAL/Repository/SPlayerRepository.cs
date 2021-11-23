@@ -14,7 +14,10 @@ namespace charleroi.server.DAL.Repository
 
 		public bool Delete( SPlayer entity )
 		{
-			var res = CRUDTools.GetInstance().Del( "player", entity.SteamID ).Result;
+			if( entity.SteamID == 0 ) 
+				throw new Exception( "SteamID is unknown" );
+
+			var res = CRUDTools.GetInstance().Del( "player", entity.SteamID.ToString() ).Result;
 			if(res.Error != "" )
 			{
 				Log.Error( res.Error );
@@ -25,7 +28,10 @@ namespace charleroi.server.DAL.Repository
 
 		public SPlayer Get( object id )
 		{
-			var req = CRUDTools.GetInstance().Get( "player", id );
+			if ( (ulong)id == 0 )
+				throw new Exception( "SteamID is unknown" );
+
+			var req = CRUDTools.GetInstance().Get( "player", id.ToString() );
 
 			var res = req.Result;
 			if ( res.Error != "" )
@@ -58,7 +64,10 @@ namespace charleroi.server.DAL.Repository
 
 		public bool Insert( SPlayer entity )
 		{
-			var res = CRUDTools.GetInstance().Set( "player", entity.SteamID, entity ).Result;
+			if ( entity.SteamID == 0 )
+				throw new Exception( "SteamID is unknown" );
+
+			var res = CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), entity ).Result;
 			if ( res.Error != "" )
 			{
 				Log.Error( res.Error );
@@ -74,7 +83,12 @@ namespace charleroi.server.DAL.Repository
 
 		public bool Update( SPlayer entity )
 		{
-			var res = CRUDTools.GetInstance().Set( "player", entity.SteamID, entity ).Result;
+			if ( entity.SteamID == 0 )
+				throw new Exception( "SteamID is unknown" );
+
+			var toast = JsonSerializer.Serialize<SPlayer>( entity );
+			Log.Info( toast );
+			var res = CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), entity ).Result;
 			if ( res.Error != "" )
 			{
 				Log.Error( res.Error );
