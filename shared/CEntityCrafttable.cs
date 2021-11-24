@@ -84,8 +84,8 @@ namespace charleroi
 			Host.AssertServer();
 			var player = user as CPlayer;
 
-			CPlayerMenuCraft.Show( To.Single(user) );
-			return true;
+			CPlayerMenuCraft.Show( To.Single(user), this );
+			return false;
 		}
 		public virtual bool IsUsable( Entity user ) {
 			return user is Player;

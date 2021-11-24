@@ -5,33 +5,34 @@ using Sandbox.UI;
 namespace charleroi.client.UI
 {
 	public partial class CPlayerMenuCraft : Panel {
-
 		public static CPlayerMenuCraft Instance { get; private set; }
+		private static TimeSince LastOpen;
+		private CEntityCrafttable ent;
 
 		public CPlayerMenuCraft() {
 			SetTemplate( "/client/UI/CPlayerMenuCraft.html" );
 		}
 
 		[ClientRpc]
-		public static void Show()
+		public static void Show(Entity ent)
 		{
-			if ( Instance == null ) {
+			if ( Instance == null && LastOpen >= 0.5f ) {
 				Instance = Local.Hud.AddChild<CPlayerMenuCraft>();
-				_ = Instance.HideLayer();
+				Instance.ent = ent as CEntityCrafttable;
+				LastOpen = 0;
 			}
 		}
 
-		public async Task HideLayer() {
-			await Task.DelaySeconds( 10.0f );
-			CPlayerMenuCraft.Hide();
-		}
-
-		public static void Hide()
+		public override void Tick()
 		{
-			if ( Instance != null ) {
+			base.Tick();
+
+			if ( Input.Pressed( InputButton.Use ) && LastOpen >= 0.5f ) {
+				LastOpen = 0;
 				Instance.Delete();
 				Instance = null;
 			}
 		}
+
 	}
 }
