@@ -105,7 +105,7 @@ namespace charleroi.server
 
 		}
 
-
+			
 		private void InitWs()
 		{
 			if(WS != null && WS.IsConnected )
@@ -172,6 +172,23 @@ namespace charleroi.server
 			return await req.ResponsePromise.Task;
 		}
 
+		public async Task<CRUDResponse> DelType( string type )
+		{
+			InitWs();
+			CRUDRequest req = new CRUDRequest( "DELTYPE", type, "", null );
+			Processing[req.ReqID] = req;
+			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
+			return await req.ResponsePromise.Task;
+		}
+
+		public async Task<CRUDResponse> WipeDB()
+		{
+			InitWs();
+			CRUDRequest req = new CRUDRequest( "DELALL", "", "", null );
+			Processing[req.ReqID] = req;
+			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
+			return await req.ResponsePromise.Task;
+		}
 		public async Task<CRUDResponse> Add( string type, JsonDocument data )
 		{
 			InitWs();

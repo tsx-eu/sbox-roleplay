@@ -31,6 +31,7 @@ namespace charleroi
 			var player = new CPlayer();
 			client.Pawn = player;
 
+			/*
 			if ( IsServer ) {
 				var steamid = (ulong)client.PlayerId;
 
@@ -40,7 +41,7 @@ namespace charleroi
 					uow.SPlayer.Insert( player );
 				else
 					player.Load( SPly );
-			}
+			}*/
 
 			player.Respawn();
 		}

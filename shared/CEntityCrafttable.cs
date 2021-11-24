@@ -1,4 +1,5 @@
 ﻿using charleroi.client;
+using charleroi.client.UI;
 using charleroi.client.WorldUI;
 using Sandbox;
 using System;
@@ -79,10 +80,11 @@ namespace charleroi
 					point.TurnOff();
 			}
 		}
-
 		public virtual bool OnUse( Entity user ) {
+			Host.AssertServer();
 			var player = user as CPlayer;
-			Log.Error( "used" );
+
+			CPlayerMenuCraft.Show( To.Single(user) );
 			return true;
 		}
 		public virtual bool IsUsable( Entity user ) {
