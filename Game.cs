@@ -37,7 +37,7 @@ namespace charleroi
 
 				var uow = new UnitofWork();
 				SPlayer SPly = uow.SPlayer.Get( steamid );
-				if( SPly == null )
+				if ( SPly == null )
 					uow.SPlayer.Insert( player );
 				else
 					player.Load( SPly );
