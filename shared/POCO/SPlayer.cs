@@ -9,6 +9,7 @@ namespace charleroi
 		public float Health { get; set; }
 		public float Thirst { get; set; }
 		public float Hunger { get; set; }
+		public float CurrentXP { get; set; }
 		public string Job { get; set; }
 		public string Clothes { get; set; }
 	}

@@ -8,14 +8,11 @@ namespace charleroi.client
 	partial class CPlayer : Player, SPlayer
 	{
 		public ulong SteamID { get; set; }
-		[Net, Local, Predicted]
-		public float Thirst { get; set; }
-		[Net, Local, Predicted]
-		public float Hunger { get; set; }
-		[Net, Local]
-		public string Job { get; set; }
-		[Net, Local]
-		public string Clothes { get; set; }
+		[Net, Local]	public float Thirst { get; set; }
+		[Net, Local]	public float Hunger { get; set; }
+		[Net, Local]	public string Job { get; set; }
+		[Net, Local]	public string Clothes { get; set; }
+		[Net, Local]	public float CurrentXP { get; set; }
 
 		//New version of Items in Bag
 		[Net]
@@ -84,6 +81,11 @@ namespace charleroi.client
 					Camera = new ThirdPersonCamera();
 			}
 
+			if ( IsServer )
+			{
+				CurrentXP = (Noise.Turbulence( 1, Time.Now ) + 1.0f) / 2.0f;
+				Log.Info( CurrentXP );
+			}
 			TickPlayerUse();
 		}
 
