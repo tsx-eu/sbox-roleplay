@@ -18,7 +18,7 @@ CPlayerMenuCraft {
         width: 80%;
         height: 80%;
         //border: 2px solid red;
-        background-color: $hud-color;
+        background-color: $hud-background-color;
         justify-content: center;
         align-content: center;
         //Colonne Gauche
@@ -35,48 +35,51 @@ CPlayerMenuCraft {
                 border: 2px solid yellow;
                 align-items: center;
                 font-size: 30px;
-                background-color: $hud-color;
+                background-color: $hud-background-color;
             }
 
-                .Craft {
-                    width: 780px;
-                    height: 130px;
-                    border: 2px solid black;
-                    align-items: center;
-                    font-size: 15px;
-                    margin-top: 20px;
-                    flex-shrink: 1;
-                    background-color: $hud-color;
+            .Craft {
+                width: 780px;
+                height: 130px;
+                border: 2px solid black;
+                align-items: center;
+                font-size: 15px;
+                margin-top: 20px;
+                flex-shrink: 0;
+                background-color: $hud-background-color;
 
-                    .img {
-                        width: 20%;
-                        height: 100%;
-                        border: 2px solid yellow;
+                .img {
+                    width: 20%;
+                    height: 100%;
+                    border: 2px solid yellow;
+                    background-image: url('https://i.gyazo.com/0da7fbda0b63a32b962d0eb2bd7f8794.png');
+                    background-size: 100%;
+                    //background-repeat: no-repeat;
+                }
+
+                .item {
+                    width: 80%;
+                    height: 100%;
+                    flex-direction: column;
+                    border: 2px solid green;
+
+                    .name {
+                        width: 100%;
+                        height: 30%;
+                        border: 2px solid pink;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 20px;
                     }
 
-                    .item {
-                        width: 80%;
-                        height: 100%;
-                        flex-direction: column;
-                        border: 2px solid green;
-
-                        .name {
-                            width: 100%;
-                            height: 30%;
-                            border: 2px solid pink;
-                            align-items: center;
-                            justify-content: center;
-                            font-size: 20px;
-                        }
-
-                        .description {
-                            width: 100%;
-                            height: 70%;
-                            border: 2px solid purple;
-                            padding: 10px;
-                        }
+                    .description {
+                        width: 100%;
+                        height: 70%;
+                        border: 2px solid purple;
+                        padding: 10px;
                     }
                 }
+            }
         }
 
         .scroller {
@@ -84,15 +87,64 @@ CPlayerMenuCraft {
             flex-direction: column;
             border: 2px solid red;
             align-items: center;
+            height: 100%;
         }
-            //Colonne Droite
-            .RecetteCraft {
-                width: 50%;
-                height: 100%;
-                border: 2px solid green;
+        //Colonne Droite
+        .RecetteCraft {
+            width: 50%;
+            height: 100%;
+            border: 2px solid green;
+            flex-direction: column;
+
+            .Craft {
+                height: 50%;
+                width: 100%;
+                border: 2px solid red;
 
                 .Recette {
                 }
             }
+
+            .Stock {
+                height: 50%;
+                width: 100%;
+                border: 2px solid blue;
+
+                .Items {
+                    flex-direction: column;
+                    width: 90%;
+                    justify-content: space-between;
+                    align-content: space-between;
+
+                    CInventory, CInventoryVIP {
+                        flex-wrap: wrap;
+
+                        CInventoryItem, .item-bag {
+                            background-color: rgba(0, 0, 0, 0.25);
+                            backdrop-filter: blur(10px) saturate(80%);
+                            border: 2px solid black;
+                            border-radius: 10px;
+                            width: 78px;
+                            height: 78px;
+                            align-items: center;
+                            margin: 3px;
+
+
+                            .item-name {
+                                color: white;
+                            }
+
+                            .item-quantity {
+                                color: blue;
+                            }
+
+                            .item-description {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
+}

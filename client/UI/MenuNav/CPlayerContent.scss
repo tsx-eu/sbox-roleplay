@@ -256,7 +256,7 @@
                     CInventory, CInventoryVIP {
                         flex-wrap: wrap;
 
-                        CInventoryItem, .item-bag {
+                        CInventoryItem {
                             background-color: rgba(0, 0, 0, 0.25);
                             backdrop-filter: blur(10px) saturate(80%);
                             border: 2px solid black;
