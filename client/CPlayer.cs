@@ -86,6 +86,10 @@ namespace charleroi.client
 
 			TickPlayerUse();
 		}
+
+		protected override void UseFail() {
+			// DO NOTHING
+		}
 	}
 
 }
