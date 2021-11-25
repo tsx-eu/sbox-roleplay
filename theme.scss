@@ -1,4 +1,5 @@
 ﻿$hud-background-color: rgba(0, 0, 0, 0.8);
+$hud-background-color-negative: rgba(255, 255, 255, 0.3);
 $hud-border-color: 1px solid rgba(0, 0, 0, 0.95);
 
 $hud-text-title-font: Poppins;
@@ -6,6 +7,8 @@ $hud-text-title-color: white;
 
 $hud-text-font: Poppins;
 $hud-text-color: white;
+$hud-text-color-negative: black;
+
 
 .root {
     icon {
@@ -52,20 +55,32 @@ $hud-text-color: white;
     .tsx_progress {
         margin-top: 2%;
         height: 20px;
-        background-color: rgba(255,255,255, 0.3 );
-        
+        background-color: $hud-background-color-negative;
         justify-content: flex-start;
         align-items: center;
-        border: 2px solid black;
+        border: 2px solid $hud-border-color;
         border-radius: 50%;
         width: 90%;
-        position: relative;
-        
-        .xp-value {
-            background-color: darkorange;
+
+        .value {
             border-radius: 50%;
             height: 100%;
-            width: 20%; /*Bug en % < 2 */
+        }
+
+        .text {
+            position: absolute;
+            font-size: 18px;
+            width: 100%;
+            text-align: center;
+            color: $hud-text-color-negative;
+        }
+
+        .currentxp-value {
+            background-color: darkorange;
+        }
+
+        .currentitemcount-value {
+            background-color: greenyellow;
         }
     }
 }

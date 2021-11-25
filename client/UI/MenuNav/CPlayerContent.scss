@@ -244,35 +244,6 @@
                         justify-content: center;
                         align-items: center;
                         flex-direction: column;
-
-                        .progress-status {
-
-                            .progress-charge {
-                                background-color: rgba(255,255,255, 0.3 );
-                                justify-content: flex-start;
-                                align-items: center;
-                                border: 2px solid black;
-                                border-radius: 50%;
-                                height: 30px;
-                                width: 90%;
-                                position: relative;
-
-                                .charge-value {
-                                    background-color: greenyellow;
-                                    border-radius: 50%;
-                                    height: 25px;
-                                    width: 15%;
-                                }
-
-                                .value {
-                                    position: absolute;
-                                    font-size: 18px;
-                                    width: 100%;
-                                    text-align: center;
-                                    color: black;
-                                }
-                            }
-                        }
                     }
                 }
 
