@@ -89,15 +89,18 @@ CPlayerMenu {
             }
         }
 
-        .pagecontainer {
+        > .pagecontainer {
             //flex-grow: 1;
             height: 90%;
             width: 100%;
 
 
-            .page {
+            > .page {
                 width: 100%;
                 height: 100%;
+
+                color: white;
+                font-family: Poppins;
             }
         }
     }

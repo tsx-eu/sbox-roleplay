@@ -5,8 +5,10 @@ namespace charleroi.server.DAL
 {
 	public class UnitofWork : IUnitOfWork
 	{
-		private IRepository<SPlayer> _SPlayer;
-		private IRepository<SItem> _SItem;
+#pragma warning disable 0649
+		private readonly IRepository<SPlayer> _SPlayer;
+		private readonly IRepository<SItem> _SItem;
+#pragma warning restore 0649
 
 		public UnitofWork() {
 			Host.AssertServer();

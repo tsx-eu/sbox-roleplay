@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace charleroi.client.UI
 {
-	class CPlayerAvatar : Panel {
+	class CAvatar : Panel {
 		public ScenePanel heroScene;
 		public SceneWorld world;
 		public AnimSceneObject playerPreview;
@@ -13,7 +13,7 @@ namespace charleroi.client.UI
 
 		private bool clothes = false;
 
-		public CPlayerAvatar() {
+		public CAvatar() {
 			clothes = false;
 			playerClothesPreview = new List<AnimSceneObject>();
 
@@ -35,6 +35,8 @@ namespace charleroi.client.UI
 				heroScene.SetClass( "heroPortrait", true );
 				heroScene.Style.ZIndex = 3;
 			}
+
+			AddClass( "tsx_avatar" );
 		}
 
 		public override void Tick() {
@@ -49,7 +51,7 @@ namespace charleroi.client.UI
 					CopyClothes( client, playerPreview );
 
 				bool isBig = HasClass( "big" );
-				heroScene.FieldOfView = isBig ? 25.0f : 10.0f;
+				heroScene.FieldOfView = isBig ? 30.0f : 12.0f;
 
 				if ( heroScene.ComputedStyle != null && heroScene.ComputedStyle.Width.HasValue && heroScene.ComputedStyle.Height.HasValue ) {
 					float d = 128;
@@ -58,9 +60,7 @@ namespace charleroi.client.UI
 					var fovV = 2 * Math.Atan( Math.Tan( MathX.DegreeToRadian( heroScene.FieldOfView ) / 2 ) * (h / w) );
 					var sizeH = 2 * Math.Tan( fovV / 2 ) * 64;
 
-					float f = isBig ? 0.0f : 9.0f;
-
-					heroScene.CameraPosition = new Vector3( d, 0, (float)(64 - sizeH + f) );
+					heroScene.CameraPosition = new Vector3( d, 0, (float)(64 - sizeH + 9) );
 				}
 
 				playerPreview.Update( RealTime.Delta );
@@ -117,7 +117,7 @@ namespace charleroi.client.UI
 //						to.SetAnimBool( animParam.Key, boolAnimValue );
 				}
 			}
-			catch ( Exception e ) { }
+			catch ( Exception ) { }
 		}
 	}
 }

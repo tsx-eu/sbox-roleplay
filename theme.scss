@@ -1,1 +1,71 @@
-﻿$hud-color: rgba(0, 0, 0, 0.8);
+﻿$hud-background-color: rgba(0, 0, 0, 0.8);
+$hud-border-color: 1px solid rgba(0, 0, 0, 0.95);
+
+$hud-text-title-font: Poppins;
+$hud-text-title-color: white;
+
+$hud-text-font: Poppins;
+$hud-text-color: white;
+
+.root {
+    icon {
+        color: $hud-text-color;
+        font-family: MaterialIcons;
+        align-items: center;
+        justify-content: center;
+
+        &.outline {
+            font-family: MaterialIconsOutlined;
+        }
+
+        &.round {
+            font-family: MaterialIconsRound;
+        }
+
+        &.sharp {
+            font-family: MaterialIconsSharp;
+        }
+
+        &.twotone {
+            font-family: MaterialIconsTwoTone;
+        }
+    }
+
+    .tsx_avatar {
+        z-index: 10;
+
+        &:not(.big) .heroPortrait {
+            width: 180px;
+            height: 180px;
+            background-color: black;
+        }
+
+        &.big .heroPortrait {
+            width: 100%;
+            height: 100%;
+            background-image: url('https://i.gyazo.com/6b795d5103cfc80fddc3aa4c80627469.png');
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+    }
+
+    .tsx_progress {
+        margin-top: 2%;
+        height: 20px;
+        background-color: rgba(255,255,255, 0.3 );
+        
+        justify-content: flex-start;
+        align-items: center;
+        border: 2px solid black;
+        border-radius: 50%;
+        width: 90%;
+        position: relative;
+        
+        .xp-value {
+            background-color: darkorange;
+            border-radius: 50%;
+            height: 100%;
+            width: 20%; /*Bug en % < 2 */
+        }
+    }
+}

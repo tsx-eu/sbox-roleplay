@@ -1,15 +1,13 @@
 ﻿@import '/theme.scss';
 
-CPlayerJob {
-    color: white;
-    font-family: Poppins;
+.page {
 
     .menujob {
         width: 20%;
         flex-direction: column;
         margin: 20px;
         border-radius: 10px;
-        background-color: $hud-color;
+        background-color: $hud-background-color;
 
         .jobname {
             justify-content: center;
@@ -60,7 +58,7 @@ CPlayerJob {
             justify-content: center;
             border: 2px solid black;
             border-radius: 10px;
-            background-color: $hud-color;
+            background-color: $hud-background-color;
             margin-bottom: 10px;
 
             .lvl-info {
@@ -108,7 +106,7 @@ CPlayerJob {
             height: 90%;
             flex-direction: column;
             border-radius: 10px;
-            background-color: $hud-color;
+            background-color: $hud-background-color;
             margin-bottom: 10px;
 
 

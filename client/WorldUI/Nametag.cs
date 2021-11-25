@@ -9,7 +9,9 @@ namespace charleroi.client.WorldUI
 		public string Name { get; set; }
 		protected Entity entity;
 
-		protected Nametag() { }
+		protected Nametag() {
+			AddClass( "root" );
+		}
 
 		public Nametag( Entity ent, string text )
 		{
@@ -17,6 +19,7 @@ namespace charleroi.client.WorldUI
 			entity = ent;
 
 			SetTemplate( "/client/WorldUI/Nametag.html" );
+			AddClass( "root" );
 		}
 
 		public override void Tick()

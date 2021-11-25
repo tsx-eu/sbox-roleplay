@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using charleroi.client.UI.MenuNav;
+
 namespace charleroi.client.UI
 {
 	[Library]
@@ -47,7 +48,10 @@ namespace charleroi.client.UI
 
 		void AddPage( string icon, string name, Func<Panel> act = null )
 		{
-			var button = PageList.Add.Button( name, () => { SwitchPage( name ); act?.Invoke().AddClass( "page" ); } );
+			var button = PageList.Add.Button( name, () => {
+				SwitchPage( name );
+				act?.Invoke().AddClass( "page" );
+			});
 			button.Icon = icon;
 
 			Buttons[name] = button;

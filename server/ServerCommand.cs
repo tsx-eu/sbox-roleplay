@@ -82,7 +82,6 @@ namespace charleroi.server
 		public static void Cmd_spawn2()
 		{
 			string model = "models/tsx/dab2.vmdl";
-			string tagname = "Table de craft";
 
 			var client = ConsoleSystem.Caller?.Pawn;
 

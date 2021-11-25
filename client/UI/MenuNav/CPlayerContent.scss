@@ -1,33 +1,22 @@
 ﻿@import '/theme.scss';
 
-CPlayerContent {
-    color: white;
-    font-family: Poppins;
+.page {
 
     icon {
-        //border: 2px solid blue;
-        height: 40px;
-        width: 40px;
-        align-items: center;
-        justify-content: center;
+        padding: 10px;
         font-size: 30px;
-        font-family: MaterialIcons;
     }
 
     .main-menu {
-        width: 100%;
-        height: 100%;
-        pointer-events: all;
-
         .col-gauche {
             width: 40%;
             flex-direction: column;
             align-items: center;
 
             .head {
-                flex-direction: column;
                 width: 100%;
                 height: 15%;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;
 
@@ -77,24 +66,7 @@ CPlayerContent {
                     .status-bar {
                         justify-content: center;
 
-                        .progress {
-                            margin-top: 2%;
-                            height: 20px;
-                            background-color: rgba(255,255,255, 0.3 );
-                            justify-content: flex-start;
-                            align-items: center;
-                            border: 2px solid black;
-                            border-radius: 50%;
-                            width: 90%;
-                            position: relative;
-
-                            .xp-value {
-                                background-color: darkorange;
-                                border-radius: 50%;
-                                height: 100%;
-                                width: 20%; /*Bug en % < 2 */
-                            }
-                        }
+                        
                     }
                 }
             }
@@ -115,17 +87,7 @@ CPlayerContent {
                     align-items: center;
                 }
 
-                CPlayerAvatar {
-                    justify-content: center;
-
-                    .heroPortrait {
-                        width: 80%;
-                        height: 90%;
-                        margin: 0 10px;
-                        background-image: url('https://i.gyazo.com/6b795d5103cfc80fddc3aa4c80627469.png');
-                        background-size: 100%;
-                        background-repeat: no-repeat;
-                    }
+                .heroPortrait {
                 }
 
                 .item {
@@ -189,7 +151,7 @@ CPlayerContent {
                             border: 2px solid blue;
 
                             label {
-                                align-items:center;
+                                align-items: center;
                                 border: 2px solid green;
                                 width: 100%;
                                 height: 100%;
@@ -352,26 +314,3 @@ CPlayerContent {
         }
     }
 }
-
-    icon {
-        font-size: 50px;
-        color: white;
-        font-family: MaterialIcons;
-        padding: 10px;
-
-        &.outline {
-            font-family: MaterialIconsOutlined;
-        }
-
-        &.round {
-            font-family: MaterialIconsRound;
-        }
-
-        &.sharp {
-            font-family: MaterialIconsSharp;
-        }
-
-        &.twotone {
-            font-family: MaterialIconsTwoTone;
-        }
-    }

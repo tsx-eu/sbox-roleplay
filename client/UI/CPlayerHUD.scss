@@ -18,18 +18,9 @@ CPlayerHUD {
             height: 20%;
             width: 100%;
 
-            CPlayerAvatar {
-                z-index: 2;
-                justify-content: start;
-                align-content: start;
-
-                .heroPortrait {
-                    background-color: black;
-                    border: 5px solid black;
-                    width: 180px;
-                    height: 180px;
-                    border-radius: 50%;
-                }
+            .heroPortrait {
+                border: 5px solid black;
+                border-radius: 50%;
             }
 
             .big {
@@ -53,7 +44,7 @@ CPlayerHUD {
                     position: absolute;
                     flex-direction: column;
                     justify-content: center;
-                    background-color: $hud-color;
+                    background-color: $hud-background-color;
                     backdrop-filter: blur(10px) saturate(80%);
                     padding-left: 90px;
                     border: 2px solid red;
@@ -84,7 +75,7 @@ CPlayerHUD {
 
         .chatbox {
             border-radius: 10px;
-            background-color: $hud-color;
+            background-color: $hud-background-color;
             backdrop-filter: blur(10px) saturate(80%);
             width: 100%;
             height: 20%;
@@ -99,7 +90,7 @@ CPlayerHUD {
             .tchatentry {
                 border: 2px solid black;
                 border-radius: 0 0 10px 10px;
-                background-color: $hud-color;
+                background-color: $hud-background-color;
                 backdrop-filter: blur(10px) saturate(80%);
                 position: absolute;
                 height: 15%;
@@ -125,8 +116,8 @@ CPlayerHUD {
                     border-radius: 0 0 10px 0;
                     width: 75%;
 
-                    .entry{
-                        margin-left:5px;
+                    .entry {
+                        margin-left: 5px;
                     }
                 }
             }
