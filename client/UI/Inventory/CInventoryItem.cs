@@ -11,12 +11,18 @@ namespace charleroi.client.UI.Inventory
 		private Label _ShortDescription;
 		private CItemQuantity item;
 
-		public CInventoryItem( Panel parent, CItemQuantity tupleItem = null)
-		{
+		public CInventoryItem( Panel parent, CItemQuantity tupleItem = null) {
 			Parent = parent;
 			item = tupleItem;
 
-			if ( tupleItem == null ) {
+			Initialize();
+		}
+
+		private void Initialize() {
+
+			DeleteChildren( true );
+			if ( item == null )
+			{
 				_Name = Add.Label( "", "item-name" );
 			}
 			else
@@ -25,9 +31,9 @@ namespace charleroi.client.UI.Inventory
 				this.Style.BackgroundSizeX = Length.Percent( 95.0f );
 				this.Style.BackgroundSizeY = Length.Percent( 95.0f );
 
-				_Name = Add.Label( tupleItem.Item.Name, "item-name" ); // deplacer le nom de l'item dans le pop over avec la desc
-				_Quantity = Add.Label( tupleItem.Quantity.ToString(), "item-quantity" );
-				_ShortDescription = Add.Label( tupleItem.Item.ShortDescription, "item-description" );// prévoir un z-index 7
+				_Name = Add.Label( item.Item.Name, "item-name" ); // deplacer le nom de l'item dans le pop over avec la desc
+				_Quantity = Add.Label( item.Quantity.ToString(), "item-quantity" );
+				_ShortDescription = Add.Label( item.Item.ShortDescription, "item-description" );// prévoir un z-index 7
 
 				// TODO: ajouter un delais de 2secondes avant affichage
 				this.AddEventListener( "onmouseover", () => {
@@ -45,8 +51,8 @@ namespace charleroi.client.UI.Inventory
 
 				// TODO ServerRPC
 				this.AddEventListener( "onclick", () => {
-					tupleItem.Quantity = tupleItem.Quantity == 0 ? 0 : tupleItem.Quantity - 2;
-					_Quantity.Text = tupleItem.Quantity.ToString();
+					item.Quantity = item.Quantity == 0 ? 0 : item.Quantity - 2;
+					_Quantity.Text = item.Quantity.ToString();
 				} );
 			}
 		}

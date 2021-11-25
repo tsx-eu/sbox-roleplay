@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace charleroi.client.UI.Inventory
 {
-	class CInventory : Panel
+	partial class CInventory : Panel
 	{
 		public static CInventory Instance { get; private set; }
 
@@ -15,31 +15,29 @@ namespace charleroi.client.UI.Inventory
 		public CInventory() {
 			cItems = new List<CInventoryItem>();
 			Initialize();
-
 			Instance = this;
 		}
 
 		public void Initialize() {
 			var client = Local.Pawn as CPlayer;
 
+			DeleteChildren( true );
 			cItems.Clear();
 			if ( client.ItemsBag != null ) {
 				foreach ( var item in client.ItemsBag ) {
 					cItems.Add( new CInventoryItem( this, item ) );
 				}
 			}
-
+			
 			while( cItems.Count < MaxItem ) {
 				cItems.Add( new CInventoryItem( this, null ) );
 			}
 		}
 
-
-		public static void Refresh()
-		{
-			Instance.Initialize();
+		[ClientRpc]
+		public static void Refresh() {
+			if( Instance != null )
+				Instance.Initialize();
 		}
-
-
 	}
 }
