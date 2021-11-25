@@ -4,7 +4,7 @@ using Sandbox.UI.Construct;
 
 namespace charleroi.client.UI.Inventory
 {
-	class CInventoryItem : Panel
+	class CInventoryItem : CDragAndDrop
 	{
 		private Label _Quantity;
 		private Label _Name;
