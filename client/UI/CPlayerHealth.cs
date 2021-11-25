@@ -5,8 +5,7 @@ using Sandbox.UI.Construct;
 namespace charleroi.client.UI
 {
 	class CPlayerHealth : Panel
-	{
-		
+	{		
 		private Label _Health;
 		private Panel _HealthBar;
 
@@ -23,7 +22,7 @@ namespace charleroi.client.UI
 			base.Tick();
 			var currentPlayer = (CPlayer)Local.Pawn;
 
-			_HealthBar.Style.Width = Length.Percent( currentPlayer.Health );
+			//_HealthBar.Style.Width = Length.Percent( currentPlayer.Health );
 			_Health.Text = $"{currentPlayer.Health.CeilToInt()} %";
 			
 		}
