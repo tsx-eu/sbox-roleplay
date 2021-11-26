@@ -81,7 +81,7 @@ namespace charleroi.server
 		[ServerCmd( "rp_spawn2" )]
 		public static void Cmd_spawn2()
 		{
-			string model = "models/tsx/dab2.vmdl";
+			string model = "models/tsx/kitchen.vmdl";
 
 			var client = ConsoleSystem.Caller?.Pawn;
 
