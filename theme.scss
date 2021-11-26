@@ -36,7 +36,6 @@ $hud-text-color-negative: black;
 
     .tsx_avatar {
         z-index: 10;
-        pixel-snap: 0;
 
         &:not(.big) .heroPortrait {
             width: 180px;

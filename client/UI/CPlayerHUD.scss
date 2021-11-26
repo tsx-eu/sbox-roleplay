@@ -36,7 +36,6 @@ CPlayerHUD {
                     background-color: $hud-background-color;
                     backdrop-filter: blur(10px) saturate(80%);
                     padding-left: 90px;
-                    border: 2px solid red;
                 }
 
                 .title {
@@ -50,6 +49,7 @@ CPlayerHUD {
                 }
 
                 .bars {
+                    transform: translateY(-2px);
                     top: 60px;
                     border-top-right-radius: 5%;
                     border-bottom-right-radius: 50%;
