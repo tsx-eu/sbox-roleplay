@@ -43,7 +43,7 @@ namespace charleroi.client.UI.Inventory
 					cItems.Add( new CInventoryItem( this, TupleItem ) );
 				}
 				// Add empty slots
-				for ( int i = 0; i < 16- currentPlayer.ItemsBag.Count; i++ )
+				for ( int i = 0; i < 20- currentPlayer.ItemsBag.Count; i++ )
 				{
 					cItems.Add( new CInventoryItem(this, null) );
 				}

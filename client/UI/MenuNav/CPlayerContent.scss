@@ -65,8 +65,6 @@
 
                     .status-bar {
                         justify-content: center;
-
-                        
                     }
                 }
             }
@@ -178,7 +176,6 @@
                     align-items: center;
 
                     .head-content {
-                        justify-content: center;
                         align-items: center;
                         flex-direction: column;
                     }
@@ -187,20 +184,24 @@
                 .items {
                     flex-direction: column;
                     width: 90%;
-                    justify-content: space-between;
-                    align-content: space-between;
+                    //justify-content: center;
+                    //align-content: center;
+                    border: 2px solid red;
 
                     CInventory, CInventoryVIP {
                         flex-wrap: wrap;
+                        justify-content: center;
 
                         CInventoryItem {
                             background-color: rgba(0, 0, 0, 0.25);
                             backdrop-filter: blur(10px) saturate(80%);
                             border: 2px solid black;
                             border-radius: 10px;
-                            width: 78px;
-                            height: 78px;
-                            align-items: center;
+                            width: 8.5%;
+                            height: auto;
+                            aspect-ratio: 1;
+                            justify-content: space-around;
+                            /align-items: center;
                             margin: 3px;
 
 
