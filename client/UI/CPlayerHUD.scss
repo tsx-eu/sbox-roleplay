@@ -5,8 +5,9 @@ CPlayerHUD {
     padding: 20px;
     width: 30%;
     height: 100%;
-    color: white;
-    font-family: Poppins;
+    color: $hud-text-color;
+    font-family: $hud-text-font;
+    pixel-snap: 0;
 
 
     .hudgauche {
@@ -21,18 +22,6 @@ CPlayerHUD {
             .heroPortrait {
                 border: 5px solid black;
                 border-radius: 50%;
-            }
-
-            .big {
-                .heroPortrait {
-                    height: 360px;
-                }
-            }
-
-            .verybig {
-                .heroPortrait {
-                    height: 600px;
-                }
             }
 
             .status {
