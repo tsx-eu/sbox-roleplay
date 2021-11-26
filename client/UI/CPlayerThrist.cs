@@ -22,7 +22,7 @@ namespace charleroi.client.UI
 			base.Tick();
 			var currentPlayer = (CPlayer)Local.Pawn;
 
-			_ThirstBar.Style.Width = Length.Percent( currentPlayer.Thirst );
+			//_ThirstBar.Style.Width = Length.Percent( currentPlayer.Thirst );
 			_Thirst.Text = $"{currentPlayer.Thirst.CeilToInt()} %";
 
 		}
