@@ -1,4 +1,5 @@
-﻿using charleroi.server.DAL.Repository;
+﻿using System.Threading.Tasks;
+using charleroi.server.DAL.Repository;
 using Sandbox;
 
 namespace charleroi.server.DAL
@@ -12,6 +13,14 @@ namespace charleroi.server.DAL
 
 		public UnitofWork() {
 			Host.AssertServer();
+		}
+
+		public async Task<bool> Seed()
+		{
+			await CRUDTools.GetInstance().WipeDB();
+
+			Log.Info( "Task complete!" );
+			return true;
 		}
 
 		public IRepository<SPlayer> SPlayer => _SPlayer ?? new SPlayerRepository();

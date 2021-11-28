@@ -21,6 +21,13 @@ namespace charleroi.server
 			client.Health = Rand.Float( 1.0f, 100.0f );
 		}
 
+		[ServerCmd( "rp_createdb" )]
+		public static void Cmd_CreateDB()
+		{
+			var uow = new UnitofWork();
+			_ = uow.Seed();
+		}
+
 		[ServerCmd( "rp_delme" )]
 		public static void Cmd_DelMe()
 		{
