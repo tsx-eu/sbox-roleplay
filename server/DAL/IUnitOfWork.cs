@@ -8,6 +8,6 @@ namespace charleroi.server.DAL
 		public IRepository<SPlayer> SPlayer { get; }
 		public IRepository<SItem> SItem { get; }
 
-		public async Task<bool> Seed();
+		public Task<bool> Seed();
 	}
 }
