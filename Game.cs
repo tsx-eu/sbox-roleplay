@@ -25,23 +25,20 @@ namespace charleroi
 			}
 		}
 
-		public override void ClientJoined( Client client ) {
+		public async override void ClientJoined( Client client ) {
 			base.ClientJoined( client );
 
 			var player = new CPlayer();
 			client.Pawn = player;
+			player.SteamID = (ulong)client.PlayerId;
+			player.Job = "Chomeur";
 
-			/*
-			if ( IsServer ) {
-				var steamid = (ulong)client.PlayerId;
-
-				var uow = new UnitofWork();
-				SPlayer SPly = uow.SPlayer.Get( steamid );
-				if ( SPly == null )
-					uow.SPlayer.Insert( player );
-				else
-					player.Load( SPly );
-			}*/
+			var uow = new UnitofWork();
+			SPlayer data = await uow.SPlayer.Get( player.SteamID );
+			if ( data != null )
+				player.Load( data );
+			else
+				await uow.SPlayer.Update( player );
 
 			player.Respawn();
 		}

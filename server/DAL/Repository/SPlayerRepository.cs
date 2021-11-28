@@ -2,7 +2,9 @@
 using Sandbox;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace charleroi.server.DAL.Repository
 {
@@ -13,88 +15,86 @@ namespace charleroi.server.DAL.Repository
 			Host.AssertServer();
 		}
 
-		public bool Delete( SPlayer entity )
+		public async Task<bool> Delete( SPlayer entity )
 		{
 			if( entity.SteamID == 0 ) 
 				throw new Exception( "SteamID is unknown" );
 
-			var res = CRUDTools.GetInstance().Del( "player", entity.SteamID.ToString() ).Result;
-			if(res.Error != "" )
-			{
+			var res = await CRUDTools.GetInstance().Del( "player", entity.SteamID.ToString() );
+
+			if(res.Error != "" ) {
 				Log.Error( res.Error );
 				return false;
 			}
+
 			return true;
 		}
 
-		public SPlayer Get( object id )
+		public async Task<SPlayer> Get( object id )
 		{
 			if ( (ulong)id == 0 )
 				throw new Exception( "SteamID is unknown" );
 
-			var req = CRUDTools.GetInstance().Get( "player", id.ToString() );
+			var res = await CRUDTools.GetInstance().Get( "player", id.ToString() );
 
-			var res = req.Result;
-			if ( res.Error != "" )
-			{
+			if ( res.Error != "" ) {
 				Log.Error( res.Error );
 				return null;
 			}
+
 			var resPlayer = JsonSerializer.Deserialize<CPlayer>( res.Data.GetRawText() );
 			return resPlayer;
 		}
 
-		public IList<SPlayer> GetAll()
+		public async Task<IList<SPlayer>> GetAll()
 		{
-			var req = CRUDTools.GetInstance().GetAll( "player" );
-			var res = req.Result;
-			if ( res.Error != "" )
-			{
+			var res = await CRUDTools.GetInstance().GetAll( "player" );
+			
+			if ( res.Error != "" ) {
 				Log.Error( res.Error );
 				return null;
 			}
+
 			var resMap = JsonSerializer.Deserialize<CRUDGetAllData>( res.Data.GetRawText() );
 			var SPlyList = new List<SPlayer>();
-			foreach (var elem in resMap.Data )
-			{
+			foreach (var elem in resMap.Data ) {
 				var SPly = JsonSerializer.Deserialize<CPlayer>( elem.Value.GetRawText() );
 				SPlyList.Add( SPly );
 			}
+
 			return SPlyList;
 		}
 
-		public bool Insert( SPlayer entity )
+		public async Task<bool> Insert( SPlayer entity )
 		{
 			if ( entity.SteamID == 0 )
 				throw new Exception( "SteamID is unknown" );
 
 			JsonDocument toast = JsonSerializer.SerializeToDocument<SPlayer>( entity );
-			var res = CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), toast ).Result;
-			if ( res.Error != "" )
-			{
+			var res = await CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), toast );
+
+			if ( res.Error != "" ) {
 				Log.Error( res.Error );
 				return false;
 			}
+
 			return true;
 		}
 
-		public void Save()
-		{
-			throw new NotImplementedException();
-		}
-
-		public bool Update( SPlayer entity )
+		public async Task<bool> Update( SPlayer entity )
 		{
 			if ( entity.SteamID == 0 )
 				throw new Exception( "SteamID is unknown" );
 
 			JsonDocument toast = JsonSerializer.SerializeToDocument<SPlayer>( entity );
-			var res = CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), toast ).Result;
-			if ( res.Error != "" )
-			{
+
+			var res = await CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), toast );
+
+			if ( res.Error != "" ) {
 				Log.Error( res.Error );
 				return false;
 			}
+
 			return true;
 		}
 	}

@@ -106,20 +106,19 @@ namespace charleroi.server
 		}
 
 			
-		private void InitWs()
-		{
-			if(WS != null && WS.IsConnected )
-			{
+		private async Task InitWs() {
+			if(WS != null && WS.IsConnected ) {
 				return;
 			}
+
 			WS = new();
 			Log.Info( "Connecting to websocket." );
-			WS.Connect( ServerConfig.WSUrl );
+			await WS.Connect( ServerConfig.WSUrl );
 
-			WS.OnDisconnected += ( status, reason ) =>
-			{
+			WS.OnDisconnected += async ( status, reason ) => {
 				Log.Error( string.Format( "WS Disconnected with: %d %s", status, reason ) );
-				InitWs();
+				await Task.Delay( 1000 );
+				await InitWs();
 				// Empty or resend processing, relog ?
 			};
 
@@ -131,7 +130,7 @@ namespace charleroi.server
 			LoginData["user"] = ServerConfig.WSUser;
 			LoginData["pass"] = ServerConfig.WSPass;
 			//LoginData["debug"] = "full";
-			WS.Send( JsonSerializer.Serialize( LoginData, JSONOpt ) );
+			await WS.Send( JsonSerializer.Serialize( LoginData, JSONOpt ) );
 		}
 
 		private void WsResponseHandler( string message )
@@ -146,44 +145,40 @@ namespace charleroi.server
 
 		public async Task<CRUDResponse> Get( string type, string id )
 		{
-			InitWs();
+			await InitWs();
 			CRUDRequest req = new CRUDRequest( "GET", type, id, null );
 			Processing[req.ReqID] = req;
 			var reqJson = JsonSerializer.Serialize( req, JSONOpt );
 			await WS.Send( reqJson );
 			return await req.ResponsePromise.Task;
 		}
-
 		public async Task<CRUDResponse> Set( string type, string id, JsonDocument data )
 		{
-			InitWs();
+			await InitWs();
 			CRUDRequest req = new CRUDRequest( "SET", type, id, data );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
 			return await req.ResponsePromise.Task;
 		}
-
 		public async Task<CRUDResponse> Del( string type, string id )
 		{
-			InitWs();
+			await InitWs();
 			CRUDRequest req = new CRUDRequest( "DEL", type, id, null );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
 			return await req.ResponsePromise.Task;
 		}
-
 		public async Task<CRUDResponse> DelType( string type )
 		{
-			InitWs();
+			await InitWs();
 			CRUDRequest req = new CRUDRequest( "DELTYPE", type, "", null );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
 			return await req.ResponsePromise.Task;
 		}
-
 		public async Task<CRUDResponse> WipeDB()
 		{
-			InitWs();
+			await InitWs();
 			CRUDRequest req = new CRUDRequest( "DELALL", "", "", null );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
@@ -191,17 +186,15 @@ namespace charleroi.server
 		}
 		public async Task<CRUDResponse> Add( string type, JsonDocument data )
 		{
-			InitWs();
+			await InitWs();
 			CRUDRequest req = new CRUDRequest( "ADD", type, "", data );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
 			return await req.ResponsePromise.Task;
 		}
-
-
 		public async Task<CRUDResponse> GetAll( string type )
 		{
-			InitWs();
+			await InitWs();
 			CRUDRequest req = new CRUDRequest( "GETALL", type, "", null );
 			Processing[req.ReqID] = req;
 			await WS.Send( JsonSerializer.Serialize( req, JSONOpt ) );
@@ -218,10 +211,5 @@ namespace charleroi.server
 				return instance;
 			}
 		}
-
-
 	}
-
-
-
 }

@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace charleroi.server.DAL.Repository
 {
 	public interface IRepository<T> where T : class
 	{
-		T Get(object id);
+		Task<T> Get(object id);
 
-		IList<T> GetAll();
+		Task<IList<T>> GetAll();
 
-		Boolean Insert(T entity);
+		Task<Boolean> Insert(T entity);
 
-		Boolean Delete(T entity);
+		Task<Boolean> Delete(T entity);
 
-		Boolean Update(T entity);
-
-		void Save();
+		Task<Boolean> Update(T entity);
 	}
 }
