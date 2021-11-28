@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using charleroi.client;
 using charleroi.server.DAL.Repository;
 using Sandbox;
 
@@ -18,8 +19,19 @@ namespace charleroi.server.DAL
 		public async Task<bool> Seed()
 		{
 			await CRUDTools.GetInstance().WipeDB();
+			await Seed_Items();
 
 			Log.Info( "Task complete!" );
+			return true;
+		}
+		private async Task<bool> Seed_Items()
+		{
+			Log.Info( "Creating items" );
+
+			await SItem.Insert( new CItem { Id=1, Name = "Pomme", ShortDescription = "Ceci est une pomme", MaxCarry=16 });
+			await SItem.Insert( new CItem { Id=2, Name = "Poire", ShortDescription = "Ceci est une poire", MaxCarry=16 });
+
+			Log.Info( "Creating items complete!" );
 			return true;
 		}
 
