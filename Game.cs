@@ -15,7 +15,7 @@ namespace charleroi
 		}
 
 		[Net] public IList<CItem> Items { get; set; }
-		[Net] public IList<CJob> Job { get; set; }
+		[Net] public IList<CJob> Jobs { get; set; }
 
 		public Game()
 		{
@@ -42,10 +42,11 @@ namespace charleroi
 				Instance.Items.Add( item as CItem );
 			Log.Info( "CItem.Dictionnary initialized with " + Instance.Items.Count );
 
+			Instance.Jobs.Clear();
 			var jobs = await uow.SJob.GetAll();
 			foreach ( var job in jobs )
-				Instance.Job.Add( job as CJob );
-			Log.Info( "CJob.Dictionnary initialized with " + Instance.Job.Count );
+				Instance.Jobs.Add( job as CJob );
+			Log.Info( "CJob.Dictionnary initialized with " + Instance.Jobs.Count );
 
 			return true;
 		}

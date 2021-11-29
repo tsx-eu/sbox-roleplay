@@ -14,6 +14,18 @@ namespace charleroi.client.UI.MenuNav
 		{
 
 		}
+	}
+
+	class CPlayerJobList : Panel
+	{
+		public CPlayerJobList() {
+			DeleteChildren( true );
+
+			foreach (var job in Game.Instance.Jobs) {
+				var label = AddChild<Label>( "jobname" );
+				label.Text = job.Name;
+			}
+		}
 
 	}
 }
