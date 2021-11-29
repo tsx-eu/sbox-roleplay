@@ -24,8 +24,12 @@ namespace charleroi.client.UI.Inventory
 			DeleteChildren( true );
 			cItems.Clear();
 			if ( client.ItemsBag != null ) {
-				foreach ( var item in client.ItemsBag ) {
-					cItems.Add( new CInventoryItem( this, item ) );
+
+				foreach ( var item in CItem.Dictionnary ) {
+					cItems.Add( new CInventoryItem( this, new CItemQuantity { Item = item.Value, Quantity = 2 } ) );
+
+					if ( cItems.Count >= MaxItem )
+						break;
 				}
 			}
 			

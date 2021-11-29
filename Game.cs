@@ -2,6 +2,7 @@
 
 using charleroi.client;
 using charleroi.server.DAL;
+using System.Threading.Tasks;
 
 namespace charleroi
 {
@@ -9,12 +10,26 @@ namespace charleroi
 		HUD hud;
 
 		public Game() {
-			if ( IsServer )
+			if ( IsServer ) {
 				hud = new HUD();
+				_ = InitializeDB();
+			}
 
 			if ( IsClient ) {
 				// ...
 			}
+		}
+
+		public async Task<bool> InitializeDB() {
+			var uow = new UnitofWork();
+
+			CItem.Dictionnary.Clear();
+			var items = await uow.SItem.GetAll();
+			foreach ( var item in items )
+				CItem.Dictionnary.Add( item.Id, item as CItem );
+			Log.Info( "CItem.Dictionnary initialized with " + CItem.Dictionnary.Count );
+
+			return true;
 		}
 
 		[Event.Hotload]
@@ -22,6 +37,8 @@ namespace charleroi
 			if ( IsServer ) {
 				hud.Delete();
 				hud = new HUD();
+
+				_ = InitializeDB();
 			}
 		}
 

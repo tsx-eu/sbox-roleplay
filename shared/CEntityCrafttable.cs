@@ -98,6 +98,13 @@ namespace charleroi
 
 			if ( tag == null && cl.Pawn.Transform.Position.Distance( Position ) <= dist ) {
 				tag = new CraftableTAG( this, description );
+
+				foreach ( var item in CItem.Dictionnary ) {
+					Log.Info( item.Value.Name );
+				}
+
+
+				Log.Info( "CItem.Dictionnary has " + CItem.Dictionnary.Count );
 			}
 			if ( tag != null && cl.Pawn.Transform.Position.Distance( Position ) > dist ) {
 				tag.Delete();

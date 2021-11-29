@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Sandbox;
 
 namespace charleroi.client
@@ -13,6 +14,9 @@ namespace charleroi.client
 		public string ShortDescription { get; set; }
 		[Net]
 		public float MaxCarry { get; set; }
+
+		[Net]
+		public static IDictionary<ulong, CItem> Dictionnary { get; set; } = new Dictionary<ulong, CItem>();
 
 		public bool IsUsable( Entity user ) {
 			return true;
