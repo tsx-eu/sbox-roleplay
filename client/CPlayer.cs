@@ -16,8 +16,8 @@ namespace charleroi.client
 		[Net, Local]    public float CurrentItemCount { get; set; }
 
 		//New version of Items in Bag
-		[Net]
-		public IList<CItemQuantity> ItemsBag { get; set; } = new List<CItemQuantity>();
+		// [Net]
+		// public IList<CItemQuantity> ItemsBag { get; set; } = new List<CItemQuantity>();
 
 		public Clothing.Container Clothing = new();
 
@@ -55,13 +55,14 @@ namespace charleroi.client
 
 
 			//New way of Items in Bag
+			/*
 			ItemsBag = new List<CItemQuantity>() {
 				new CItemQuantity { Quantity = 6, Item = new CItem() { Name = "Pomme rouge", ShortDescription = "Une pink lady" } },
 				new CItemQuantity { Quantity = 6, Item = new CItem() { Name = "Diamant", ShortDescription = "Vaut son pesant d'or" } },
 				new CItemQuantity { Quantity = 6, Item = new CItem() { Name = "Redbull", ShortDescription = "te donne des ailes" } },
 				new CItemQuantity { Quantity = 6, Item = new CItem() { Name = "Caillou", ShortDescription = "Est une forme de lythothérapie, si lancé très fort sur la tête de quelqu'un" } },
 				new CItemQuantity { Quantity = 6, Item = new CItem() { Name = "Cuivre", ShortDescription = "On s'en sert principalement pour faire des cables" } },
-			};
+			};*/
 
 
 			Health = 100;
@@ -84,7 +85,7 @@ namespace charleroi.client
 
 			if ( IsServer ) {
 				CurrentXP = (Noise.Turbulence( 1, Time.Now ) + 1.0f) / 2.0f;
-				CurrentItemCount = ItemsBag.Count / 40.0f;
+				CurrentItemCount = (Noise.Turbulence( 1, Time.Now ) + 1.0f) / 2.0f;  // ItemsBag.Count / 40.0f;
 			}
 
 			TickPlayerUse();

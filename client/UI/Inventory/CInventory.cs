@@ -23,14 +23,14 @@ namespace charleroi.client.UI.Inventory
 
 			DeleteChildren( true );
 			cItems.Clear();
-			if ( client.ItemsBag != null ) {
+			
+			foreach ( var item in Game.Instance.Items ) {
+				CItemQuantity qt = new CItemQuantity { Item = item, Quantity = 2 };
+				Log.Info( "adding item: " + item.Name  + " qt: " + qt.Item.Name );
 
-				foreach ( var item in Game.Instance.Items ) {
-					cItems.Add( new CInventoryItem( this, new CItemQuantity { Item = item, Quantity = 2 } ) );
-
-					if ( cItems.Count >= MaxItem )
+				cItems.Add( new CInventoryItem( this, qt) );
+				if ( cItems.Count >= MaxItem )
 						break;
-				}
 			}
 			
 			while( cItems.Count < MaxItem ) {

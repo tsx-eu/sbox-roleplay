@@ -7,6 +7,7 @@ namespace charleroi.client.UI.Inventory
 	class CInventoryVIP : Panel
 	{
 		private readonly IList<CInventoryItem> cItems = new List<CInventoryItem>();
+		private static int MaxItem = 20;
 
 		public CInventoryVIP()
 		{
@@ -26,30 +27,10 @@ namespace charleroi.client.UI.Inventory
 
 		private void PopulateInventory()
 		{
-			var currentPlayer = (CPlayer)Local.Pawn;
-
-
-
-			if ( currentPlayer.ItemsBag == null || currentPlayer.ItemsBag.Count == 0 )
+			while ( cItems.Count < MaxItem )
 			{
-
+				cItems.Add( new CInventoryItem( this, null ) );
 			}
-
-			if ( cItems.Count == 0 )
-			{
-				//Add occupied slots
-				foreach ( var TupleItem in currentPlayer.ItemsBag )
-				{
-					cItems.Add( new CInventoryItem( this, TupleItem ) );
-				}
-				// Add empty slots
-				for ( int i = 0; i < 20- currentPlayer.ItemsBag.Count; i++ )
-				{
-					cItems.Add( new CInventoryItem(this, null) );
-				}
-			}
-			
-
 		}
 	}
 }

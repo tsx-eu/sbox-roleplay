@@ -23,7 +23,11 @@ namespace charleroi.client.UI.Inventory
 			DeleteChildren( true );
 			if ( item == null )
 			{
-				_Name = Add.Label( "", "item-name" );
+				_Name = Add.Label( "empty", "item-name" );
+			}
+			else if ( item.Item == null )
+			{
+				_Name = Add.Label( "null", "item-name" );
 			}
 			else
 			{

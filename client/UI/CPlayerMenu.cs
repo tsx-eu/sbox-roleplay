@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using charleroi.client.UI.MenuNav;
+using charleroi.client.UI.Inventory;
 
 namespace charleroi.client.UI
 {
@@ -92,6 +93,9 @@ namespace charleroi.client.UI
 		private void SetOpen(bool status) {
 			IsOpen = status;
 			SetClass( "open", IsOpen );
+
+			if ( IsOpen )
+				CInventory.Refresh(To.Single(Local.Client));
 		}
 
 		[ClientRpc]

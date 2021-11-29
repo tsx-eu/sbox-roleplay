@@ -25,12 +25,9 @@ namespace charleroi.client
 	}
 
 
-	public partial class CItemQuantity : BaseNetworkable
+	public partial class CItemQuantity
 	{
-		[Net]
 		public int Quantity { get; set; } = 0;
-
-		[Net]
 		public CItem Item { get; set; } = null;
 	}
 }
