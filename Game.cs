@@ -14,8 +14,8 @@ namespace charleroi
 			get => Current as Game;
 		}
 
-		[Net]
-		public IList<CItem> Items { get; set; }
+		[Net] public IList<CItem> Items { get; set; }
+		[Net] public IList<CJob> Job { get; set; }
 
 		public Game()
 		{
@@ -41,6 +41,11 @@ namespace charleroi
 			foreach ( var item in items )
 				Instance.Items.Add( item as CItem );
 			Log.Info( "CItem.Dictionnary initialized with " + Instance.Items.Count );
+
+			var jobs = await uow.SJob.GetAll();
+			foreach ( var job in jobs )
+				Instance.Job.Add( job as CJob );
+			Log.Info( "CJob.Dictionnary initialized with " + Instance.Job.Count );
 
 			return true;
 		}
