@@ -11,6 +11,7 @@ namespace charleroi.server.DAL
 		private readonly IRepository<SPlayer> _SPlayer;
 		private readonly IRepository<SItem> _SItem;
 		private readonly IRepository<SJob> _SJob;
+		private readonly IRepository<SCraft> _SCraft;
 #pragma warning restore 0649
 
 		public UnitofWork() {
@@ -22,6 +23,7 @@ namespace charleroi.server.DAL
 			await CRUDTools.GetInstance().WipeDB();
 			await Seed_Items();
 			await Seed_Jobs();
+			await Seed_Crafts();
 
 			Log.Info( "Task complete!" );
 			return true;
@@ -47,9 +49,21 @@ namespace charleroi.server.DAL
 			Log.Info( "Creating jobs complete!" );
 			return true;
 		}
+		private async Task<bool> Seed_Crafts()
+		{
+			Log.Info( "Creating crafts" );
+
+
+			await SCraft.Insert( new CCraft { Id = 1, Name = "Acide Citrique", Description = "L'acide citrique est un acide tricarboxylique α-hydroxylé présent en abondance dans le citron, d'où son nom." } );
+			await SCraft.Insert( new CCraft { Id = 2, Name = "Canne à pêche", Description = "Si tu ne sais pas à quoi ça sert, c'est que c'est pas pour toi ..." } );
+
+			Log.Info( "Creating craft complete!" );
+			return true;
+		}
 
 		public IRepository<SPlayer> SPlayer => _SPlayer ?? new SPlayerRepository();
 		public IRepository<SItem> SItem => _SItem ?? new SItemRepository();
 		public IRepository<SJob> SJob => _SJob ?? new SJobRepository();
+		public IRepository<SCraft> SCraft => _SCraft ?? new SCraftRepository();
 	}
 }
