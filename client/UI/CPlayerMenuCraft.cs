@@ -65,4 +65,32 @@ namespace charleroi.client.UI
 		}
 
 	}
+
+	class CPlayerCraftList : Panel
+	{
+		public CPlayerCraftList()
+		{
+			DeleteChildren( true );
+
+			foreach ( var craft in Game.Instance.Crafts )
+			{
+				var panel = AddChild<Panel>( "Craft" );
+				panel.AddChild<Panel>( "img" );
+				var item = panel.AddChild<Panel>( "item" );
+				var name= item.AddChild<Panel>( "name" );
+				name.AddChild<Label>( );
+				var description = item.AddChild<Panel>( "description" );
+				description.AddChild<Label>();
+			}
+		}
+
+	}
 }
+/*
+ *				<div class="Craft">
+					<div class="img"></div>
+					<div class="item">
+						<div class="name"><label>Acide citrique 2</label></div>
+						<div class="description"><label>L'acide citrique est un acide tricarboxylique α-hydroxylé présent en abondance dans le citron, d'où son nom.</label></div>
+					</div>
+				</div>*/
