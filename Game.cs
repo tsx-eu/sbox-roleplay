@@ -4,15 +4,23 @@ using charleroi.client;
 using charleroi.server.DAL;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using charleroi.shared;
 
 namespace charleroi
 {
 	public partial class Game : Sandbox.Game {
 		HUD hud;
 
+		public static Game Instance {
+			get => Current as Game;
+		}
+
+		[Net]
+		public IList<CItem> Items { get; set; }
+
 		public Game()
 		{
+			Transmit = TransmitType.Always;
+			Items = new List<CItem>();
 
 			if ( IsServer ) {
 				hud = new HUD();
@@ -28,11 +36,11 @@ namespace charleroi
 		public async Task<bool> InitializeDB() {
 			var uow = new UnitofWork();
 
-			SharedDatabase.Instance.Items.Clear();
+			Instance.Items.Clear();
 			var items = await uow.SItem.GetAll();
 			foreach ( var item in items )
-				SharedDatabase.Instance.Items.Add( item as CItem );
-			Log.Info( "CItem.Dictionnary initialized with " + SharedDatabase.Instance.Items.Count );
+				Instance.Items.Add( item as CItem );
+			Log.Info( "CItem.Dictionnary initialized with " + Instance.Items.Count );
 
 			return true;
 		}
