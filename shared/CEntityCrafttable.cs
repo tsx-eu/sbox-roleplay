@@ -1,6 +1,7 @@
 ﻿using charleroi.client;
 using charleroi.client.UI;
 using charleroi.client.WorldUI;
+using charleroi.shared;
 using Sandbox;
 using System;
 using System.Collections.Generic;
@@ -99,12 +100,12 @@ namespace charleroi
 			if ( tag == null && cl.Pawn.Transform.Position.Distance( Position ) <= dist ) {
 				tag = new CraftableTAG( this, description );
 
-				foreach ( var item in CItem.Dictionnary ) {
-					Log.Info( item.Value.Name );
+				foreach ( var item in SharedDatabase.Instance.Items ) {
+					Log.Info( item.Name );
 				}
 
 
-				Log.Info( "CItem.Dictionnary has " + CItem.Dictionnary.Count );
+				Log.Info( "CItem.Dictionnary has " + SharedDatabase.Instance.Items.Count );
 			}
 			if ( tag != null && cl.Pawn.Transform.Position.Distance( Position ) > dist ) {
 				tag.Delete();

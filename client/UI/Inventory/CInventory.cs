@@ -1,4 +1,5 @@
-﻿using Sandbox;
+﻿using charleroi.shared;
+using Sandbox;
 using Sandbox.UI;
 using System;
 using System.Collections.Generic;
@@ -25,8 +26,8 @@ namespace charleroi.client.UI.Inventory
 			cItems.Clear();
 			if ( client.ItemsBag != null ) {
 
-				foreach ( var item in CItem.Dictionnary ) {
-					cItems.Add( new CInventoryItem( this, new CItemQuantity { Item = item.Value, Quantity = 2 } ) );
+				foreach ( var item in SharedDatabase.Instance.Items ) {
+					cItems.Add( new CInventoryItem( this, new CItemQuantity { Item = item, Quantity = 2 } ) );
 
 					if ( cItems.Count >= MaxItem )
 						break;

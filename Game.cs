@@ -3,13 +3,17 @@
 using charleroi.client;
 using charleroi.server.DAL;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using charleroi.shared;
 
 namespace charleroi
 {
 	public partial class Game : Sandbox.Game {
 		HUD hud;
 
-		public Game() {
+		public Game()
+		{
+
 			if ( IsServer ) {
 				hud = new HUD();
 				_ = InitializeDB();
@@ -18,16 +22,17 @@ namespace charleroi
 			if ( IsClient ) {
 				// ...
 			}
+
 		}
 
 		public async Task<bool> InitializeDB() {
 			var uow = new UnitofWork();
 
-			CItem.Dictionnary.Clear();
+			SharedDatabase.Instance.Items.Clear();
 			var items = await uow.SItem.GetAll();
 			foreach ( var item in items )
-				CItem.Dictionnary.Add( item.Id, item as CItem );
-			Log.Info( "CItem.Dictionnary initialized with " + CItem.Dictionnary.Count );
+				SharedDatabase.Instance.Items.Add( item as CItem );
+			Log.Info( "CItem.Dictionnary initialized with " + SharedDatabase.Instance.Items.Count );
 
 			return true;
 		}

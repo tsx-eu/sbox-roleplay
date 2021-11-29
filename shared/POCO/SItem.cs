@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using charleroi.shared.POCO;
 
 namespace charleroi
 {
-	public interface SItem : ISharedDictionary<SItem>
+	public interface SItem
 	{
 		public ulong Id { get; set; }
 		public string Name { get; set; }
