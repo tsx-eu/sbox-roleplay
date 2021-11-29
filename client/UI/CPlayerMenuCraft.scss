@@ -34,7 +34,8 @@ CPlayerMenuCraft {
                 height: 10%;
                 align-items: center;
                 font-size: 30px;
-                background: radial-gradient(#26222190, #59595990, #403F3E90);
+                //background: radial-gradient(#26222190, #59595990, #403F3E90);
+                background: radial-gradient(#f28e26, #fd644f);
                 border-radius: 15px 0 0 0;
             }
 
@@ -69,7 +70,8 @@ CPlayerMenuCraft {
                         height: 30%;
                         align-items: center;
                         justify-content: center;
-                        background: radial-gradient(#26222180, #59595980, #403F3E80);
+                        //background: radial-gradient(#26222180, #59595980, #403F3E80);
+                        background: radial-gradient(#43ea80, #38f8d4);
                         font-size: 20px;
                         border-bottom: 2px solid black;
                     }
@@ -114,8 +116,63 @@ CPlayerMenuCraft {
                 width: 100%;
                 border-left: 2px solid black;
                 border-bottom: 2px solid black;
+                justify-content: center;
 
-                .Recette {
+
+                .ingredient {
+                    height: 65%;
+                    width: 80%;
+                    border: 2px solid black;
+                    border-radius: 20px;
+                    top: 15px;
+                    flex-direction: column;
+                    background-color: $hud-background-color;
+
+                    .title {
+                        text-align: center;
+                        width: 100%;
+                        height: 30%;
+                        align-items: center;
+                        justify-content: center;
+                        background: radial-gradient(#6717cd, #2871fa);
+                        font-size: 20px;
+                        border-radius: 20px 20px 0 0;
+                        border-bottom: 2px solid black;
+                    }
+
+                    .recette {
+                        justify-content: center;
+
+                        .img {
+                            background-image: url('https://i.gyazo.com/f511f62340207a1db6d37363b72d8b83.png');
+                            width: 50px;
+                            height: 50px;
+                            background-size: 100%;
+                            background-repeat: no-repeat;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 25px;
+                            color: black;
+                            border: 2px solid black;
+                            border-radius: 10px;
+                            margin: 5px;
+                        }
+
+                        .img2 {
+                            background-image: url('https://i.gyazo.com/df08f7d0d797d969a993c0c4e7aff99d.png');
+                            width: 50px;
+                            height: 50px;
+                            background-size: 100%;
+                            background-repeat: no-repeat;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 25px;
+                            color: black;
+                            border: 2px solid black;
+                            border-radius: 10px;
+                            margin: 5px;
+                        }
+                    }
                 }
             }
 

@@ -184,6 +184,7 @@
                 .items {
                     flex-direction: column;
                     width: 90%;
+                    height: 80%;
                     //justify-content: center;
                     //align-content: center;
                     border: 2px solid red;
@@ -198,7 +199,7 @@
                             border: 2px solid black;
                             border-radius: 10px;
                             width: 8.5%;
-                            height: auto;
+                            height: 8.5%;
                             aspect-ratio: 1;
                             justify-content: space-around;
                             /align-items: center;
