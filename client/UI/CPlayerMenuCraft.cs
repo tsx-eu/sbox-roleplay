@@ -68,7 +68,7 @@ namespace charleroi.client.UI
 
 	class CPlayerCraftList : Panel
 	{
-		public CPlayerCraftList()								// <CPlayerCraftList>
+		public CPlayerCraftList()								// <CPlayerCraftList>, si das le HTML y'a déjà une classe, il le récup automiquement.
 		{
 			var player = Local.Client.Pawn as CPlayer;
 
@@ -97,15 +97,3 @@ namespace charleroi.client.UI
 
 	}
 }
-/*
- *				<div class="Craft">
-					<div class="img"></div>
-					<div class="item">
-						<div class="name"><label>Acide citrique 2</label></div>
-						<div class="description"><label>L'acide citrique est un acide tricarboxylique α-hydroxylé présent en abondance dans le citron, d'où son nom.</label></div>
-					</div>
-				</div>
-v<div class="Craft nolvl">
-					<div class="img"><label class="lvl">10</label></div>
- 
- */
