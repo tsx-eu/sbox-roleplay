@@ -11,6 +11,10 @@ namespace charleroi.client.UI.Inventory
 		private Label _ShortDescription;
 		private CItemQuantity item;
 
+		public CInventoryItem() {
+
+		}
+
 		public CInventoryItem( Panel parent, CItemQuantity tupleItem = null) {
 			Parent = parent;
 			item = tupleItem;

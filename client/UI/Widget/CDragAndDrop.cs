@@ -1,4 +1,6 @@
-﻿using Sandbox;
+﻿using System;
+using charleroi.client.UI.Inventory;
+using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
 
@@ -29,8 +31,10 @@ namespace charleroi.client.UI
 
 		public void OnDrag() {
 			isDragging = true;
-			fake = Local.Hud.AddChild<Panel>();
-			CloneTo( this, fake);
+			fake = Clone( this );
+
+			Local.Hud.AddChild( fake );
+
 		}
 
 		public void OnDrop() {
@@ -38,18 +42,25 @@ namespace charleroi.client.UI
 			fake.Delete();
 		}
 
-		private void CloneTo(Panel src, Panel dst) {
-			dst.Style.BackgroundColor = Color.Red;
-			dst.Style.BackgroundColor = src.Style.BackgroundColor;
-
-			foreach ( Panel item in src.Children ) {
-				var p = dst.Add.Panel();
-				dst.AddChild( p );
-
-				CloneTo( item, p );
+		private Panel Clone(Panel item) {
+			Panel p;
+			if ( item is Label i1 ) {
+				Label q = new Label();
+				q.Text = i1.Text;
+				p = q;
 			}
-		}
+			else if ( item is CInventoryItem )
+				p = new CInventoryItem();
+			else
+				p = new Panel();
 
+			p.Classes = item.Classes;
+			foreach ( var i in item.Children ) {
+				p.AddChild( Clone( i ) );
+			}
+
+			return p;
+		}
 
 		public override void Tick() {
 			base.Tick();

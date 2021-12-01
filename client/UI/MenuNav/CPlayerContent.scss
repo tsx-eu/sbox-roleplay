@@ -194,29 +194,9 @@
                         justify-content: center;
 
                         CInventoryItem {
-                            background-color: rgba(0, 0, 0, 0.25);
-                            backdrop-filter: blur(10px) saturate(80%);
-                            border: 2px solid black;
-                            border-radius: 10px;
                             width: 8.5%;
                             height: 8.5%;
                             aspect-ratio: 1;
-                            justify-content: space-around;
-                            /align-items: center;
-                            margin: 3px;
-
-
-                            .item-name {
-                                color: white;
-                            }
-
-                            .item-quantity {
-                                color: blue;
-                            }
-
-                            .item-description {
-                                display: none;
-                            }
                         }
                     }
                 }

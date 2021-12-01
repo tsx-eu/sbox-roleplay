@@ -1,4 +1,6 @@
-﻿.hidden {
+﻿@import '/theme.scss';
+
+.hidden {
     display: none;
     opacity: 0;
 }
