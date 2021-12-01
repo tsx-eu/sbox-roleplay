@@ -11,6 +11,7 @@ namespace charleroi.client
 		[Net]public string Description { get; set; }
 		[Net] public string ImageURL { get; set; }
 		[Net] public string Ingredients { get; set; }
+		[Net] public int Level { get; set; }
 
 	}
 }

@@ -70,11 +70,18 @@ namespace charleroi.client.UI
 	{
 		public CPlayerCraftList()								// <CPlayerCraftList>
 		{
+			var player = Local.Client.Pawn as CPlayer;
+
 			DeleteChildren( true );
 			foreach ( var craft in Game.Instance.Crafts )
 			{
-				var panel = AddChild<Panel>( "Craft" );				// <div class="Craft">
-				var img = panel.AddChild<Panel>( "img" );				// <div class="img"></div>
+				var panel = AddChild<Panel>( "Craft" );             // <div class="Craft">
+				if ( craft.Level > player.CurrentXP )
+					panel.AddClass( "nolvl" );
+
+				var img = panel.AddChild<Panel>( "img" );               // <div class="img"></div>
+				if ( craft.Level > player.CurrentXP )
+					img.AddChild<Label>( "lvl" ).Text = craft.Level.ToString();
 
 				var item = panel.AddChild<Panel>( "item" );				// <div class="item">
 
@@ -97,4 +104,8 @@ namespace charleroi.client.UI
 						<div class="name"><label>Acide citrique 2</label></div>
 						<div class="description"><label>L'acide citrique est un acide tricarboxylique α-hydroxylé présent en abondance dans le citron, d'où son nom.</label></div>
 					</div>
-				</div>*/
+				</div>
+v<div class="Craft nolvl">
+					<div class="img"><label class="lvl">10</label></div>
+ 
+ */

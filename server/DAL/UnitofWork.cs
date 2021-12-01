@@ -24,6 +24,7 @@ namespace charleroi.server.DAL
 			await Seed_Items();
 			await Seed_Jobs();
 			await Seed_Crafts();
+			await Game.Instance.InitializeDB();
 
 			Log.Info( "Task complete!" );
 			return true;
@@ -32,8 +33,10 @@ namespace charleroi.server.DAL
 		{
 			Log.Info( "Creating items" );
 
-			await SItem.Insert( new CItem { Id=1, Name = "Pomme", ShortDescription = "Ceci est une pomme", MaxCarry=16 });
-			await SItem.Insert( new CItem { Id=2, Name = "Poire", ShortDescription = "Ceci est une poire", MaxCarry=16 });
+			ulong id = 1;
+
+			await SItem.Insert( new CItem { Id=id++, Name = "Pomme", ShortDescription = "Ceci est une pomme", MaxCarry=16 });
+			await SItem.Insert( new CItem { Id=id++, Name = "Poire", ShortDescription = "Ceci est une poire", MaxCarry=16 });
 
 			Log.Info( "Creating items complete!" );
 			return true;
@@ -42,9 +45,10 @@ namespace charleroi.server.DAL
 		{
 			Log.Info( "Creating jobs" );
 
+			ulong id = 1;
 
-			await SJob.Insert( new CJob {Id=1, Name = "Chimiste", Description = "Vend des truc" });
-			await SJob.Insert( new CJob {Id=2, Name = "Vendeur", Description = "Vend des truc" });
+			await SJob.Insert( new CJob { Id=id++, Name = "Chimiste", Description = "Vend des truc" });
+			await SJob.Insert( new CJob { Id=id++, Name = "Vendeur", Description = "Vend des truc" });
 
 			Log.Info( "Creating jobs complete!" );
 			return true;
@@ -53,9 +57,12 @@ namespace charleroi.server.DAL
 		{
 			Log.Info( "Creating crafts" );
 
+			ulong id = 1;
 
-			await SCraft.Insert( new CCraft { Id = 1, Name = "Acide Citrique", Description = "L'acide citrique est un acide tricarboxylique α-hydroxylé présent en abondance dans le citron, d'où son nom." } );
-			await SCraft.Insert( new CCraft { Id = 2, Name = "Canne à pêche", Description = "Si tu ne sais pas à quoi ça sert, c'est que c'est pas pour toi ..." } );
+			await SCraft.Insert( new CCraft { Id=id++, Name = "Acide Citrique", Description = "L'acide citrique est un acide tricarboxylique α-hydroxylé présent en abondance dans le citron, d'où son nom." } );
+			await SCraft.Insert( new CCraft { Id=id++, Name = "Canne à pêche", Description = "Si tu ne sais pas à quoi ça sert, c'est que c'est pas pour toi ..." } );
+			await SCraft.Insert( new CCraft { Id=id++, Name = "Super Canne", Description = "Si tu ne sais pas à quoi ça sert, c'est que c'est pas pour toi ...", Level = 1 } );
+			await SCraft.Insert( new CCraft { Id=id++, Name = "Méga canne", Description = "Si tu ne sais pas à quoi ça sert, c'est que c'est pas pour toi ...", Level = 2} );
 
 			Log.Info( "Creating craft complete!" );
 			return true;

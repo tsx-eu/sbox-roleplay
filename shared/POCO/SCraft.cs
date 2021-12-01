@@ -10,5 +10,6 @@ namespace charleroi
 		public string Description { get; set; }
 		public string ImageURL { get; set; }
 		public string Ingredients { get; set; }
+		public int Level { get; set; }
 	}
 }
