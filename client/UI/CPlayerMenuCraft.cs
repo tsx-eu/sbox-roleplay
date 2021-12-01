@@ -68,19 +68,23 @@ namespace charleroi.client.UI
 
 	class CPlayerCraftList : Panel
 	{
-		public CPlayerCraftList()
+		public CPlayerCraftList()								// <CPlayerCraftList>
 		{
 			DeleteChildren( true );
-
 			foreach ( var craft in Game.Instance.Crafts )
 			{
-				var panel = AddChild<Panel>( "Craft" );
-				panel.AddChild<Panel>( "img" );
-				var item = panel.AddChild<Panel>( "item" );
-				var name= item.AddChild<Panel>( "name" );
-				name.AddChild<Label>( );
-				var description = item.AddChild<Panel>( "description" );
-				description.AddChild<Label>();
+				var panel = AddChild<Panel>( "Craft" );				// <div class="Craft">
+				var img = panel.AddChild<Panel>( "img" );				// <div class="img"></div>
+
+				var item = panel.AddChild<Panel>( "item" );				// <div class="item">
+
+				var name = item.AddChild<Panel>( "name" );					// <div class="name">
+				var labelName = name.AddChild<Label>( );					// <label>
+				labelName.Text = craft.Name;								// Acide citrique 2
+
+				var description = item.AddChild<Panel>( "description" );	// <div class="description">
+				var labelDescription = description.AddChild<Label>();		// <label>
+				labelDescription.Text = craft.Description;                  // L'acide citrique est un acide tricarboxylique
 			}
 		}
 
