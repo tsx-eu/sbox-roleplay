@@ -35,8 +35,7 @@ namespace charleroi.server.DAL
 
 			ulong id = 1;
 
-			await SItem.Insert( new CItem { Id=id++, Name = "Pomme", ShortDescription = "Ceci est une pomme", MaxCarry=16 });
-			await SItem.Insert( new CItem { Id=id++, Name = "Poire", ShortDescription = "Ceci est une poire", MaxCarry=16 });
+			await SItem.Insert( new CItem { Id=id++, Name = "Bûche", ShortDescription = "Du bois", MaxCarry=16 });
 
 			Log.Info( "Creating items complete!" );
 			return true;
@@ -47,8 +46,29 @@ namespace charleroi.server.DAL
 
 			ulong id = 1;
 
-			await SJob.Insert( new CJob { Id=id++, Name = "Chimiste", Description = "Vend des truc" });
-			await SJob.Insert( new CJob { Id=id++, Name = "Vendeur", Description = "Vend des truc" });
+			await SJob.Insert( new CJob { Id = id++, Name = "Mineur", Description = "TBD" });
+			await SJob.Insert( new CJob { Id = id++, Name = "Raffineur", Description = "TBD" } );
+			await SJob.Insert( new CJob { Id = id++, Name = "Électronicien", Description = "TBD" } );
+			await SJob.Insert( new CJob { Id = id++, Name = "Forgeron", Description = "TBD" } );
+			await SJob.Insert( new CJob { Id = id++, Name = "Mécanicien", Description = "TBD" } );
+			await SJob.Insert( new CJob { Id = id++, Name = "Ingénieur", Description = "TBD" } );
+
+			await SJob.Insert( new CJob { Id = id++, Name = "Bucheron", Description = "TBD" } );
+			await SJob.Insert( new CJob { Id = id++, Name = "Menuisier", Description = "TBD" } );
+			await SJob.Insert( new CJob { Id = id++, Name = "Armurier", Description = "TBD" } );
+
+			await SJob.Insert( new CJob { Id = id++, Name = "Chimiste", Description = "TBD" } );
+			await SJob.Insert( new CJob { Id = id++, Name = "Dealer", Description = "TBD" } );
+
+			await SJob.Insert( new CJob { Id = id++, Name = "Agrigulteur", Description = "TBD" } );
+			await SJob.Insert( new CJob { Id = id++, Name = "Menier", Description = "TBD" } );
+			await SJob.Insert( new CJob { Id = id++, Name = "Boulanger", Description = "TBD" } );
+
+			await SJob.Insert( new CJob { Id = id++, Name = "Pêcheur", Description = "TBD" } );
+			await SJob.Insert( new CJob { Id = id++, Name = "Éleveur", Description = "TBD" } );
+			await SJob.Insert( new CJob { Id = id++, Name = "Boucher", Description = "TBD" } );
+			await SJob.Insert( new CJob { Id = id++, Name = "Cuisinier", Description = "TBD" } );
+			await SJob.Insert( new CJob { Id = id++, Name = "Couturier", Description = "TBD" } );
 
 			Log.Info( "Creating jobs complete!" );
 			return true;
@@ -59,10 +79,11 @@ namespace charleroi.server.DAL
 
 			ulong id = 1;
 
-			await SCraft.Insert( new CCraft { Id=id++, Name = "Acide Citrique", Description = "L'acide citrique est un acide tricarboxylique α-hydroxylé présent en abondance dans le citron, d'où son nom." } );
-			await SCraft.Insert( new CCraft { Id=id++, Name = "Canne à pêche", Description = "Si tu ne sais pas à quoi ça sert, c'est que c'est pas pour toi ..." } );
-			await SCraft.Insert( new CCraft { Id=id++, Name = "Super Canne", Description = "Si tu ne sais pas à quoi ça sert, c'est que c'est pas pour toi ...", Level = 1 } );
-			await SCraft.Insert( new CCraft { Id=id++, Name = "Méga canne", Description = "Si tu ne sais pas à quoi ça sert, c'est que c'est pas pour toi ...", Level = 2} );
+			await SCraft.Insert( new CCraft { Id = id++, Name = "Planche", Description = "TBD" } );
+			await SCraft.Insert( new CCraft { Id = id++, Name = "Baton", Description = "TBD" } );
+			await SCraft.Insert( new CCraft { Id = id++, Name = "Chaise", Description = "TBD", Level = 1 } );
+			await SCraft.Insert( new CCraft { Id = id++, Name = "Table", Description = "TBD", Level = 1} );
+			await SCraft.Insert( new CCraft { Id = id++, Name = "Lit", Description = "TBD", Level = 2 } );
 
 			Log.Info( "Creating craft complete!" );
 			return true;
