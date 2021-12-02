@@ -10,36 +10,47 @@ namespace charleroi.client.UI
 	{
 		Panel fake;
 		private bool isDragging;
-		private Vector2 pos;
 
-		public CDragAndDrop()
-		{
-			AddEventListener( "ondragselect", () => {
-				if ( !isDragging ) {
+		private TimeSince lastMouseUp;
+		private TimeSince lastMouseDown;
+		private Vector2 lastMouseDownPosition;
+		private Vector2 delta;
+
+		public CDragAndDrop() {
+
+			AddEventListener( "onmousedown", () => {
+				if ( !isDragging && lastMouseUp > 0.1 && lastMouseDown > 0.1 )
 					OnDrag();
-				}
+				lastMouseDown = 0;
 			} );
-		}
 
-		protected override void OnMouseUp( MousePanelEvent e ) {
-			if ( isDragging ) {
-				OnDrop();
-			}
-
-			base.OnMouseUp( e );
+			Local.Hud.AddEventListener( "onmouseup", () => {
+				if ( isDragging )
+					OnDrop();
+				lastMouseUp = 0;
+			} );
 		}
 
 		public void OnDrag() {
 			isDragging = true;
+			delta = MousePosition;
+
 			fake = Clone( this );
+			fake.Style.Position = PositionMode.Absolute;
+			fake.Style.Width = Box.Rect.width;
+			fake.Style.Height = Box.Rect.height;
+			fake.Style.ZIndex = 99999999;
+			fake.Style.Opacity = (Style.Opacity.HasValue ? Style.Opacity : 1.0f) * 0.75f;
+
+			OnMouse();
 
 			Local.Hud.AddChild( fake );
-
 		}
 
 		public void OnDrop() {
+			fake.Delete(true);
+			fake = null;
 			isDragging = false;
-			fake.Delete();
 		}
 
 		private Panel Clone(Panel item) {
@@ -62,19 +73,18 @@ namespace charleroi.client.UI
 			return p;
 		}
 
+		private void OnMouse() {
+			var pos = Local.Hud.ScreenPositionToPanelPosition( Mouse.Position ) - delta;
+
+			fake.Style.Top = pos.y * Local.Hud.ScaleFromScreen;
+			fake.Style.Left = pos.x * Local.Hud.ScaleFromScreen;
+		}
+
 		public override void Tick() {
 			base.Tick();
 			 
 			if( isDragging && fake != null ) {
-				pos = Local.Hud.ScreenPositionToPanelPosition( Mouse.Position );
-
-				fake.Style.PixelSnap = 1;
-				fake.Style.Position = PositionMode.Absolute;
-				fake.Style.Width = Box.ClipRect.width;
-				fake.Style.Height = Box.ClipRect.height;
-				fake.Style.Top = pos.y * Local.Hud.ScaleFromScreen;
-				fake.Style.Left = pos.x * Local.Hud.ScaleFromScreen;
-				fake.Style.ZIndex = 99999999;
+				OnMouse();
 			}
 		}
 	}
