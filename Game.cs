@@ -21,7 +21,6 @@ namespace charleroi
 		public Game()
 		{
 			Transmit = TransmitType.Always;
-			Items = new List<CItem>();
 
 			if ( IsServer ) {
 				hud = new HUD();
@@ -68,15 +67,10 @@ namespace charleroi
 			}
 		}
 
-		public async override void ClientJoined( Client client ) {
-			base.ClientJoined( client );
-
-			var player = new CPlayer();
-			client.Pawn = player;
-			player.SteamID = (ulong)client.PlayerId;
-			player.Job = "Chomeur";
-
+		private async Task<bool> LoadPlayerData( CPlayer player )
+		{
 			var uow = new UnitofWork();
+
 			SPlayer data = await uow.SPlayer.Get( player.SteamID );
 			if ( data != null )
 				player.Load( data );
@@ -84,6 +78,34 @@ namespace charleroi
 				await uow.SPlayer.Update( player );
 
 			player.Respawn();
+
+			return true;
+		}
+		private async Task<bool> SavePlayerData( CPlayer player )
+		{
+			var uow = new UnitofWork();
+			await uow.SPlayer.Update( player );
+
+			return true;
+		}
+
+		public override void ClientJoined( Client client ) {
+			base.ClientJoined( client );
+
+			var player = new CPlayer();
+			client.Pawn = player;
+			player.SteamID = (ulong)client.PlayerId;
+			player.Job = "Chomeur";
+
+			_ = LoadPlayerData( player);
+		}
+
+		public override void ClientDisconnect( Client client, NetworkDisconnectionReason reason )
+		{
+			var player = client.Pawn as CPlayer;
+			_ = SavePlayerData( player );
+
+			base.ClientDisconnect( client, reason );
 		}
 	}
 
