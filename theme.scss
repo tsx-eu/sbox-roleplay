@@ -58,7 +58,8 @@ $hud-text-color-negative: black;
         background-color: $hud-background-color-negative;
         justify-content: flex-start;
         align-items: center;
-        border: 2px solid $hud-border-color;
+        border: $hud-border-color;
+        border: 2px;
         border-radius: 50%;
         width: 90%;
 
