@@ -2,7 +2,8 @@
 
 CPlayerMenuCraft {
     position: absolute;
-    width: 100%;
+    left: 25%;
+    width: 75%;
     height: 100%;
     transition: all 0.5s ease-out;
     pointer-events: all;
@@ -12,21 +13,21 @@ CPlayerMenuCraft {
     align-items: center;
     font-family: Roboto;
     color: white;
-    border-radius: 10px;
 
     .MenuCraft {
-        width: 80%;
-        height: 80%;
-        background-color: $hud-background-color;
-        border: 2px solid black;
-        border-radius: 15px;
-        justify-content: center;
-        align-content: center;
+        width: 98%;
+        height: 95%;
+        //background-color: $hud-background-color;
+        border-radius: 15px 0 0 0;
+        //justify-content: center;
+        //align-content: center;
         //Colonne Gauche
         .ListCraft {
             flex-direction: column;
-            width: 50%;
+            width: 35%;
             height: 100%;
+            border-radius: 15px 0 0 0;
+            background-color: $hud-background-color;
 
             .Titre {
                 text-align: center;
@@ -36,12 +37,12 @@ CPlayerMenuCraft {
                 font-size: 30px;
                 //background: radial-gradient(#26222190, #59595990, #403F3E90);
                 background: radial-gradient(#f28e26, #fd644f);
-                border-radius: 15px 0 0 0;
+                border-radius: 14px 0 0 0;
             }
 
             .Craft {
                 width: 100%;
-                height: 20%;
+                height: 15%;
                 align-items: center;
                 font-size: 15px;
                 margin-top: 20px;
@@ -107,15 +108,14 @@ CPlayerMenuCraft {
         }
         //Colonne Droite
         .RecetteCraft {
-            width: 50%;
+            width: 30%;
             height: 100%;
             flex-direction: column;
+            top: 20%;
 
             .Craft {
                 height: 50%;
                 width: 100%;
-                border-left: 2px solid black;
-                border-bottom: 2px solid black;
                 justify-content: center;
 
 
@@ -124,7 +124,6 @@ CPlayerMenuCraft {
                     width: 80%;
                     border: 2px solid black;
                     border-radius: 20px;
-                    top: 15px;
                     flex-direction: column;
                     background-color: $hud-background-color;
 
@@ -142,6 +141,7 @@ CPlayerMenuCraft {
 
                     .recette {
                         justify-content: center;
+                        top: 2.5%;
 
                         .img {
                             background-image: url('https://i.gyazo.com/f511f62340207a1db6d37363b72d8b83.png');
@@ -175,57 +175,67 @@ CPlayerMenuCraft {
                     }
                 }
             }
+        }
 
-            .Stock {
-                height: 50%;
+        .Stock {
+            height: 100%;
+            width: 35%;
+            background-color: $hud-background-color;
+            border-radius: 15px;
+            flex-direction: column;
+            //background-color: $hud-background-color;
+
+            .Items {
+                flex-direction: column;
                 width: 100%;
-                border-left: 2px solid black;
-                //background-color: $hud-background-color;
+                height: 90%;
+                justify-content: center;
+                align-content: center;
 
-                .Items {
-                    flex-direction: column;
+                .stock_machine {
                     width: 100%;
-                    height: 90%;
-                    justify-content: center;
-                    align-content: center;
+                    height: 50%;
+                    margin-left: 10%;
+                    margin-top: 2%;
+                    border-bottom: 2px solid black;
+                }
 
-                    CInventory, CInventoryVIP {
-                        flex-wrap: wrap;
-                        width: 90%;
-                        height: 70%;
-                        margin-left: 10%;
-                        margin-top: 2%;
+                CInventory, CInventoryVIP {
+                    flex-wrap: wrap;
+                    width: 100%;
+                    height: 30%;
+                    margin-left: 10%;
+                    margin-top: 2%;
 
-                        CInventoryItem, {
-                            background-color: rgba(0, 0, 0, 0.25);
-                            backdrop-filter: blur(10px) saturate(80%);
-                            border: 2px solid black;
-                            border-radius: 10px;
-                            width: 8.5%;
-                            height: auto;
-                            aspect-ratio: 1;
-                            justify-content: space-around;
-                            align-items: center;
-                            margin: 3px;
+                    CInventoryItem, {
+                        background-color: rgba(0, 0, 0, 0.25);
+                        backdrop-filter: blur(10px) saturate(80%);
+                        border: 2px solid black;
+                        border-radius: 10px;
+                        width: 10%;
+                        height: auto;
+                        aspect-ratio: 1;
+                        justify-content: space-around;
+                        align-items: center;
+                        margin: 3px;
 
 
-                            .item-name {
-                                color: white;
-                            }
+                        .item-name {
+                            color: white;
+                        }
 
-                            .item-quantity {
-                                color: blue;
-                            }
+                        .item-quantity {
+                            color: blue;
+                        }
 
-                            .item-description {
-                                display: none;
-                            }
+                        .item-description {
+                            display: none;
                         }
                     }
+                }
 
-                    CInventoryVIP {
-                        height: 30%;
-                    }
+                CInventoryVIP {
+                    height: 30%;
                 }
             }
         }
