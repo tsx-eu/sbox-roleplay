@@ -15,16 +15,16 @@ namespace charleroi.client.UI
 		public CPlayerMenu() : base()
 		{
 
-			AddPage( "price_change", "Inventaire", () => PageContainer.AddChild<CPlayerInventory>() );
-			AddPage( "card_travel", "Métiers", () => PageContainer.AddChild<CPlayerJob>() );
-			AddPage( "science", "Compétences", () => PageContainer.AddChild<CPlayerSkill>() );
-			AddPage( "groups", "Famille", () => PageContainer.AddChild<CPlayerFamily>() );
-			AddPage( "shopping_cart", "Boutique", () => PageContainer.AddChild<CPlayerShop>() );
-			AddPage( "mail_outline", "Courriers", () => PageContainer.AddChild<CPlayerMail>() );// transform en mark_email_read ou mark_email_unread si courrier ?
-			AddPage( "miscellaneous_services", "Options", () => PageContainer.AddChild<CPlayerOption>() );
+			AddPage( "price_change", "Inventaire", "Je suis un titre", () => PageContainer.AddChild<CPlayerInventory>() );
+			AddPage( "card_travel", "Métiers", "Je suis un titre", () => PageContainer.AddChild<CPlayerJob>() );
+			AddPage( "science", "Compétences", "Je suis un titre", () => PageContainer.AddChild<CPlayerSkill>() );
+			AddPage( "groups", "Famille", "Je suis un titre", () => PageContainer.AddChild<CPlayerFamily>() );
+			AddPage( "shopping_cart", "Boutique", "Je suis un titre", () => PageContainer.AddChild<CPlayerShop>() );
+			AddPage( "mail_outline", "Courriers", "Je suis un titre", () => PageContainer.AddChild<CPlayerMail>() );
+			AddPage( "miscellaneous_services", "Options", "Je suis un titre", () => PageContainer.AddChild<CPlayerOption>() );
 
 
-			Buttons.First().Value.CreateEvent( "onclick" );
+			LoadDefaultPage();
 		}
 
 		[ClientRpc]

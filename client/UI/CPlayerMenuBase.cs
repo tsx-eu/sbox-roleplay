@@ -19,12 +19,15 @@ namespace charleroi.client.UI
 		public Panel PageList { get; set; }
 		public Panel PageContainer { get; set; }
 
-		protected Dictionary<string, Button> Buttons;
+		private Dictionary<string, Button> Buttons;
+		private Dictionary<string, string> Titles;
+
 
 		public CPlayerMenuBase()
 		{
 			StyleSheet.Load( "/client/UI/CPlayerMenu.scss" );
 			Buttons = new Dictionary<string, Button>();
+			Titles = new Dictionary<string, string>();
 			Inner = Add.Panel( "inner" );
 
 
@@ -32,7 +35,11 @@ namespace charleroi.client.UI
 			PageContainer = Inner.Add.Panel( "pagecontainer" );
 		}
 
-		protected void AddPage( string icon, string name, Func<Panel> act = null )
+		protected void LoadDefaultPage() {
+			Buttons.First().Value.CreateEvent( "onclick" );
+		}
+
+		protected void AddPage( string icon, string name, string title, Func<Panel> act = null )
 		{
 			var button = PageList.Add.Button( name, () => {
 				SwitchPage( name );
@@ -41,6 +48,7 @@ namespace charleroi.client.UI
 			button.Icon = icon;
 
 			Buttons[name] = button;
+			Titles[name] = title;
 		}
 
 		protected void SwitchPage( string name )
@@ -54,11 +62,10 @@ namespace charleroi.client.UI
 		}
 
 		[Event.Hotload]
-		public override void OnHotloaded()
+		public static void Hotloaded()
 		{
-			base.OnHotloaded();
-			Delete();
-			Instance = null;
+			if ( Instance != null )
+				Instance.Delete();
 		}
 
 		public override void Tick() {
