@@ -97,6 +97,8 @@ namespace charleroi
 			player.SteamID = (ulong)client.PlayerId;
 			player.Job = "Chomeur";
 
+			player.Respawn();
+
 			_ = LoadPlayerData( player);
 		}
 

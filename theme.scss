@@ -85,6 +85,14 @@ $hud-text-color-negative: black;
         }
     }
 
+    .scroller {
+        overflow: scroll;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+    }
+
+
     CInventoryItem {
         background-color: rgba(0, 0, 0, 0.25);
         backdrop-filter: blur(10px) saturate(80%);

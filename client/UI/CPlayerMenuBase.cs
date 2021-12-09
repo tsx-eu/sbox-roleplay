@@ -10,9 +10,7 @@ using charleroi.client.UI.Inventory;
 
 namespace charleroi.client.UI
 {
-	[Library]
-	[NavigatorTarget( "/client/MenuNav/" )]
-	public partial class CPlayerMenuBase : Panel
+	public abstract class CPlayerMenuBase : Panel
 	{
 		protected static CPlayerMenuBase Instance { get; set; }
 
@@ -55,15 +53,12 @@ namespace charleroi.client.UI
 			}
 		}
 
+		[Event.Hotload]
 		public override void OnHotloaded()
 		{
 			base.OnHotloaded();
-
-			var activePage = Buttons.Where( x => x.Value.HasClass( "active" ) ).FirstOrDefault();
-			if ( activePage.Value != null )
-			{
-				activePage.Value.CreateEvent( "onclick" );
-			}
+			Delete();
+			Instance = null;
 		}
 
 		public override void Tick() {

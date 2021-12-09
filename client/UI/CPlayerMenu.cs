@@ -10,11 +10,8 @@ using charleroi.client.UI.Inventory;
 
 namespace charleroi.client.UI
 {
-	[Library]
-	[NavigatorTarget( "/client/MenuNav/" )]
 	public partial class CPlayerMenu : CPlayerMenuBase
 	{
-
 		public CPlayerMenu() : base()
 		{
 
