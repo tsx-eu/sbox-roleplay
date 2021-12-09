@@ -1,30 +1,33 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using charleroi.client.UI.MenuNav;
 using Sandbox;
 using Sandbox.UI;
 
 namespace charleroi.client.UI
 {
-	public partial class CPlayerMenuCraft : Panel {
-		public static CPlayerMenuCraft Instance { get; private set; }
-		private static TimeSince LastOpen;
+	[Library]
+	[NavigatorTarget( "/client/MenuNav/" )]
+	public partial class CPlayerMenuCraft : CPlayerMenuBase {
+
 		private CEntityCrafttable ent;
 		private TimeSince LastRay;
 
-		public CPlayerMenuCraft() {
-			SetTemplate( "/client/UI/CPlayerMenuCraft.html" );
+		public CPlayerMenuCraft() : base() {
+			AddPage( "price_change", "Inventaire", () => PageContainer.AddChild<CPlayerInventory>() );
+			AddPage( "card_travel", "Métiers", () => PageContainer.AddChild<CPlayerJob>() );
+
+
+			Buttons.First().Value.CreateEvent( "onclick" );
 		}
-		public override void Delete( bool immediate = false ) {
-			LastOpen = 0;
-			base.Delete( immediate );
-			Instance = null;
-		}
+
 
 		[ClientRpc]
 		public static void Show(Entity ent)
 		{
 			if ( Instance == null && LastOpen >= 0.5f ) {
 				Instance = Local.Hud.AddChild<CPlayerMenuCraft>();
-				Instance.ent = ent as CEntityCrafttable;
+				(Instance as CPlayerMenuCraft).ent = ent as CEntityCrafttable;
 				LastOpen = 0;
 			}
 		}
@@ -33,10 +36,6 @@ namespace charleroi.client.UI
 		{
 			base.Tick();
 
-			if ( Input.Pressed( InputButton.Use ) && LastOpen >= 0.5f ) {
-				Instance.Delete();
-				return;
-			}
 
 			if ( !ent.IsValid() ) {
 				Instance.Delete();

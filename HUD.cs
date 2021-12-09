@@ -10,7 +10,6 @@ namespace charleroi
 				RootPanel.AddClass( "root" );
 
 				RootPanel.AddChild<CPlayerHUD>();
-				RootPanel.AddChild<CPlayerMenu>();
 			}
 		}
 	}

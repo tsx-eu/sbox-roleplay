@@ -3,13 +3,13 @@ using Sandbox.UI;
 
 namespace charleroi.client.UI.MenuNav
 {
-	class CPlayerContent : Panel
+	class CPlayerInventory : Panel
 	{
 		public string Job { get; set; }
 
-		public CPlayerContent()
+		public CPlayerInventory()
 		{
-			SetTemplate( "/client/UI/MenuNav/CPlayerContent.html" );
+			SetTemplate( "/client/UI/MenuNav/CPlayerInventory.html" );
 		}
 
 		public override void Tick()

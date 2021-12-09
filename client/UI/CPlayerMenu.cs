@@ -12,29 +12,13 @@ namespace charleroi.client.UI
 {
 	[Library]
 	[NavigatorTarget( "/client/MenuNav/" )]
-	public partial class CPlayerMenu : Panel
+	public partial class CPlayerMenu : CPlayerMenuBase
 	{
-		public static CPlayerMenu Instance { get; private set; }
 
-		private bool IsOpen = false;
-		private TimeSince LastOpen;
-		public Panel Inner { get; set; }
-		public Panel PageList { get; set; }
-		public Panel PageContainer { get; set; }
-
-		Dictionary<string, Button> Buttons;
-
-		public CPlayerMenu()
+		public CPlayerMenu() : base()
 		{
-			StyleSheet.Load( "/client/UI/CPlayerMenu.scss" );
-			Buttons = new Dictionary<string, Button>();
-			Inner = Add.Panel( "inner" );
 
-
-			PageList = Inner.Add.Panel( "pagelist" );
-			PageContainer = Inner.Add.Panel( "pagecontainer" );
-
-			AddPage( "price_change", "Inventaire", () => PageContainer.AddChild<CPlayerContent> () );
+			AddPage( "price_change", "Inventaire", () => PageContainer.AddChild<CPlayerInventory>() );
 			AddPage( "card_travel", "Métiers", () => PageContainer.AddChild<CPlayerJob>() );
 			AddPage( "science", "Compétences", () => PageContainer.AddChild<CPlayerSkill>() );
 			AddPage( "groups", "Famille", () => PageContainer.AddChild<CPlayerFamily>() );
@@ -44,68 +28,23 @@ namespace charleroi.client.UI
 
 
 			Buttons.First().Value.CreateEvent( "onclick" );
-			Instance = this;
 		}
 
-		void AddPage( string icon, string name, Func<Panel> act = null )
+		[ClientRpc]
+		public static void Show()
 		{
-			var button = PageList.Add.Button( name, () => {
-				SwitchPage( name );
-				act?.Invoke().AddClass( "page" );
-			});
-			button.Icon = icon;
-
-			Buttons[name] = button;
-		}
-
-		void SwitchPage( string name )
-		{
-			PageContainer.DeleteChildren();
-
-			foreach ( var button in Buttons )
+			if ( Instance == null && LastOpen >= 0.5f )
 			{
-				button.Value.SetClass( "active", button.Key == name );
-			}
-		}
-
-		public override void OnHotloaded()
-		{
-			base.OnHotloaded();
-
-			var activePage = Buttons.Where( x => x.Value.HasClass( "active" ) ).FirstOrDefault();
-			if ( activePage.Value != null )
-			{
-				activePage.Value.CreateEvent( "onclick" );
-			}
-		}
-
-		public override void Tick() {
-			base.Tick();
-
-			if ( Input.Pressed( InputButton.Menu ) && LastOpen >= 0.5f )
-			{
-				SetOpen( !IsOpen );
+				Instance = Local.Hud.AddChild<CPlayerMenu>();
 				LastOpen = 0;
 			}
-
-		}
-
-		private void SetOpen(bool status) {
-			IsOpen = status;
-			SetClass( "open", IsOpen );
-
-			if ( IsOpen )
-				CInventory.Refresh(To.Single(Local.Client));
 		}
 
 		[ClientRpc]
-		public static void Show( ) {
-			Instance.SetOpen( true );
+		public static void Hide()
+		{
+			Instance.Delete( true );
 		}
 
-		[ClientRpc]
-		public static void Hide() {
-			Instance.SetOpen( false );
-		}
 	}
 }

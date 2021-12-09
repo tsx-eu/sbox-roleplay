@@ -1,4 +1,5 @@
-﻿using charleroi.client.WorldUI;
+﻿using charleroi.client.UI;
+using charleroi.client.WorldUI;
 using Sandbox;
 using System;
 using System.Collections.Generic;
@@ -81,6 +82,11 @@ namespace charleroi.client
 					Camera = new FirstPersonCamera();
 				else
 					Camera = new ThirdPersonCamera();
+			}
+
+			if ( Input.Pressed( InputButton.Menu ) )
+			{
+				CPlayerMenu.Show( );
 			}
 
 			if ( IsServer ) {
