@@ -1,10 +1,37 @@
 ﻿<link rel="stylesheet" href="/client/UI/MenuNav/CPlayerCraft.scss">
 
-<body>
-    <div class="MenuCraft">
-        <div class="ListCraft">
-            <label class="Titre">Liste des recettes</label>
-            <CPlayerCraftList class="scroller"></CPlayerCraftList>
+<body class="MenuCraft">
+    <div class="header">
+        <label class="titre">Liste des recettes</label>
+    </div>
+    <div class="body scroller">
+        <div class="line odd">
+            <div class="flex-start">
+                <CInventoryItem></CInventoryItem>
+                <CInventoryItem></CInventoryItem>
+                <label>Banane</label>
+            </div>
+            <div class="flex-end">
+                <CInventoryItem></CInventoryItem>
+                <CInventoryItem></CInventoryItem>
+                <CInventoryItem></CInventoryItem>
+                <CInventoryItem></CInventoryItem>
+            </div>
         </div>
+        <div class="line even">
+            <div class="flex-start">
+                <CInventoryItem></CInventoryItem>
+                <label>Banane</label>
+            </div>
+            <div class="flex-end">
+                <CInventoryItem></CInventoryItem>
+                <CInventoryItem></CInventoryItem>
+                <CInventoryItem></CInventoryItem>
+                <CInventoryItem></CInventoryItem>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+
     </div>
 </body>

@@ -28,24 +28,16 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<Analyzer Include="..\..\..\bin\managed\Sandbox.Generator.dll" />
+		<Analyzer Include="..\..\..\bin\managed\Sandbox.Generator.dll"/>
 		<Reference Include="..\..\..\bin\managed/Sandbox.System.dll" />
 		<Reference Include="..\..\..\bin\managed/Sandbox.Engine.dll" />
 		<Reference Include="..\..\..\bin\managed/Sandbox.Game.dll" />
 		<Reference Include="..\..\..\bin\managed/Sandbox.Event.dll" />
+		<Reference Include="..\..\..\bin\managed/Sandbox.Reflection.dll" />
 	</ItemGroup>
 
   <ItemGroup>
 <ProjectReference Include="..\..\..\addons\base\code\base.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="client\UI\MenuNav\CPlayerCraftStock.html">
-      <DependentUpon>CPlayerCraftStock.cs</DependentUpon>
-    </None>
-    <None Update="client\UI\MenuNav\CPlayerCraftStock.scss">
-      <DependentUpon>CPlayerCraftStock.cs</DependentUpon>
-    </None>
   </ItemGroup>
 
 </Project>
