@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -212,4 +214,53 @@ namespace charleroi.server
 			}
 		}
 	}
+
+	class ForeignReference
+	{
+		[JsonPropertyName( "__foreign_id" )]
+		public string Id { get; set; }
+
+		[JsonPropertyName( "__foreign_type" )]
+		public string TypeName { get
+			{
+				return Type.Name;
+			}
+		}
+
+		[JsonIgnore]
+		public Type Type { get; set; }
+	}
+
+	class CRUDSerializer
+	{
+		public static JsonDocument SerializeToDocument<T>(T baseObj )
+		{
+
+			var props = baseObj.GetType().GetType()
+				 .GetProperties( BindingFlags.Instance | BindingFlags.Public );
+
+			Dictionary<string, object> dict = new Dictionary<string, object>();
+
+			// TODO: Recursive function, handle list
+			foreach ( PropertyInfo info in props ){
+				var propId = info.GetType().GetProperty( "Id" );
+				if ( propId == null )
+				{
+					dict.Add( info.Name, info.GetValue( baseObj, null ) );
+				}else
+				{
+					dict.Add( info.Name, new ForeignReference
+					{
+						Id = propId.ToString(),
+						Type = info.GetType()
+					} );
+				}
+			}
+
+			return JsonSerializer.SerializeToDocument( dict );
+		}
+
+	}
+
+	
 }
