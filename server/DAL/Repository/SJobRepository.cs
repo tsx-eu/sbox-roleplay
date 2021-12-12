@@ -35,7 +35,7 @@ namespace charleroi.server.DAL.Repository
 				return null;
 			}
 
-			var resPlayer = JsonSerializer.Deserialize<CJob>( res.Data.GetRawText() );
+			var resPlayer = JsonSerializer.Deserialize<CJob>( res.Data );
 			return resPlayer;
 		}
 
@@ -48,11 +48,11 @@ namespace charleroi.server.DAL.Repository
 				return null;
 			}
 
-			var resMap = JsonSerializer.Deserialize<CRUDGetAllData>( res.Data.GetRawText() );
+			var resMap = JsonSerializer.Deserialize<CRUDGetAllData>( res.Data );
 
 			var SPlyList = new List<SJob>();
 			foreach (var elem in resMap.Data ) {
-				var SPly = JsonSerializer.Deserialize<CJob>( elem.Value.GetRawText() );
+				var SPly = JsonSerializer.Deserialize<CJob>( elem.Value );
 				SPlyList.Add( SPly );
 			}
 
