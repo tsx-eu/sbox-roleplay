@@ -15,6 +15,7 @@ namespace charleroi.client.UI
 		private TimeSince lastMouseDown;
 		private Vector2 lastMouseDownPosition;
 		private Vector2 delta;
+		public bool Allow { get; set; } = false;
 
 		public CDragAndDrop() {
 
@@ -32,6 +33,9 @@ namespace charleroi.client.UI
 		}
 
 		public void OnDrag() {
+			if ( !Allow )
+				return;
+
 			isDragging = true;
 			delta = MousePosition;
 
