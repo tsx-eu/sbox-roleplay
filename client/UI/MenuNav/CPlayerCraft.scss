@@ -3,15 +3,7 @@
 CPlayerCraft {
     flex-direction: column;
 
-    .flex-start {
-        justify-content: flex-start;
-        border: 1px solid red;
-    }
 
-    .flex-end {
-        justify-content: flex-end;
-        border: 1px solid green;
-    }
 
     .input-quantity {
         width: 50px;
@@ -40,19 +32,22 @@ CPlayerCraft {
             justify-content: space-between;
             min-height: 85px;
             width: 100%;
-            padding: 5px;
+            padding: 20px;
 
             > panel {
+                height: 100%;
+                justify-content: center;
+
                 > CInventoryItem {
-                    height: 100%;
-                    width: auto;
-                    aspect-ratio: 1;
+                    height: 70px;
+                    width: 70px;
                 }
 
-                > label, > button, > textentry {
+                > CInventoryItem, > label, > button, > textentry {
                     font-family: $hud-text-title-font;
                     font-size: 20px;
                     align-self: center;
+                    justify-content: center;
                     padding: 5px;
                 }
             }
