@@ -3,68 +3,68 @@
 CPlayerCraft {
     flex-direction: column;
 
-
-
     .input-quantity {
         width: 50px;
     }
 
+    .titre {
+        width: 100%;
+        font-family: $hud-text-title-font;
+        font-size: 24px;
+        font-weight: bold;
+        text-stroke-color: black;
+        text-stroke-width: 2px;
+        padding: 12px 24px 24px 24px;
+    }
+
+    .line {
+        flex-direction: row;
+        justify-content: space-between;
+        min-height: 85px;
+        width: 100%;
+        padding-left: 20px;
+        padding-right: 20px;
+
+        > panel {
+            height: 100%;
+            justify-content: center;
+
+            > CInventoryItem {
+                height: 70px;
+                width: 70px;
+            }
+
+            > CInventoryItem, > label, > button, > textentry {
+                font-family: $hud-text-title-font;
+                font-size: 20px;
+                align-self: center;
+                justify-content: center;
+                padding: 5px;
+            }
+        }
+
+        &.odd {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        &.even {
+            background-color: rgba(32, 32, 32, 0.9);
+        }
+    }
+
     .header {
         width: 100%;
-
-        .titre {
-            font-family: $hud-text-title-font;
-            font-size: 24px;
-            font-weight: bold;
-            text-stroke-color: black;
-            text-stroke-width: 2px;
-            padding: 12px 24px 48px 24px;
-        }
     }
 
     .body {
         width: 100%;
         max-width: 1200px;
         margin: auto;
-
-        .line {
-            flex-direction: row;
-            justify-content: space-between;
-            min-height: 85px;
-            width: 100%;
-            padding: 20px;
-
-            > panel {
-                height: 100%;
-                justify-content: center;
-
-                > CInventoryItem {
-                    height: 70px;
-                    width: 70px;
-                }
-
-                > CInventoryItem, > label, > button, > textentry {
-                    font-family: $hud-text-title-font;
-                    font-size: 20px;
-                    align-self: center;
-                    justify-content: center;
-                    padding: 5px;
-                }
-            }
-
-            &.odd {
-                background-color: rgba(255, 255, 255, 0.1);
-            }
-
-            &.even {
-                background-color: rgba(32, 32, 32, 0.9);
-            }
-        }
     }
 
     .footer {
         height: 25%;
         width: 100%;
-        background-color: blue;
+        max-width: 1200px;
     }
 }
