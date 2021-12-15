@@ -288,7 +288,7 @@ namespace charleroi.server
 			return JsonSerializer.SerializeToDocument( dict );
 		}
 
-		public async static Task<object> Deserialize( JsonElement baseObj, string typename )
+		private async static Task<object> Deserialize( JsonElement baseObj, string typename )
 		{
 			if ( typename == "SItem" )
 				return await Deserialize<CItem>( baseObj );
@@ -300,6 +300,10 @@ namespace charleroi.server
 				return await Deserialize<CPlayer>( baseObj );
 
 			return null;
+		}
+		private static IList MakeListOfType( string typename )
+		{
+			return Library.Create<IList>( "ListOf" + typename );
 		}
 
 		public async static Task<T?> Deserialize<T>( JsonElement baseObj ) where T : new()
@@ -322,12 +326,34 @@ namespace charleroi.server
 				{
 					if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IDictionary<,> ) )
 					{
-						Log.Info( "skipped name: " + childName );
+						_ = new Exception( "IDictionary are not yet supported" );
 					}
 					else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IList<> ) ||
 							  childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( ICollection<> ) )
 					{
-						Log.Info( "skipped name: " + childName );
+
+						var firstFk = JsonSerializer.Deserialize<ForeignReference>( childData.EnumerateArray().FirstOrDefault() );
+						if ( firstFk == null )
+							continue;
+
+
+						var list = MakeListOfType( firstFk.TypeName );
+						if ( list == null )
+							continue;
+
+						foreach ( var i in childData.EnumerateArray() )
+						{
+							ForeignReference? fk = JsonSerializer.Deserialize<ForeignReference>( i );
+							if ( fk != null )
+							{
+								var req = await CRUDTools.GetInstance().Get( fk.TypeName, "" + fk.Id );
+								var childValue = await CRUDSerializer.Deserialize( req.Data, fk.TypeName );
+								if ( childValue != null )
+									list.Add( childValue );
+							}
+
+						}
+						childProp.SetValue( ret, list, null );
 					}
 					else
 					{
@@ -336,7 +362,7 @@ namespace charleroi.server
 						{
 							var req = await CRUDTools.GetInstance().Get( fk.TypeName, "" + fk.Id );
 							var childValue = await CRUDSerializer.Deserialize( req.Data, fk.TypeName );
-							if( childValue != null )
+							if ( childValue != null )
 								childProp.SetValue( ret, childValue, null );
 						}
 					}
