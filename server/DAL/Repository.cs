@@ -4,9 +4,8 @@ using System.Threading.Tasks;
 
 namespace charleroi.server.DAL
 {
-	public class Repository<S, C> : IRepository<S>
+	public class Repository<S> : IRepository<S>
 		where S : class, IStorable
-		where C : S, new()
 	{
 		public async Task<bool> Delete( S entity )
 		{
@@ -30,7 +29,7 @@ namespace charleroi.server.DAL
 				return default;
 			}
 
-			var resPlayer = await CRUDSerializer.Deserialize( res.Data, typeof(C).Name );
+			var resPlayer = await CRUDSerializer.Deserialize( res.Data, typeof(S).Name );
 			return (S)resPlayer;
 		}
 

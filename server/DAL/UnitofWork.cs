@@ -102,9 +102,9 @@ namespace charleroi.server.DAL
 			return true;
 		}
 
-		public IRepository<SPlayer> SPlayer => _SPlayer ?? new Repository<SPlayer, CPlayer>();
-		public IRepository<SItem> SItem => _SItem ?? new Repository<SItem, CItem>();
-		public IRepository<SJob> SJob => _SJob ?? new Repository<SJob, CJob>();
-		public IRepository<SCraft> SCraft => _SCraft ?? new Repository<SCraft, CCraft>();
+		public IRepository<SPlayer> SPlayer => _SPlayer ?? new Repository<SPlayer>();
+		public IRepository<SItem> SItem => _SItem ?? new Repository<SItem>();
+		public IRepository<SJob> SJob => _SJob ?? new Repository<SJob>();
+		public IRepository<SCraft> SCraft => _SCraft ?? new Repository<SCraft>();
 	}
 }
