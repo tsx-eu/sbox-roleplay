@@ -40,7 +40,7 @@ namespace charleroi.client.UI.MenuNav
 
 				var name = item.AddChild<Panel>( "name" );                  // <div class="name">
 				var labelName = name.AddChild<Label>();                 // <label>
-				labelName.Text = craft.Name;                                // Acide citrique 2
+				labelName.Text = craft.Item.Name;                                // Acide citrique 2
 
 				var description = item.AddChild<Panel>( "description" );    // <div class="description">
 				var labelDescription = description.AddChild<Label>();       // <label>

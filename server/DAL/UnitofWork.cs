@@ -35,7 +35,7 @@ namespace charleroi.server.DAL
 
 			ulong id = 1;
 
-			await SItem.Insert( new CItem { Id=id++, Name = "Bûche", ShortDescription = "Du bois", MaxCarry=16 });
+			
 
 			Log.Info( "Creating items complete!" );
 			return true;
@@ -79,11 +79,25 @@ namespace charleroi.server.DAL
 
 			ulong id = 1;
 
-			await SCraft.Insert( new CCraft { Id = id++, Name = "Planche", Description = "TBD" } );
-			await SCraft.Insert( new CCraft { Id = id++, Name = "Baton", Description = "TBD" } );
-			await SCraft.Insert( new CCraft { Id = id++, Name = "Chaise", Description = "TBD", Level = 1 } );
-			await SCraft.Insert( new CCraft { Id = id++, Name = "Table", Description = "TBD", Level = 1} );
-			await SCraft.Insert( new CCraft { Id = id++, Name = "Lit", Description = "TBD", Level = 2 } );
+			var Bois = new CItem { Id = id++, Name = "Bois " };
+			var Planche = new CItem { Id = id++, Name = "Planche" };
+			var Baton = new CItem { Id = id++, Name = "Baton" };
+			var Chaise = new CItem { Id = id++, Name = "Chaise" };
+			var Table = new CItem { Id = id++, Name = "Table" };
+			var Lit = new CItem { Id = id++, Name = "Lit" };
+
+			await SItem.Insert( Bois );
+			await SItem.Insert( Planche );
+			await SItem.Insert( Baton );
+			await SItem.Insert( Chaise );
+			await SItem.Insert( Table );
+			await SItem.Insert( Lit );
+
+			await SCraft.Insert( new CCraft { Id = id++, Item = Planche, Ingredients = { Bois } } );
+			await SCraft.Insert( new CCraft { Id = id++, Item = Baton, Ingredients = { Bois } } );
+			await SCraft.Insert( new CCraft { Id = id++, Item = Chaise, Ingredients = { Planche, Baton } } );
+			await SCraft.Insert( new CCraft { Id = id++, Item = Table, Ingredients = { Planche, Baton, Chaise } } );
+			await SCraft.Insert( new CCraft { Id = id++, Item = Lit, Ingredients = { Planche, Bois } } );
 
 			Log.Info( "Creating craft complete!" );
 			return true;
