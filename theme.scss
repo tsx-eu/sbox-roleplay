@@ -11,6 +11,14 @@ $hud-text-color-negative: black;
 
 
 .root {
+    .flex-start {
+        justify-content: flex-start;
+    }
+
+    .flex-end {
+        justify-content: flex-end;
+    }
+
     icon {
         color: $hud-text-color;
         font-family: MaterialIcons;
@@ -98,11 +106,6 @@ $hud-text-color-negative: black;
         backdrop-filter: blur(10px) saturate(80%);
         border: 2px solid black;
         border-radius: 10px;
-        width: 8.5%;
-        height: 8.5%;
-        aspect-ratio: 1;
-        justify-content: space-around;
-        align-items: center;
         margin: 3px;
 
 
