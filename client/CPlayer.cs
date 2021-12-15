@@ -8,7 +8,8 @@ namespace charleroi.client
 {
 	partial class CPlayer : Player, SPlayer
 	{
-		public ulong SteamID { get; set; }
+		public ulong SteamID { get { return Id; } set { Id = value; } }
+		public ulong Id { get; set; }
 		[Net, Local]	public float Thirst { get; set; }
 		[Net, Local]	public float Hunger { get; set; }
 		[Net, Local]	public string Job { get; set; }

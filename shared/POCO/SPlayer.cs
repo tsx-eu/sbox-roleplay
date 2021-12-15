@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace charleroi
 {
 	[Library]
-	public interface SPlayer
+	public interface SPlayer : IStorable
 	{
 		public ulong SteamID { get; set; }
 		public float Health { get; set; }
