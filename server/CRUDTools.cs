@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -249,15 +250,21 @@ namespace charleroi.server
 
 			if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IList<> ) )
 			{
-
+				var list = new List<ForeignReference>();
+				foreach( var item in (IEnumerable)childValue ) {
+					var hasKey = item.GetType().GetProperty( "Id" );
+					if ( hasKey != null )
+						list.Add(new ForeignReference( "" + hasKey.GetValue( item, null ), item.GetType() ) );
+				}
+				dict.Add( childName, list );
 			}
 			else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IDictionary<,> ) )
 			{
-
+				new Exception( "IDictionary are not yet supported" );
 			}
 			else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( ICollection<> ) )
 			{
-
+				new Exception( "ICollection are not yet supported" );
 			}
 			else
 			{
