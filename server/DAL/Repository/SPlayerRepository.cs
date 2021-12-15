@@ -70,7 +70,7 @@ namespace charleroi.server.DAL.Repository
 			if ( entity.SteamID == 0 )
 				throw new Exception( "SteamID is unknown" );
 
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SPlayer>( entity );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SPlayer>( entity );
 			var res = await CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), toast );
 
 			if ( res.Error != "" ) {
@@ -86,7 +86,7 @@ namespace charleroi.server.DAL.Repository
 			if ( entity.SteamID == 0 )
 				throw new Exception( "SteamID is unknown" );
 
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SPlayer>( entity );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SPlayer>( entity );
 
 			var res = await CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), toast );
 

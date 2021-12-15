@@ -61,7 +61,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Insert( SCraft entity )
 		{
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SCraft>( entity );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SCraft>( entity );
 			var res = await CRUDTools.GetInstance().Set( "craft", entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {
@@ -74,7 +74,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Update( SCraft entity )
 		{
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SCraft>( entity );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SCraft>( entity );
 			var res = await CRUDTools.GetInstance().Set( "craft", entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {

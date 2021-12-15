@@ -61,7 +61,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Insert( SItem entity )
 		{
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SItem>( entity );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SItem>( entity );
 			var res = await CRUDTools.GetInstance().Set( "item", entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {
@@ -74,7 +74,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Update( SItem entity )
 		{
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SItem>( entity );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SItem>( entity );
 			var res = await CRUDTools.GetInstance().Set( "item", entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {

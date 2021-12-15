@@ -235,25 +235,23 @@ namespace charleroi.server
 	{
 		public static JsonDocument SerializeToDocument<T>(T baseObj )
 		{
-
-			var props = baseObj.GetType().GetType()
-				 .GetProperties( BindingFlags.Instance | BindingFlags.Public );
+			var props = typeof( T ).GetProperties( BindingFlags.Instance | BindingFlags.Public );
 
 			Dictionary<string, object> dict = new Dictionary<string, object>();
 
-			// TODO: Recursive function, handle list
-			foreach ( PropertyInfo info in props ){
-				var propId = info.GetType().GetProperty( "Id" );
-				if ( propId == null )
+			foreach ( var childProp in props ) {
+				var childName = childProp.Name;
+				var childType = childProp.PropertyType;
+				var childValue = childProp.GetValue( baseObj, null );
+
+				try
 				{
-					dict.Add( info.Name, info.GetValue( baseObj, null ) );
-				}else
+					dict.Add( childName, childValue );
+					Log.Info( "prop: " + childName + " value: " + childValue + " type: " + childType);
+				}
+				catch ( Exception ex )
 				{
-					dict.Add( info.Name, new ForeignReference
-					{
-						Id = propId.ToString(),
-						Type = info.GetType()
-					} );
+					Log.Error( "prop: " + childName + " value: " + childValue + " type: " + childType );
 				}
 			}
 

@@ -61,7 +61,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Insert( SJob entity )
 		{
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SJob>( entity );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SJob>( entity );
 			var res = await CRUDTools.GetInstance().Set( "job", entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {
@@ -74,7 +74,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Update( SJob entity )
 		{
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SJob>( entity );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SJob>( entity );
 			var res = await CRUDTools.GetInstance().Set( "job", entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {
