@@ -43,11 +43,10 @@ namespace charleroi.client.UI.MenuNav
 				else
 					line.AddClass( "even" );
 
-
 				var output = line.AddChild<Panel>( "flex-start" );
 				for ( int c = 0; c < Rand.Int( 1, 3 ); c++ )
 					output.AddChild<CInventoryItem>();
-				output.AddChild<Label>().Text = craft.Name;
+				output.AddChild<Label>().Text = craft.Item.Name;
 
 
 				var input = line.AddChild<Panel>( "flex-end" );

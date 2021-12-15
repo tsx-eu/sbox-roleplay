@@ -1,13 +1,20 @@
 ﻿using Sandbox;
-using System;
+using System.Collections.Generic;
 
 namespace charleroi
 {
+	[Library]
 	public interface SJob
 	{
 		public ulong Id { get; set; }
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public string ImageURL { get; set; }
+	}
+
+
+	[Library]
+	public class ListOfSJob : List<SJob>
+	{
 	}
 }

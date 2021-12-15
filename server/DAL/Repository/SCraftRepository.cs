@@ -16,7 +16,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Delete( SCraft entity )
 		{
-			var res = await CRUDTools.GetInstance().Del( "craft", entity.Id.ToString() );
+			var res = await CRUDTools.GetInstance().Del( typeof( SCraft ).Name, entity.Id.ToString() );
 			if(res.Error != "" )
 			{
 				Log.Error( res.Error );
@@ -27,7 +27,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<SCraft> Get( object id )
 		{
-			var req = await CRUDTools.GetInstance().Get( "craft", id.ToString() );
+			var req = await CRUDTools.GetInstance().Get( typeof( SCraft ).Name, id.ToString() );
 
 			var res = req;
 			if ( res.Error != "" ) {
@@ -35,24 +35,24 @@ namespace charleroi.server.DAL.Repository
 				return null;
 			}
 
-			var resPlayer = JsonSerializer.Deserialize<CCraft>( res.Data.GetRawText() );
+			var resPlayer = await CRUDSerializer.Deserialize<CCraft>( res.Data );
 			return resPlayer;
 		}
 
 		public async Task<IList<SCraft>> GetAll()
 		{
-			var res = await CRUDTools.GetInstance().GetAll( "craft" );
+			var res = await CRUDTools.GetInstance().GetAll( typeof(SCraft).Name );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );
 				return null;
 			}
 
-			var resMap = JsonSerializer.Deserialize<CRUDGetAllData>( res.Data.GetRawText() );
+			var resMap = await CRUDSerializer.Deserialize<CRUDGetAllData>( res.Data );
 
 			var SPlyList = new List<SCraft>();
 			foreach (var elem in resMap.Data ) {
-				var SPly = JsonSerializer.Deserialize<CCraft>( elem.Value.GetRawText() );
+				var SPly = await CRUDSerializer.Deserialize<CCraft>( elem.Value );
 				SPlyList.Add( SPly );
 			}
 
@@ -61,8 +61,8 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Insert( SCraft entity )
 		{
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SCraft>( entity );
-			var res = await CRUDTools.GetInstance().Set( "craft", entity.Id.ToString(), toast );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SCraft>( entity );
+			var res = await CRUDTools.GetInstance().Set( typeof( SCraft ).Name, entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );
@@ -74,8 +74,8 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Update( SCraft entity )
 		{
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SCraft>( entity );
-			var res = await CRUDTools.GetInstance().Set( "craft", entity.Id.ToString(), toast );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SCraft>( entity );
+			var res = await CRUDTools.GetInstance().Set( typeof( SCraft ).Name, entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );

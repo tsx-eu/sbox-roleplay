@@ -16,7 +16,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Delete( SJob entity )
 		{
-			var res = await CRUDTools.GetInstance().Del( "job", entity.Id.ToString() );
+			var res = await CRUDTools.GetInstance().Del( typeof( SJob ).Name, entity.Id.ToString() );
 			if(res.Error != "" )
 			{
 				Log.Error( res.Error );
@@ -27,7 +27,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<SJob> Get( object id )
 		{
-			var req = await CRUDTools.GetInstance().Get( "job", id.ToString() );
+			var req = await CRUDTools.GetInstance().Get( typeof( SJob ).Name, id.ToString() );
 
 			var res = req;
 			if ( res.Error != "" ) {
@@ -35,24 +35,24 @@ namespace charleroi.server.DAL.Repository
 				return null;
 			}
 
-			var resPlayer = JsonSerializer.Deserialize<CJob>( res.Data.GetRawText() );
+			var resPlayer = await CRUDSerializer.Deserialize<CJob>( res.Data );
 			return resPlayer;
 		}
 
 		public async Task<IList<SJob>> GetAll()
 		{
-			var res = await CRUDTools.GetInstance().GetAll( "job" );
+			var res = await CRUDTools.GetInstance().GetAll( typeof( SJob ).Name );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );
 				return null;
 			}
 
-			var resMap = JsonSerializer.Deserialize<CRUDGetAllData>( res.Data.GetRawText() );
+			var resMap = await CRUDSerializer.Deserialize<CRUDGetAllData>( res.Data );
 
 			var SPlyList = new List<SJob>();
 			foreach (var elem in resMap.Data ) {
-				var SPly = JsonSerializer.Deserialize<CJob>( elem.Value.GetRawText() );
+				var SPly = await CRUDSerializer.Deserialize<CJob>( elem.Value );
 				SPlyList.Add( SPly );
 			}
 
@@ -61,8 +61,8 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Insert( SJob entity )
 		{
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SJob>( entity );
-			var res = await CRUDTools.GetInstance().Set( "job", entity.Id.ToString(), toast );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SJob>( entity );
+			var res = await CRUDTools.GetInstance().Set( typeof( SJob ).Name, entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );
@@ -74,8 +74,8 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Update( SJob entity )
 		{
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SJob>( entity );
-			var res = await CRUDTools.GetInstance().Set( "job", entity.Id.ToString(), toast );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SJob>( entity );
+			var res = await CRUDTools.GetInstance().Set( typeof( SJob ).Name, entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );

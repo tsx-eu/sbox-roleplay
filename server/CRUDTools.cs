@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using charleroi.client;
 using Sandbox;
 
 namespace charleroi.server
@@ -212,4 +216,166 @@ namespace charleroi.server
 			}
 		}
 	}
+
+	class ForeignReference
+	{
+		[JsonPropertyName( "__foreign_id" )]
+		public string Id { get; set; }
+
+		[JsonPropertyName( "__foreign_type" )]
+		public string TypeName { get; set; }
+	
+		[JsonIgnore]
+		public Type Type
+		{
+			set
+			{
+				TypeName = value.Name;
+			}
+		}
+	}
+
+	class CRUDSerializer
+	{
+		public static JsonDocument SerializeToDocument<T>( T baseObj )
+		{
+			var props = typeof( T ).GetProperties( BindingFlags.Instance | BindingFlags.Public );
+
+			Dictionary<string, object> dict = new Dictionary<string, object>();
+
+			foreach ( var childProp in props )
+			{
+				var childName = childProp.Name;
+				var childType = childProp.PropertyType;
+				var childValue = childProp.GetValue( baseObj, null );
+
+				if ( (childType.IsClass || childType.IsInterface || childType.IsGenericType) && childType != typeof( string ) )
+				{
+
+					if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IDictionary<,> ) )
+					{
+						_ = new Exception( "IDictionary are not yet supported" );
+					}
+					else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IList<> ) ||
+							  childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( ICollection<> ) )
+					{
+						var list = new List<ForeignReference>();
+						var genericType = childType.GetGenericArguments().FirstOrDefault();
+
+						foreach ( var item in (IEnumerable)childValue )
+						{
+							var hasKey = item.GetType().GetProperty( "Id" );
+							if ( hasKey != null && genericType != null )
+							{
+								list.Add( new ForeignReference { Id = "" + hasKey.GetValue( item, null ), Type = genericType } );
+							}
+						}
+						dict.Add( childName, list );
+					}
+					else
+					{
+						var hasKey = childValue.GetType().GetProperty( "Id" );
+						if ( hasKey != null )
+							dict.Add( childName, new ForeignReference { Id = "" + hasKey.GetValue( childValue, null ), Type = childType } );
+					}
+				}
+				else
+				{
+					dict.Add( childName, childValue );
+				}
+			}
+
+			return JsonSerializer.SerializeToDocument( dict );
+		}
+
+		private async static Task<object> Deserialize( JsonElement baseObj, string typename )
+		{
+			if ( typename == "SItem" )
+				return await Deserialize<CItem>( baseObj );
+			if ( typename == "SJob" )
+				return await Deserialize<CJob>( baseObj );
+			if ( typename == "SCraft" )
+				return await Deserialize<CCraft>( baseObj );
+			if ( typename == "SPlayer" )
+				return await Deserialize<CPlayer>( baseObj );
+
+			return null;
+		}
+		private static IList MakeListOfType( string typename )
+		{
+			return Library.Create<IList>( "ListOf" + typename );
+		}
+
+		public async static Task<T?> Deserialize<T>( JsonElement baseObj ) where T : new()
+		{
+			T ret = new T();
+
+			var props = typeof( T ).GetProperties( BindingFlags.Instance | BindingFlags.Public );
+
+			foreach ( var childProp in props )
+			{
+				var childName = childProp.Name;
+				var childType = childProp.PropertyType;
+
+				JsonElement childData;
+				var hasValue = baseObj.TryGetProperty( childName, out childData );
+				if ( !hasValue )
+					continue;
+
+				if ( (childType.IsClass || childType.IsInterface || childType.IsGenericType) && childType != typeof( string ) )
+				{
+					if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IDictionary<,> ) )
+					{
+						_ = new Exception( "IDictionary are not yet supported" );
+					}
+					else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IList<> ) ||
+							  childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( ICollection<> ) )
+					{
+
+						var firstFk = JsonSerializer.Deserialize<ForeignReference>( childData.EnumerateArray().FirstOrDefault() );
+						if ( firstFk == null )
+							continue;
+
+
+						var list = MakeListOfType( firstFk.TypeName );
+						if ( list == null )
+							continue;
+
+						foreach ( var i in childData.EnumerateArray() )
+						{
+							ForeignReference? fk = JsonSerializer.Deserialize<ForeignReference>( i );
+							if ( fk != null )
+							{
+								var req = await CRUDTools.GetInstance().Get( fk.TypeName, "" + fk.Id );
+								var childValue = await CRUDSerializer.Deserialize( req.Data, fk.TypeName );
+								if ( childValue != null )
+									list.Add( childValue );
+							}
+
+						}
+						childProp.SetValue( ret, list, null );
+					}
+					else
+					{
+						ForeignReference? fk = JsonSerializer.Deserialize<ForeignReference>( childData );
+						if ( fk != null )
+						{
+							var req = await CRUDTools.GetInstance().Get( fk.TypeName, "" + fk.Id );
+							var childValue = await CRUDSerializer.Deserialize( req.Data, fk.TypeName );
+							if ( childValue != null )
+								childProp.SetValue( ret, childValue, null );
+						}
+					}
+				}
+				else
+				{
+					var childValue = childData.Deserialize( childType );
+					childProp.SetValue( ret, childValue, null );
+				}
+			}
+
+			return ret;
+		}
+	}
+
 }

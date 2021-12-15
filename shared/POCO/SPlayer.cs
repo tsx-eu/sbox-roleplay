@@ -1,8 +1,9 @@
 ﻿using Sandbox;
-using System;
+using System.Collections.Generic;
 
 namespace charleroi
 {
+	[Library]
 	public interface SPlayer
 	{
 		public ulong SteamID { get; set; }
@@ -12,5 +13,11 @@ namespace charleroi
 		public float CurrentXP { get; set; }
 		public string Job { get; set; }
 		public string Clothes { get; set; }
+	}
+
+
+	[Library]
+	public class ListOfSPlayer : List<SPlayer>
+	{
 	}
 }

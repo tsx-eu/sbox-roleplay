@@ -20,7 +20,7 @@ namespace charleroi.server.DAL.Repository
 			if( entity.SteamID == 0 ) 
 				throw new Exception( "SteamID is unknown" );
 
-			var res = await CRUDTools.GetInstance().Del( "player", entity.SteamID.ToString() );
+			var res = await CRUDTools.GetInstance().Del( typeof( SPlayer ).Name, entity.SteamID.ToString() );
 
 			if(res.Error != "" ) {
 				Log.Error( res.Error );
@@ -35,30 +35,30 @@ namespace charleroi.server.DAL.Repository
 			if ( (ulong)id == 0 )
 				throw new Exception( "SteamID is unknown" );
 
-			var res = await CRUDTools.GetInstance().Get( "player", id.ToString() );
+			var res = await CRUDTools.GetInstance().Get( typeof( SPlayer ).Name, id.ToString() );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );
 				return null;
 			}
 
-			var resPlayer = JsonSerializer.Deserialize<CPlayer>( res.Data.GetRawText() );
+			var resPlayer = await CRUDSerializer.Deserialize<CPlayer>( res.Data );
 			return resPlayer;
 		}
 
 		public async Task<IList<SPlayer>> GetAll()
 		{
-			var res = await CRUDTools.GetInstance().GetAll( "player" );
+			var res = await CRUDTools.GetInstance().GetAll( typeof( SPlayer ).Name );
 			
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );
 				return null;
 			}
 
-			var resMap = JsonSerializer.Deserialize<CRUDGetAllData>( res.Data.GetRawText() );
+			var resMap = await CRUDSerializer.Deserialize<CRUDGetAllData>( res.Data );
 			var SPlyList = new List<SPlayer>();
 			foreach (var elem in resMap.Data ) {
-				var SPly = JsonSerializer.Deserialize<CPlayer>( elem.Value.GetRawText() );
+				var SPly = await CRUDSerializer.Deserialize<CPlayer>( elem.Value );
 				SPlyList.Add( SPly );
 			}
 
@@ -70,8 +70,8 @@ namespace charleroi.server.DAL.Repository
 			if ( entity.SteamID == 0 )
 				throw new Exception( "SteamID is unknown" );
 
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SPlayer>( entity );
-			var res = await CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), toast );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SPlayer>( entity );
+			var res = await CRUDTools.GetInstance().Set( typeof( SPlayer ).Name, entity.SteamID.ToString(), toast );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );
@@ -86,7 +86,7 @@ namespace charleroi.server.DAL.Repository
 			if ( entity.SteamID == 0 )
 				throw new Exception( "SteamID is unknown" );
 
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SPlayer>( entity );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SPlayer>( entity );
 
 			var res = await CRUDTools.GetInstance().Set( "player", entity.SteamID.ToString(), toast );
 

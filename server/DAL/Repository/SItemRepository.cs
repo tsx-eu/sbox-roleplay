@@ -16,7 +16,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Delete( SItem entity )
 		{
-			var res = await CRUDTools.GetInstance().Del( "item", entity.Id.ToString() );
+			var res = await CRUDTools.GetInstance().Del( typeof( SItem ).Name, entity.Id.ToString() );
 			if(res.Error != "" )
 			{
 				Log.Error( res.Error );
@@ -27,7 +27,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<SItem> Get( object id )
 		{
-			var req = await CRUDTools.GetInstance().Get( "item", id.ToString() );
+			var req = await CRUDTools.GetInstance().Get( typeof( SItem ).Name, id.ToString() );
 
 			var res = req;
 			if ( res.Error != "" ) {
@@ -35,24 +35,24 @@ namespace charleroi.server.DAL.Repository
 				return null;
 			}
 
-			var resPlayer = JsonSerializer.Deserialize<CItem>( res.Data.GetRawText() );
+			var resPlayer = await CRUDSerializer.Deserialize<CItem>( res.Data );
 			return resPlayer;
 		}
 
 		public async Task<IList<SItem>> GetAll()
 		{
-			var res = await CRUDTools.GetInstance().GetAll( "item" );
+			var res = await CRUDTools.GetInstance().GetAll( typeof( SItem ).Name );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );
 				return null;
 			}
 
-			var resMap = JsonSerializer.Deserialize<CRUDGetAllData>( res.Data.GetRawText() );
+			var resMap = await CRUDSerializer.Deserialize<CRUDGetAllData>( res.Data );
 
 			var SPlyList = new List<SItem>();
 			foreach (var elem in resMap.Data ) {
-				var SPly = JsonSerializer.Deserialize<CItem>( elem.Value.GetRawText() );
+				var SPly = await CRUDSerializer.Deserialize<CItem>( elem.Value );
 				SPlyList.Add( SPly );
 			}
 
@@ -61,8 +61,8 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Insert( SItem entity )
 		{
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SItem>( entity );
-			var res = await CRUDTools.GetInstance().Set( "item", entity.Id.ToString(), toast );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SItem>( entity );
+			var res = await CRUDTools.GetInstance().Set( typeof( SItem ).Name, entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );
@@ -74,8 +74,8 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Update( SItem entity )
 		{
-			JsonDocument toast = JsonSerializer.SerializeToDocument<SItem>( entity );
-			var res = await CRUDTools.GetInstance().Set( "item", entity.Id.ToString(), toast );
+			JsonDocument toast = CRUDSerializer.SerializeToDocument<SItem>( entity );
+			var res = await CRUDTools.GetInstance().Set( typeof( SItem ).Name, entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );
