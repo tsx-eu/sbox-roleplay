@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using charleroi.client;
-using charleroi.server.DAL.Repository;
 using Sandbox;
 
 namespace charleroi.server.DAL

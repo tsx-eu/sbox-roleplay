@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace charleroi.server.DAL.Repository
+namespace charleroi.server.DAL
 {
 	public interface IRepository<T> where T : class
 	{

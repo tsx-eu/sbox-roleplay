@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using charleroi.server.DAL.Repository;
 
 namespace charleroi.server.DAL
 {
