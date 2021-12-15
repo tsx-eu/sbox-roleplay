@@ -288,10 +288,6 @@ namespace charleroi.server
 
 			return JsonSerializer.SerializeToDocument( dict );
 		}
-		private static IList MakeListOfType( string typename )
-		{
-			return Library.Create<IList>( "ListOf" + typename );
-		}
 
 		public async static Task<object> Deserialize( JsonElement baseObj, string typename )
 		{
@@ -325,7 +321,7 @@ namespace charleroi.server
 							continue;
 
 
-						var list = MakeListOfType( firstFk.TypeName );
+						var list = Library.Create<IList>( "ListOf" + firstFk.TypeName );
 						if ( list == null )
 							continue;
 

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Sandbox;
 
 namespace charleroi.server.DAL
 {
@@ -30,12 +32,23 @@ namespace charleroi.server.DAL
 			}
 
 			var resPlayer = await CRUDSerializer.Deserialize( res.Data, typeof(S).Name );
-			return (S)resPlayer;
+			return resPlayer as S;
 		}
 
 		public async Task<IList<S>> GetAll()
 		{
-			throw new System.Exception();
+			var res = await CRUDTools.GetInstance().GetAll( typeof( S ).Name );
+			var resMap = JsonSerializer.Deserialize<CRUDGetAllData>( res.Data );
+
+			var SPlyList = Library.Create<IList<S>>( "ListOf" + typeof( S ).Name );
+
+			foreach ( var elem in resMap.Data )
+			{
+				var resPlayer = await CRUDSerializer.Deserialize( elem.Value, typeof( S ).Name );
+				SPlyList.Add( resPlayer as S);
+			}
+
+			return SPlyList;
 		}
 
 		public async Task<bool> Insert( S entity )
