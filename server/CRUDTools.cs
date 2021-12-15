@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using charleroi.client;
 using Sandbox;
 
 namespace charleroi.server
@@ -287,7 +288,21 @@ namespace charleroi.server
 			return JsonSerializer.SerializeToDocument( dict );
 		}
 
-		public static T? Deserialize<T>( JsonElement baseObj ) where T : new()
+		public async static Task<object> Deserialize( JsonElement baseObj, string typename )
+		{
+			if ( typename == "SItem" )
+				return await Deserialize<CItem>( baseObj );
+			if ( typename == "SJob" )
+				return await Deserialize<CJob>( baseObj );
+			if ( typename == "SCraft" )
+				return await Deserialize<CCraft>( baseObj );
+			if ( typename == "SPlayer" )
+				return await Deserialize<CPlayer>( baseObj );
+
+			return null;
+		}
+
+		public async static Task<T?> Deserialize<T>( JsonElement baseObj ) where T : new()
 		{
 			T ret = new T();
 
@@ -316,12 +331,11 @@ namespace charleroi.server
 					}
 					else
 					{
-						Log.Info( "working on name: " + childName + " data: " + childData.GetRawText() );
 						ForeignReference? fk = JsonSerializer.Deserialize<ForeignReference>( childData );
 						if ( fk != null )
 						{
-							Log.Info( fk.Id + " --- " + fk.TypeName);
-							var childValue = CRUDTools.GetInstance().Get( fk.TypeName, fk.Id ).Result;
+							var req = await CRUDTools.GetInstance().Get( fk.TypeName, "" + fk.Id );
+							var childValue = await CRUDSerializer.Deserialize( req.Data, fk.TypeName );
 							if( childValue != null )
 								childProp.SetValue( ret, childValue, null );
 						}

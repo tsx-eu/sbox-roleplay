@@ -32,7 +32,7 @@ namespace charleroi.server
 		{
 			var uow = new UnitofWork();
 			CCraft c = uow.SCraft.Get( 10 ).Result as CCraft;
-			Log.Info( c );
+			Log.Info( c.Item.Name );
 		}
 
 		[ServerCmd( "rp_delme" )]

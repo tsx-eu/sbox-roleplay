@@ -35,7 +35,7 @@ namespace charleroi.server.DAL.Repository
 				return null;
 			}
 
-			var resPlayer = CRUDSerializer.Deserialize<CCraft>( res.Data );
+			var resPlayer = await CRUDSerializer.Deserialize<CCraft>( res.Data );
 			return resPlayer;
 		}
 
@@ -48,11 +48,11 @@ namespace charleroi.server.DAL.Repository
 				return null;
 			}
 
-			var resMap = CRUDSerializer.Deserialize<CRUDGetAllData>( res.Data );
+			var resMap = await CRUDSerializer.Deserialize<CRUDGetAllData>( res.Data );
 
 			var SPlyList = new List<SCraft>();
 			foreach (var elem in resMap.Data ) {
-				var SPly = CRUDSerializer.Deserialize<CCraft>( elem.Value );
+				var SPly = await CRUDSerializer.Deserialize<CCraft>( elem.Value );
 				SPlyList.Add( SPly );
 			}
 
