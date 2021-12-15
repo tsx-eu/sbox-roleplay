@@ -241,42 +241,6 @@ namespace charleroi.server
 	class CRUDSerializer
 	{
 
-		private static void SerializeReference(object baseObj, PropertyInfo childProp, ref Dictionary<string, object> dict)
-		{
-
-			var childName = childProp.Name;
-			var childType = childProp.PropertyType;
-			var childValue = childProp.GetValue( baseObj, null );
-
-			if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IList<> ) )
-			{
-				var list = new List<ForeignReference>();
-				var genericType = childType.GetGenericArguments().FirstOrDefault();
-
-				foreach ( var item in (IEnumerable)childValue ) {
-					var hasKey = item.GetType().GetProperty( "Id" );
-					if ( hasKey != null && genericType != null )
-					{
-						list.Add( new ForeignReference( "" + hasKey.GetValue( item, null ), genericType ) );
-					}
-				}
-				dict.Add( childName, list );
-			}
-			else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IDictionary<,> ) )
-			{
-				new Exception( "IDictionary are not yet supported" );
-			}
-			else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( ICollection<> ) )
-			{
-				new Exception( "ICollection are not yet supported" );
-			}
-			else
-			{
-				var hasKey = childValue.GetType().GetProperty( "Id" );
-				if ( hasKey != null )
-					dict.Add( childName, new ForeignReference( "" + hasKey.GetValue( childValue, null ), childType ) );
-			}
-		}
 
 		public static JsonDocument SerializeToDocument<T>(T baseObj )
 		{
@@ -291,7 +255,33 @@ namespace charleroi.server
 
 				if ( (childType.IsClass || childType.IsInterface || childType.IsGenericType) && childType != typeof( string ) )
 				{
-					SerializeReference( baseObj, childProp, ref dict );
+					
+					if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IDictionary<,> ) )
+					{
+						_ = new Exception( "IDictionary are not yet supported" );
+					}
+					else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IList<> ) ||
+							  childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( ICollection<> ) )
+					{
+						var list = new List<ForeignReference>();
+						var genericType = childType.GetGenericArguments().FirstOrDefault();
+
+						foreach ( var item in (IEnumerable)childValue )
+						{
+							var hasKey = item.GetType().GetProperty( "Id" );
+							if ( hasKey != null && genericType != null )
+							{
+								list.Add( new ForeignReference( "" + hasKey.GetValue( item, null ), genericType ) );
+							}
+						}
+						dict.Add( childName, list );
+					}
+					else
+					{
+						var hasKey = childValue.GetType().GetProperty( "Id" );
+						if ( hasKey != null )
+							dict.Add( childName, new ForeignReference( "" + hasKey.GetValue( childValue, null ), childType ) );
+					}
 				}
 				else
 				{
