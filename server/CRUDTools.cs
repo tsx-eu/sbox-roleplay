@@ -222,19 +222,15 @@ namespace charleroi.server
 		public string Id { get; set; }
 
 		[JsonPropertyName( "__foreign_type" )]
-		public string TypeName { get
-			{
-				return Type.Name;
-			}
-		}
-
+		public string TypeName { get; set; }
+	
 		[JsonIgnore]
-		public Type Type { get; set; }
-
-		public ForeignReference(string aKey, Type aType)
+		public Type Type
 		{
-			Id = aKey;
-			Type = aType;
+			set
+			{
+				TypeName = value.Name;
+			}
 		}
 	}
 
@@ -270,7 +266,7 @@ namespace charleroi.server
 							var hasKey = item.GetType().GetProperty( "Id" );
 							if ( hasKey != null && genericType != null )
 							{
-								list.Add( new ForeignReference( "" + hasKey.GetValue( item, null ), genericType ) );
+								list.Add( new ForeignReference { Id = "" + hasKey.GetValue( item, null ), Type = genericType } );
 							}
 						}
 						dict.Add( childName, list );
@@ -279,7 +275,7 @@ namespace charleroi.server
 					{
 						var hasKey = childValue.GetType().GetProperty( "Id" );
 						if ( hasKey != null )
-							dict.Add( childName, new ForeignReference( "" + hasKey.GetValue( childValue, null ), childType ) );
+							dict.Add( childName, new ForeignReference { Id = "" + hasKey.GetValue( childValue, null ), Type = childType } );
 					}
 				}
 				else
@@ -309,13 +305,32 @@ namespace charleroi.server
 
 				if ( (childType.IsClass || childType.IsInterface || childType.IsGenericType) && childType != typeof( string ) )
 				{
-
+					if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IDictionary<,> ) )
+					{
+						Log.Info( "skipped name: " + childName );
+					}
+					else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IList<> ) ||
+							  childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( ICollection<> ) )
+					{
+						Log.Info( "skipped name: " + childName );
+					}
+					else
+					{
+						Log.Info( "working on name: " + childName + " data: " + childData.GetRawText() );
+						ForeignReference? fk = JsonSerializer.Deserialize<ForeignReference>( childData );
+						if ( fk != null )
+						{
+							Log.Info( fk.Id + " --- " + fk.TypeName);
+							var childValue = CRUDTools.GetInstance().Get( fk.TypeName, fk.Id ).Result;
+							if( childValue != null )
+								childProp.SetValue( ret, childValue, null );
+						}
+					}
 				}
 				else
 				{
-					var value = childData.Deserialize( childType );
-					Log.Info( "name: " + childName + " type: " + childType + " value: " + value );
-					childProp.SetValue( ret, value, null );
+					var childValue = childData.Deserialize( childType );
+					childProp.SetValue( ret, childValue, null );
 				}
 			}
 

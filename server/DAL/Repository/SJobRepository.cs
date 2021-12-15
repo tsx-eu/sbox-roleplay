@@ -16,7 +16,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<bool> Delete( SJob entity )
 		{
-			var res = await CRUDTools.GetInstance().Del( "job", entity.Id.ToString() );
+			var res = await CRUDTools.GetInstance().Del( typeof( SJob ).Name, entity.Id.ToString() );
 			if(res.Error != "" )
 			{
 				Log.Error( res.Error );
@@ -27,7 +27,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<SJob> Get( object id )
 		{
-			var req = await CRUDTools.GetInstance().Get( "job", id.ToString() );
+			var req = await CRUDTools.GetInstance().Get( typeof( SJob ).Name, id.ToString() );
 
 			var res = req;
 			if ( res.Error != "" ) {
@@ -41,7 +41,7 @@ namespace charleroi.server.DAL.Repository
 
 		public async Task<IList<SJob>> GetAll()
 		{
-			var res = await CRUDTools.GetInstance().GetAll( "job" );
+			var res = await CRUDTools.GetInstance().GetAll( typeof( SJob ).Name );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );
@@ -62,7 +62,7 @@ namespace charleroi.server.DAL.Repository
 		public async Task<bool> Insert( SJob entity )
 		{
 			JsonDocument toast = CRUDSerializer.SerializeToDocument<SJob>( entity );
-			var res = await CRUDTools.GetInstance().Set( "job", entity.Id.ToString(), toast );
+			var res = await CRUDTools.GetInstance().Set( typeof( SJob ).Name, entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );
@@ -75,7 +75,7 @@ namespace charleroi.server.DAL.Repository
 		public async Task<bool> Update( SJob entity )
 		{
 			JsonDocument toast = CRUDSerializer.SerializeToDocument<SJob>( entity );
-			var res = await CRUDTools.GetInstance().Set( "job", entity.Id.ToString(), toast );
+			var res = await CRUDTools.GetInstance().Set( typeof( SJob ).Name, entity.Id.ToString(), toast );
 
 			if ( res.Error != "" ) {
 				Log.Error( res.Error );
