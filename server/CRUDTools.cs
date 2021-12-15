@@ -229,6 +229,12 @@ namespace charleroi.server
 
 		[JsonIgnore]
 		public Type Type { get; set; }
+
+		public ForeignReference(string aKey, Type aType)
+		{
+			Id = aKey;
+			Type = aType;
+		}
 	}
 
 	class CRUDSerializer
@@ -252,8 +258,12 @@ namespace charleroi.server
 						Log.Error( "prop: " + childName + " type2: " + childType );
 					else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( ICollection<> ) )
 						Log.Error( "prop: " + childName + " type3: " + childType );
-					else
-						Log.Info( "prop: " + childName + " type: " + childType );
+					else {
+
+						var hasKey = childValue.GetType().GetProperty( "Id" );
+						if( hasKey != null )
+							dict.Add(childName, new ForeignReference( "" + hasKey.GetValue( childValue, null ), childType));
+					}
 					continue;
 				}
 
