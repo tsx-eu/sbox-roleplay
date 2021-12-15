@@ -27,6 +27,13 @@ namespace charleroi.server
 			var uow = new UnitofWork();
 			_ = uow.Seed();
 		}
+		[ServerCmd( "rp_loaddb" )]
+		public static void Cmd_LoadDB()
+		{
+			var uow = new UnitofWork();
+			CCraft c = uow.SCraft.Get( 10 ).Result as CCraft;
+			Log.Info( c );
+		}
 
 		[ServerCmd( "rp_delme" )]
 		public static void Cmd_DelMe()

@@ -291,11 +291,35 @@ namespace charleroi.server
 			return JsonSerializer.SerializeToDocument( dict );
 		}
 
-		public static T? Deserialize<T>( JsonElement baseObj )
+		public static T? Deserialize<T>( JsonElement baseObj ) where T : new()
 		{
+			T ret = new T();
+
 			var props = typeof( T ).GetProperties( BindingFlags.Instance | BindingFlags.Public );
 
-			return default(T);
+			foreach ( var childProp in props )
+			{
+				var childName = childProp.Name;
+				var childType = childProp.PropertyType;
+
+				JsonElement childData;
+				var hasValue = baseObj.TryGetProperty( childName, out childData );
+				if ( !hasValue )
+					continue;
+
+				if ( (childType.IsClass || childType.IsInterface || childType.IsGenericType) && childType != typeof( string ) )
+				{
+
+				}
+				else
+				{
+					var value = childData.Deserialize( childType );
+					Log.Info( "name: " + childName + " type: " + childType + " value: " + value );
+					childProp.SetValue( ret, value, null );
+				}
+			}
+
+			return ret;
 		}
 	}
 
