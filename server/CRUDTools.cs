@@ -239,6 +239,34 @@ namespace charleroi.server
 
 	class CRUDSerializer
 	{
+
+		private static void SerializeReference(object baseObj, PropertyInfo childProp, ref Dictionary<string, object> dict)
+		{
+
+			var childName = childProp.Name;
+			var childType = childProp.PropertyType;
+			var childValue = childProp.GetValue( baseObj, null );
+
+			if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IList<> ) )
+			{
+
+			}
+			else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IDictionary<,> ) )
+			{
+
+			}
+			else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( ICollection<> ) )
+			{
+
+			}
+			else
+			{
+				var hasKey = childValue.GetType().GetProperty( "Id" );
+				if ( hasKey != null )
+					dict.Add( childName, new ForeignReference( "" + hasKey.GetValue( childValue, null ), childType ) );
+			}
+		}
+
 		public static JsonDocument SerializeToDocument<T>(T baseObj )
 		{
 			var props = typeof( T ).GetProperties( BindingFlags.Instance | BindingFlags.Public );
@@ -250,25 +278,14 @@ namespace charleroi.server
 				var childType = childProp.PropertyType;
 				var childValue = childProp.GetValue( baseObj, null );
 
-				if ( (childType.IsClass || childType.IsInterface || childType.IsGenericType) && childType != typeof(string) ) {
-					
-					if( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof(IList<>) )
-						Log.Error( "prop: " + childName + " type1: " + childType );
-					else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IDictionary<,> ) )
-						Log.Error( "prop: " + childName + " type2: " + childType );
-					else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( ICollection<> ) )
-						Log.Error( "prop: " + childName + " type3: " + childType );
-					else {
-
-						var hasKey = childValue.GetType().GetProperty( "Id" );
-						if( hasKey != null )
-							dict.Add(childName, new ForeignReference( "" + hasKey.GetValue( childValue, null ), childType));
-					}
-					continue;
+				if ( (childType.IsClass || childType.IsInterface || childType.IsGenericType) && childType != typeof( string ) )
+				{
+					SerializeReference( baseObj, childProp, ref dict );
 				}
-
-
-				dict.Add( childName, childValue );
+				else
+				{
+					dict.Add( childName, childValue );
+				}
 			}
 
 			return JsonSerializer.SerializeToDocument( dict );
