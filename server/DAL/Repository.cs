@@ -30,30 +30,13 @@ namespace charleroi.server.DAL
 				return default;
 			}
 
-			var resPlayer = await CRUDSerializer.Deserialize<C>( res.Data );
-			return resPlayer;
+			var resPlayer = await CRUDSerializer.Deserialize( res.Data, typeof(C).Name );
+			return (S)resPlayer;
 		}
 
 		public async Task<IList<S>> GetAll()
 		{
-			var res = await CRUDTools.GetInstance().GetAll( typeof( S ).Name );
-
-			if ( res.Error != "" )
-			{
-				Log.Error( res.Error );
-				return default;
-			}
-
-			var resMap = await CRUDSerializer.Deserialize<CRUDGetAllData>( res.Data );
-
-			var SPlyList = new List<S>();
-			foreach ( var elem in resMap.Data )
-			{
-				var SPly = await CRUDSerializer.Deserialize<C>( elem.Value );
-				SPlyList.Add( SPly );
-			}
-
-			return SPlyList;
+			throw new System.Exception();
 		}
 
 		public async Task<bool> Insert( S entity )

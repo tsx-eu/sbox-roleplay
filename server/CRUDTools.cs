@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using charleroi.client;
+using charleroi.server.DAL;
 using Sandbox;
 
 namespace charleroi.server
@@ -287,30 +288,17 @@ namespace charleroi.server
 
 			return JsonSerializer.SerializeToDocument( dict );
 		}
-
-		private async static Task<object> Deserialize( JsonElement baseObj, string typename )
-		{
-			if ( typename == "SItem" )
-				return await Deserialize<CItem>( baseObj );
-			if ( typename == "SJob" )
-				return await Deserialize<CJob>( baseObj );
-			if ( typename == "SCraft" )
-				return await Deserialize<CCraft>( baseObj );
-			if ( typename == "SPlayer" )
-				return await Deserialize<CPlayer>( baseObj );
-
-			return null;
-		}
 		private static IList MakeListOfType( string typename )
 		{
 			return Library.Create<IList>( "ListOf" + typename );
 		}
 
-		public async static Task<T?> Deserialize<T>( JsonElement baseObj ) where T : new()
+		public async static Task<object> Deserialize( JsonElement baseObj, string typename )
 		{
-			T ret = new T();
+			var Type = Library.GetType( 'C' + typename.Substring(1) );
+			var ret = Library.Create<object>( Type );
 
-			var props = typeof( T ).GetProperties( BindingFlags.Instance | BindingFlags.Public );
+			var props = Type.GetProperties( BindingFlags.Instance | BindingFlags.Public );
 
 			foreach ( var childProp in props )
 			{
@@ -347,7 +335,7 @@ namespace charleroi.server
 							if ( fk != null )
 							{
 								var req = await CRUDTools.GetInstance().Get( fk.TypeName, "" + fk.Id );
-								var childValue = await CRUDSerializer.Deserialize( req.Data, fk.TypeName );
+								var childValue = await Deserialize( req.Data, fk.TypeName );
 								if ( childValue != null )
 									list.Add( childValue );
 							}
@@ -361,7 +349,7 @@ namespace charleroi.server
 						if ( fk != null )
 						{
 							var req = await CRUDTools.GetInstance().Get( fk.TypeName, "" + fk.Id );
-							var childValue = await CRUDSerializer.Deserialize( req.Data, fk.TypeName );
+							var childValue = await Deserialize( req.Data, fk.TypeName );
 							if ( childValue != null )
 								childProp.SetValue( ret, childValue, null );
 						}
