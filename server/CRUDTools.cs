@@ -251,10 +251,14 @@ namespace charleroi.server
 			if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IList<> ) )
 			{
 				var list = new List<ForeignReference>();
-				foreach( var item in (IEnumerable)childValue ) {
+				var genericType = childType.GetGenericArguments().FirstOrDefault();
+
+				foreach ( var item in (IEnumerable)childValue ) {
 					var hasKey = item.GetType().GetProperty( "Id" );
-					if ( hasKey != null )
-						list.Add(new ForeignReference( "" + hasKey.GetValue( item, null ), item.GetType() ) );
+					if ( hasKey != null && genericType != null )
+					{
+						list.Add( new ForeignReference( "" + hasKey.GetValue( item, null ), genericType ) );
+					}
 				}
 				dict.Add( childName, list );
 			}
