@@ -240,22 +240,21 @@ namespace charleroi.server
 
 	class CRUDSerializer
 	{
-
-
-		public static JsonDocument SerializeToDocument<T>(T baseObj )
+		public static JsonDocument SerializeToDocument<T>( T baseObj )
 		{
 			var props = typeof( T ).GetProperties( BindingFlags.Instance | BindingFlags.Public );
 
 			Dictionary<string, object> dict = new Dictionary<string, object>();
 
-			foreach ( var childProp in props ) {
+			foreach ( var childProp in props )
+			{
 				var childName = childProp.Name;
 				var childType = childProp.PropertyType;
 				var childValue = childProp.GetValue( baseObj, null );
 
 				if ( (childType.IsClass || childType.IsInterface || childType.IsGenericType) && childType != typeof( string ) )
 				{
-					
+
 					if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IDictionary<,> ) )
 					{
 						_ = new Exception( "IDictionary are not yet supported" );
@@ -292,7 +291,12 @@ namespace charleroi.server
 			return JsonSerializer.SerializeToDocument( dict );
 		}
 
+		public static T? Deserialize<T>( JsonElement baseObj )
+		{
+			var props = typeof( T ).GetProperties( BindingFlags.Instance | BindingFlags.Public );
+
+			return default(T);
+		}
 	}
 
-	
 }
