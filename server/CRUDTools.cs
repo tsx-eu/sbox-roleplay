@@ -244,14 +244,21 @@ namespace charleroi.server
 				var childType = childProp.PropertyType;
 				var childValue = childProp.GetValue( baseObj, null );
 
-				if ( (childType.IsClass || childType.IsInterface) && childType != typeof(string) ) {
-					Log.Error( "prop: " + childName + " value: " + childValue + " type: " + childType );
+				if ( (childType.IsClass || childType.IsInterface || childType.IsGenericType) && childType != typeof(string) ) {
+					
+					if( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof(IList<>) )
+						Log.Error( "prop: " + childName + " type1: " + childType );
+					else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( IDictionary<,> ) )
+						Log.Error( "prop: " + childName + " type2: " + childType );
+					else if ( childType.IsGenericType && childType.GetGenericTypeDefinition() == typeof( ICollection<> ) )
+						Log.Error( "prop: " + childName + " type3: " + childType );
+					else
+						Log.Info( "prop: " + childName + " type: " + childType );
 					continue;
 				}
 
 
 				dict.Add( childName, childValue );
-				Log.Info( "prop: " + childName + " value: " + childValue + " type: " + childType);
 			}
 
 			return JsonSerializer.SerializeToDocument( dict );
