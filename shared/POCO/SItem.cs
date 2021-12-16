@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using charleroi.client;
 using charleroi.server.DAL;
 using Sandbox;
 
@@ -13,7 +14,7 @@ namespace charleroi
 	}
 
 	[Library]
-	public class ListOfSItem : List<SItem>
+	public class ListOfSItem : List<CItem>
 	{
 	}
 }

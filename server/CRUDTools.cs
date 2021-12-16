@@ -231,7 +231,7 @@ namespace charleroi.server
 		{
 			set
 			{
-				TypeName = value.Name;
+				TypeName = "S" + value.Name.Substring(1);
 			}
 		}
 	}

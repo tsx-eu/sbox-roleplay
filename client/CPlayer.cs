@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace charleroi.client
 {
-	partial class CPlayer : Player, SPlayer
+	public partial class CPlayer : Player, SPlayer
 	{
 		public ulong SteamID { get { return Id; } set { Id = value; } }
 		public ulong Id { get; set; }

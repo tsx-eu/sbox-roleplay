@@ -40,8 +40,7 @@ namespace charleroi.server.DAL
 			var res = await CRUDTools.GetInstance().GetAll( typeof( S ).Name );
 			var resMap = JsonSerializer.Deserialize<CRUDGetAllData>( res.Data );
 
-			var SPlyList = Library.Create<IList<S>>( "ListOf" + typeof( S ).Name );
-
+			IList<S> SPlyList = new List<S>();
 			foreach ( var elem in resMap.Data )
 			{
 				var resPlayer = await CRUDSerializer.Deserialize( elem.Value, typeof( S ).Name );

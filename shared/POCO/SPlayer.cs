@@ -1,4 +1,5 @@
-﻿using charleroi.server.DAL;
+﻿using charleroi.client;
+using charleroi.server.DAL;
 using Sandbox;
 using System.Collections.Generic;
 
@@ -16,9 +17,8 @@ namespace charleroi
 		public string Clothes { get; set; }
 	}
 
-
 	[Library]
-	public class ListOfSPlayer : List<SPlayer>
+	public class ListOfSPlayer : List<CPlayer>
 	{
 	}
 }

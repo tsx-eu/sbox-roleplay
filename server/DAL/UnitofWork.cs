@@ -21,7 +21,7 @@ namespace charleroi.server.DAL
 		{
 			await CRUDTools.GetInstance().WipeDB();
 			//await Seed_Items();
-			//await Seed_Jobs();
+			await Seed_Jobs();
 			await Seed_Crafts();
 			await Game.Instance.InitializeDB();
 

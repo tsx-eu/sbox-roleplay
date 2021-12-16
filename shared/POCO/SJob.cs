@@ -1,4 +1,5 @@
-﻿using charleroi.server.DAL;
+﻿using charleroi.client;
+using charleroi.server.DAL;
 using Sandbox;
 using System.Collections.Generic;
 
@@ -12,9 +13,8 @@ namespace charleroi
 		public string ImageURL { get; set; }
 	}
 
-
 	[Library]
-	public class ListOfSJob : List<SJob>
+	public class ListOfSJob : List<CJob>
 	{
 	}
 }
