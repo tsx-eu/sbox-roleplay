@@ -8,10 +8,10 @@ namespace charleroi
 	[Library]
 	public interface SCraft : IStorable
 	{
-		public SItem Item { get; set; }
+		public CItem Item { get; set; }
 		public string Description { get; set; }
 		public string ImageURL { get; set; }
-		public IList<SItem> Ingredients { get; set; }
+		public IList<CItem> Ingredients { get; set; }
 		public int Level { get; set; }
 	}
 
