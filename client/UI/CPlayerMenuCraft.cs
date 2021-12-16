@@ -15,7 +15,7 @@ namespace charleroi.client.UI
 		{
 			AddPage( "price_change", "Craft", "Je suis un titre", () => PageContainer.AddChild<CPlayerCraft>() );
 			AddPage( "price_change", "Stock", "Je suis un titre", () => PageContainer.AddChild<CPlayerCraftStock>() );
-			AddPage( "price_change", "Autorisation", "Je suis un titre", () => PageContainer.AddChild<CPlayerInventory>() );
+			AddPage( "price_change", "Autorisation", "Je suis un titre", () => PageContainer.AddChild<CPlayerPermission>() );
 			AddPage( "price_change", "Status", "Je suis un titre", () => PageContainer.AddChild<CPlayerInventory>() );
 			AddPage( "price_change", "Personnage", "Je suis un titre", () => PageContainer.AddChild<CPlayerInventory>() );
 
