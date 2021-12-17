@@ -1,11 +1,30 @@
-﻿<link rel="stylesheet" href="/client/UI/MenuNav/CPlayerSkill.scss">
+﻿<link rel="stylesheet" href="/client/UI/MenuNav/CPlayerJob.scss">
 
 <body>
-    <CPlayerAvatar></CPlayerAvatar>
-    <div class="status">
-        <div class="title">
-            <label @text="Job"></label>
+    <div class="pagejob">
+        <CPlayerJobList class="menujob"></CPlayerJobList>
+        <div class="job">
+            <div class="header">
+                <div class="lvl-info">
+                    <label class="value">10</label>
+                </div>
+                <div class="xp">
+                    <div class="status-bar">
+                        <div class="progress">
+                            <div class="xp-value"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="body">
+                <div class="recapjob">
+                    <div class="positionjob"></div>
+                    <div class="infojob"> <label>Adresse du spot + présentation sommaire / historique du spot farm ??</label></div>
+                </div>
+                <div class="presentation">
+                    <label>recap des récoltables en fonction du lvl</label>
+                </div>
+            </div>
         </div>
-        <div class="bars"></div>
     </div>
 </body>

@@ -7,6 +7,7 @@ namespace charleroi.server.DAL
 		public IRepository<SPlayer> SPlayer { get; }
 		public IRepository<SItem> SItem { get; }
 		public IRepository<SJob> SJob { get; }
+		public IRepository<SSkill> SSkill { get; }
 		public IRepository<SCraft> SCraft { get; }
 	}
 }

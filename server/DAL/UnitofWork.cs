@@ -45,31 +45,41 @@ namespace charleroi.server.DAL
 
 			ulong id = 1;
 
-			await SJob.Insert( new CJob { Id = id++, Name = "Mineur", Description = "TBD" });
 			await SJob.Insert( new CJob { Id = id++, Name = "Raffineur", Description = "TBD" } );
 			await SJob.Insert( new CJob { Id = id++, Name = "Électronicien", Description = "TBD" } );
 			await SJob.Insert( new CJob { Id = id++, Name = "Forgeron", Description = "TBD" } );
 			await SJob.Insert( new CJob { Id = id++, Name = "Mécanicien", Description = "TBD" } );
 			await SJob.Insert( new CJob { Id = id++, Name = "Ingénieur", Description = "TBD" } );
 
-			await SJob.Insert( new CJob { Id = id++, Name = "Bucheron", Description = "TBD" } );
 			await SJob.Insert( new CJob { Id = id++, Name = "Menuisier", Description = "TBD" } );
 			await SJob.Insert( new CJob { Id = id++, Name = "Armurier", Description = "TBD" } );
 
 			await SJob.Insert( new CJob { Id = id++, Name = "Chimiste", Description = "TBD" } );
 			await SJob.Insert( new CJob { Id = id++, Name = "Dealer", Description = "TBD" } );
 
-			await SJob.Insert( new CJob { Id = id++, Name = "Agrigulteur", Description = "TBD" } );
 			await SJob.Insert( new CJob { Id = id++, Name = "Menier", Description = "TBD" } );
 			await SJob.Insert( new CJob { Id = id++, Name = "Boulanger", Description = "TBD" } );
 
-			await SJob.Insert( new CJob { Id = id++, Name = "Pêcheur", Description = "TBD" } );
-			await SJob.Insert( new CJob { Id = id++, Name = "Éleveur", Description = "TBD" } );
 			await SJob.Insert( new CJob { Id = id++, Name = "Boucher", Description = "TBD" } );
 			await SJob.Insert( new CJob { Id = id++, Name = "Cuisinier", Description = "TBD" } );
 			await SJob.Insert( new CJob { Id = id++, Name = "Couturier", Description = "TBD" } );
 
 			Log.Info( "Creating jobs complete!" );
+			return true;
+		}
+		private async Task<bool> Seed_Skills()
+		{
+			Log.Info( "Creating skills" );
+
+			ulong id = 1;
+
+			await SSkill.Insert( new CSkill { Id = id++, Name = "Mineur", Description = "TBD" } );
+			await SSkill.Insert( new CSkill { Id = id++, Name = "Bucheron", Description = "TBD" } );
+			await SSkill.Insert( new CSkill { Id = id++, Name = "Agrigulteur", Description = "TBD" } );
+			await SSkill.Insert( new CSkill { Id = id++, Name = "Pêcheur", Description = "TBD" } );
+			await SSkill.Insert( new CSkill { Id = id++, Name = "Éleveur", Description = "TBD" } );
+
+			Log.Info( "Creating skills complete!" );
 			return true;
 		}
 		private async Task<bool> Seed_Crafts()
@@ -105,6 +115,7 @@ namespace charleroi.server.DAL
 		public IRepository<SPlayer> SPlayer => _SPlayer ?? new Repository<SPlayer>();
 		public IRepository<SItem> SItem => _SItem ?? new Repository<SItem>();
 		public IRepository<SJob> SJob => _SJob ?? new Repository<SJob>();
+		public IRepository<SSkill> SSkill => _SSkill ?? new Repository<SSkill>();
 		public IRepository<SCraft> SCraft => _SCraft ?? new Repository<SCraft>();
 	}
 }

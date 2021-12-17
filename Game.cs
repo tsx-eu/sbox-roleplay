@@ -16,6 +16,7 @@ namespace charleroi
 
 		[Net] public IList<CItem> Items { get; set; }
 		[Net] public IList<CJob> Jobs { get; set; }
+		[Net] public IList<CSkill> Skills { get; set; }
 		[Net] public IList<CCraft> Crafts { get; set; }
 
 		public Game()
@@ -47,6 +48,12 @@ namespace charleroi
 			foreach ( var job in jobs )
 				Instance.Jobs.Add( job as CJob );
 			Log.Info( "CJob.Dictionnary initialized with " + Instance.Jobs.Count );
+
+			Instance.Skills.Clear();
+			var skills = await uow.SSkill.GetAll();
+			foreach ( var skill in skills )
+				Instance.Skills.Add( skill as CSkill );
+			Log.Info( "CSkill.Dictionnary initialized with " + Instance.Skills.Count );
 
 			Instance.Crafts.Clear();
 			var crafts = await uow.SCraft.GetAll();
