@@ -10,6 +10,7 @@ namespace charleroi.server.DAL
 		private readonly IRepository<SPlayer> _SPlayer;
 		private readonly IRepository<SItem> _SItem;
 		private readonly IRepository<SJob> _SJob;
+		private readonly IRepository<SSkill> _SSkill;
 		private readonly IRepository<SCraft> _SCraft;
 #pragma warning restore 0649
 

@@ -14,7 +14,7 @@ namespace charleroi
 	}
 
 	[Library]
-	public class ListOfSSkill : List<CJob>
+	public class ListOfSSkill : List<CSkill>
 	{
 	}
 }
