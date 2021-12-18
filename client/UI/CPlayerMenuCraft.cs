@@ -30,6 +30,9 @@ namespace charleroi.client.UI
 				Instance = Local.Hud.AddChild<CPlayerMenuCraft>();
 				(Instance as CPlayerMenuCraft).ent = ent as CEntityCrafttable;
 				LastOpen = 0;
+
+
+				CEntityCrafttable.RunningOnServer( ent.NetworkIdent );
 			}
 		}
 

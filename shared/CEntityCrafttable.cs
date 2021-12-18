@@ -91,6 +91,13 @@ namespace charleroi
 			return user is Player;
 		}
 
+		[ServerCmd]
+		public static void RunningOnServer( int net_id )
+		{
+			Entity ent = Entity.FindByIndex( net_id ) as CEntityCrafttable;
+			Log.Info( "Client? " + Host.IsClient + " Server? " + Host.IsServer );
+		}
+
 		[Event.Tick.Client]
 		private void ClientTick() {
 			Client cl = Local.Client;
