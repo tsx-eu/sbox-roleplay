@@ -24,6 +24,7 @@ namespace charleroi.server.DAL
 			//await Seed_Items();
 			await Seed_Jobs();
 			await Seed_Crafts();
+			await Seed_Skills();
 			await Game.Instance.InitializeDB();
 
 			Log.Info( "Task complete!" );
