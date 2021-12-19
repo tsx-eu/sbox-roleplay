@@ -8,6 +8,7 @@ namespace charleroi
 	[Library]
 	public interface SItem : IStorable
 	{
+		public new ulong Id { get; set; }
 		public string Name { get; set; }
 		public string ShortDescription { get; set; }
 		public float MaxCarry { get; set; }

@@ -6,7 +6,7 @@ namespace charleroi.client
 {
 	public partial class CCraft : BaseNetworkable, SCraft
 	{
-		public ulong Id { get; set; }
+		[Net] public ulong Id { get; set; }
 		[Net] public CItem Item { get; set; }
 		[Net] public string Description { get; set; }
 		[Net] public string ImageURL { get; set; }

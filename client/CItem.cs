@@ -6,7 +6,7 @@ namespace charleroi.client
 {
 	public partial class CItem : BaseNetworkable, SItem, IUse
 	{
-		public ulong Id { get; set; }
+		[Net] public ulong Id { get; set; }
 		[Net] public string Name { get; set; }
 		[Net] public string ShortDescription { get; set; }
 		[Net] public float MaxCarry { get; set; }

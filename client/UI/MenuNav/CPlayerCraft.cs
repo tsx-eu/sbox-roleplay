@@ -81,10 +81,15 @@ namespace charleroi.client.UI.MenuNav
 						quantity.Text = "" + (val + 1);
 				});
 				max.AddEventListener( "onclick", () => {
-					quantity.Text = "" + (999);
+					quantity.Text = "999";
 				});
 
 				var build = input.AddChild<Button>();
+				build.AddEventListener( "onclick", () => {
+					var p = Ancestors.Where( i => i.GetType() == typeof( CPlayerMenuCraft ) ).First() as CPlayerMenuCraft;
+					CEntityCrafttable.RunningOnServer( p.ent.NetworkIdent, craft.Id, quantity.Text.ToInt(1) );
+					quantity.Text = "1";
+				} );
 				build.Text = "CRAFT";
 
 			}

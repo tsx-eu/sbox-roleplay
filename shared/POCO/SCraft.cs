@@ -8,6 +8,7 @@ namespace charleroi
 	[Library]
 	public interface SCraft : IStorable
 	{
+		public new ulong Id { get; set; }
 		public CItem Item { get; set; }
 		public string Description { get; set; }
 		public string ImageURL { get; set; }

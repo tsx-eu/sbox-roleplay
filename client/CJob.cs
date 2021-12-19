@@ -6,7 +6,7 @@ namespace charleroi.client
 {
 	public partial class CJob : BaseNetworkable, SJob
 	{
-		public ulong Id { get; set; }
+		[Net] public ulong Id { get; set; }
 		[Net] public string Name { get; set; }
 		[Net] public string Description { get; set; }
 		[Net] public string ImageURL { get; set; }

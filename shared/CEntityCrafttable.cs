@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace charleroi
 {
 	[Library( "tsx_crafttable" )]
-	partial class CEntityCrafttable : Prop, IUse
+	public partial class CEntityCrafttable : Prop, IUse
 	{
 		public static class Type {
 			public static string none = "models/tsx/table_craft3.vmdl";
@@ -92,10 +92,11 @@ namespace charleroi
 		}
 
 		[ServerCmd]
-		public static void RunningOnServer( int net_id )
+		public static void RunningOnServer( int net_id, ulong craft_id, int quantity )
 		{
-			Entity ent = Entity.FindByIndex( net_id ) as CEntityCrafttable;
-			Log.Info( "Client? " + Host.IsClient + " Server? " + Host.IsServer );
+			Host.AssertServer();
+			var self = FindByIndex( net_id ) as CEntityCrafttable;
+			Log.Info( "craft_id: " + craft_id + "qt: " + quantity );
 		}
 
 		[Event.Tick.Client]
