@@ -10,6 +10,7 @@ using charleroi.client.UI.Inventory;
 
 namespace charleroi.client.UI
 {
+
 	public abstract class CPlayerMenuBase : Panel
 	{
 		protected static CPlayerMenuBase Instance { get; set; }
@@ -20,14 +21,12 @@ namespace charleroi.client.UI
 		public Panel PageContainer { get; set; }
 
 		private Dictionary<string, Button> Buttons;
-		private Dictionary<string, string> Titles;
 
 
 		public CPlayerMenuBase()
 		{
 			StyleSheet.Load( "/client/UI/CPlayerMenu.scss" );
 			Buttons = new Dictionary<string, Button>();
-			Titles = new Dictionary<string, string>();
 			Inner = Add.Panel( "inner" );
 
 
@@ -39,7 +38,7 @@ namespace charleroi.client.UI
 			Buttons.First().Value.CreateEvent( "onclick" );
 		}
 
-		protected void AddPage( string icon, string name, string title, Func<Panel> act = null )
+		protected void AddPage( string icon, string name, Func<Panel> act = null )
 		{
 			var button = PageList.Add.Button( name, () => {
 				SwitchPage( name );
@@ -48,7 +47,6 @@ namespace charleroi.client.UI
 			button.Icon = icon;
 
 			Buttons[name] = button;
-			Titles[name] = title;
 		}
 
 		protected void SwitchPage( string name )

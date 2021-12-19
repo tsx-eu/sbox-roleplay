@@ -8,16 +8,16 @@ namespace charleroi.client.UI
 {
 	public partial class CPlayerMenuCraft : CPlayerMenuBase {
 
-		private CEntityCrafttable ent;
+		public CEntityCrafttable ent;
 		private TimeSince LastRay;
 
 		public CPlayerMenuCraft() : base()
 		{
-			AddPage( "price_change", "Craft", "Je suis un titre", () => PageContainer.AddChild<CPlayerCraft>() );
-			AddPage( "price_change", "Stock", "Je suis un titre", () => PageContainer.AddChild<CPlayerCraftStock>() );
-			AddPage( "price_change", "Autorisation", "Je suis un titre", () => PageContainer.AddChild<CPlayerPermission>() );
-			AddPage( "price_change", "Status", "Je suis un titre", () => PageContainer.AddChild<CPlayerInventory>() );
-			AddPage( "price_change", "Personnage", "Je suis un titre", () => PageContainer.AddChild<CPlayerInventory>() );
+			AddPage( "price_change", "Craft", () => PageContainer.AddChild<CPlayerCraft>() );
+			AddPage( "price_change", "Stock", () => PageContainer.AddChild<CPlayerCraftStock>() );
+			AddPage( "price_change", "Autorisation", () => PageContainer.AddChild<CPlayerPermission>() );
+			AddPage( "price_change", "Status", () => PageContainer.AddChild<CPlayerInventory>() );
+			AddPage( "price_change", "Personnage", () => PageContainer.AddChild<CPlayerInventory>() );
 
 			LoadDefaultPage();
 		}
@@ -30,9 +30,6 @@ namespace charleroi.client.UI
 				Instance = Local.Hud.AddChild<CPlayerMenuCraft>();
 				(Instance as CPlayerMenuCraft).ent = ent as CEntityCrafttable;
 				LastOpen = 0;
-
-
-				CEntityCrafttable.RunningOnServer( ent.NetworkIdent );
 			}
 		}
 
