@@ -4,6 +4,7 @@ using charleroi.client;
 using charleroi.server.DAL;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace charleroi
 {
@@ -15,9 +16,16 @@ namespace charleroi
 		}
 
 		[Net] public IList<CItem> Items { get; set; }
+		public IDictionary<ulong, CItem> DItems { get; protected set; }
+
 		[Net] public IList<CJob> Jobs { get; set; }
+		public IDictionary<ulong, CJob> DJobs { get; protected set; }
+
 		[Net] public IList<CSkill> Skills { get; set; }
+		public IDictionary<ulong, CSkill> DSkills { get; protected set; }
+
 		[Net] public IList<CCraft> Crafts { get; set; }
+		public IDictionary<ulong, CCraft> DCraft { get; protected set; }
 
 		public Game()
 		{
@@ -37,28 +45,35 @@ namespace charleroi
 		public async Task<bool> InitializeDB() {
 			var uow = new UnitofWork();
 
-			Instance.Items.Clear();
+			Instance.DItems = new Dictionary<ulong, CItem>();
 			var items = await uow.SItem.GetAll();
 			foreach ( var item in items )
-				Instance.Items.Add( item as CItem );
+				Instance.DItems.Add( item.Id, item as CItem );
+			Instance.Items = Instance.DItems.Values.ToList();
 			Log.Info( "CItem.Dictionnary initialized with " + Instance.Items.Count );
 
-			Instance.Jobs.Clear();
+
+			Instance.DJobs = new Dictionary<ulong, CJob>();
 			var jobs = await uow.SJob.GetAll();
 			foreach ( var job in jobs )
-				Instance.Jobs.Add( job as CJob );
+				Instance.DJobs.Add( job.Id, job as CJob );
+			Instance.Jobs = Instance.DJobs.Values.ToList();
 			Log.Info( "CJob.Dictionnary initialized with " + Instance.Jobs.Count );
 
-			Instance.Skills.Clear();
+
+			Instance.DSkills = new Dictionary<ulong, CSkill>();
 			var skills = await uow.SSkill.GetAll();
 			foreach ( var skill in skills )
-				Instance.Skills.Add( skill as CSkill );
+				Instance.DSkills.Add(skill.Id, skill as CSkill );
+			Instance.Skills = Instance.DSkills.Values.ToList();
 			Log.Info( "CSkill.Dictionnary initialized with " + Instance.Skills.Count );
 
-			Instance.Crafts.Clear();
+
+			Instance.DCraft = new Dictionary<ulong, CCraft>();
 			var crafts = await uow.SCraft.GetAll();
 			foreach ( var craft in crafts )
-				Instance.Crafts.Add( craft as CCraft );
+				Instance.DCraft.Add( craft.Id, craft as CCraft );
+			Instance.Crafts = Instance.DCraft.Values.ToList();
 			Log.Info( "CCraft.Dictionnary initialized with " + Instance.Crafts.Count );
 
 			return true;
