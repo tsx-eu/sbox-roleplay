@@ -97,27 +97,25 @@ namespace charleroi.client.UI.MenuNav
 
 	class CPlayerCraftQueue : Panel
 	{
-		private int lastCount;
-		private CEntityCrafttable ent;
-
 		public CPlayerCraftQueue() : base() {
-			lastCount = -1;
-
+			Event.Register( this );
 			Rebuild();
 		}
 
 		private void Rebuild() {
 			DeleteChildren( true );
 
-			if ( ent == null ) {
-				var p = Ancestors.Where( i => i.GetType() == typeof( CPlayerMenuCraft ) ).FirstOrDefault() as CPlayerMenuCraft;
-				if( p != null )
-					ent = p.ent;
-			}
+			var p = Ancestors.Where( i => i.GetType() == typeof( CPlayerMenuCraft ) ).FirstOrDefault() as CPlayerMenuCraft;
+
+			if ( p == null )
+				return;
+
+			if ( p.ent == null )
+				return;
+
+			var ent = p.ent;
 
 			if ( ent != null && ent.queue != null ) {
-
-
 				if ( ent.queue.Count > 0 ) {
 					if ( HasClass( "hidden" ) )
 						RemoveClass( "hidden" );
@@ -134,18 +132,13 @@ namespace charleroi.client.UI.MenuNav
 					if ( !HasClass( "hidden" ) )
 						AddClass( "hidden" );
 				}
-
-
-					lastCount = ent.queue.Count;
 			}
 		}
 
-		public override void Tick()
-		{
-			if( ent == null )
-				Rebuild();
-			else if ( ent.queue != null && lastCount != ent.queue.Count )
-				Rebuild();
+		[GameEvent.CraftQueueUpdate]
+		public void OnCraftQueueUpdate() {
+			Log.Info( "rebuild?" );
+			Rebuild();
 		}
 	}
 }
