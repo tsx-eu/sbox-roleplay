@@ -7,16 +7,23 @@ using System.Collections.Generic;
 
 namespace charleroi
 {
+	public partial class CCraftQueue : BaseNetworkable
+	{
+		[Net] public CCraft craft { get; set; }
+		[Net] public int quantity { get; set; }
+	}
+
 	[Library( "tsx_crafttable" )]
 	public partial class CEntityCrafttable : Prop, IUse
 	{
 		public static class Type {
 			public static string none = "models/tsx/table_craft3.vmdl";
 		}
-		private IList<Entity> lightings { get; set; } = new List<Entity>();
+		
+		[Net] public string description { get; set; } = "Table de craft V3";
+		[Net] public IList<CCraftQueue> queue { get; set; }
 
-		[Net]
-		public string description { get; set; } = "Table de craft V3";
+		private IList<Entity> lightings { get; set; } = new List<Entity>();
 		public string model = Type.none;
 		public Color color = new Color( 255, 200, 32 );
 		public float brightness = 0.8f;
@@ -80,6 +87,7 @@ namespace charleroi
 					point.TurnOff();
 			}
 		}
+
 		public virtual bool OnUse( Entity user ) {
 			Host.AssertServer();
 			var player = user as CPlayer;
@@ -92,11 +100,15 @@ namespace charleroi
 		}
 
 		[ServerCmd]
-		public static void RunningOnServer( int net_id, ulong craft_id, int quantity )
-		{
+		public static void Enqueue( int net_id, ulong craft_id, int quantity ) {
 			Host.AssertServer();
 			var self = FindByIndex( net_id ) as CEntityCrafttable;
-			Log.Info( "craft_id: " + craft_id + "qt: " + quantity );
+			var craft = Game.Instance.DCraft[craft_id];
+
+			if ( self.queue.Count < 5 && quantity > 0 && quantity <= 999 && craft != null ) {
+				Log.Info( "added to queue" );
+				self.queue.Add( new CCraftQueue { craft = craft, quantity = quantity } );
+			}
 		}
 
 		[Event.Tick.Client]

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using charleroi.client.UI.Inventory;
 using Sandbox;
 using Sandbox.UI;
@@ -9,22 +10,19 @@ namespace charleroi.client.UI.MenuNav
 	class CPlayerCraft : Panel
 	{
 
-		public CPlayerCraft()
-		{
+		public CPlayerCraft() : base() {
 			SetTemplate( "/client/UI/MenuNav/CPlayerCraft.html" );
 		}
 
-		public override void Tick()
-		{
+		public override void Tick() {
 
 		}
-
 	}
 
 
 	class CPlayerCraftList : Panel
 	{
-		public CPlayerCraftList()                               // <CPlayerCraftList>, si das le HTML y'a déjà une classe, il le récup automiquement.
+		public CPlayerCraftList() : base()
 		{
 			var player = Local.Client.Pawn as CPlayer;
 
@@ -87,7 +85,7 @@ namespace charleroi.client.UI.MenuNav
 				var build = input.AddChild<Button>();
 				build.AddEventListener( "onclick", () => {
 					var p = Ancestors.Where( i => i.GetType() == typeof( CPlayerMenuCraft ) ).First() as CPlayerMenuCraft;
-					CEntityCrafttable.RunningOnServer( p.ent.NetworkIdent, craft.Id, quantity.Text.ToInt(1) );
+					CEntityCrafttable.Enqueue( p.ent.NetworkIdent, craft.Id, quantity.Text.ToInt(1) );
 					quantity.Text = "1";
 				} );
 				build.Text = "CRAFT";
@@ -95,5 +93,59 @@ namespace charleroi.client.UI.MenuNav
 			}
 		}
 
+	}
+
+	class CPlayerCraftQueue : Panel
+	{
+		private int lastCount;
+		private CEntityCrafttable ent;
+
+		public CPlayerCraftQueue() : base() {
+			lastCount = -1;
+
+			Rebuild();
+		}
+
+		private void Rebuild() {
+			DeleteChildren( true );
+
+			if ( ent == null ) {
+				var p = Ancestors.Where( i => i.GetType() == typeof( CPlayerMenuCraft ) ).FirstOrDefault() as CPlayerMenuCraft;
+				if( p != null )
+					ent = p.ent;
+			}
+
+			if ( ent != null && ent.queue != null ) {
+
+
+				if ( ent.queue.Count > 0 ) {
+					if ( HasClass( "hidden" ) )
+						RemoveClass( "hidden" );
+
+					AddChild<Label>( "titre" ).Text = "File d'attente:";
+
+					var line = AddChild<Panel>( "line" );
+					var flex = line.AddChild<Panel>( "flex-start" );
+
+					foreach ( var item in ent.queue )
+						flex.AddChild<CInventoryItem>();
+				}
+				else {
+					if ( !HasClass( "hidden" ) )
+						AddClass( "hidden" );
+				}
+
+
+					lastCount = ent.queue.Count;
+			}
+		}
+
+		public override void Tick()
+		{
+			if( ent == null )
+				Rebuild();
+			else if ( ent.queue != null && lastCount != ent.queue.Count )
+				Rebuild();
+		}
 	}
 }
