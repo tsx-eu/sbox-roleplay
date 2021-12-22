@@ -95,32 +95,28 @@ namespace charleroi.client.UI.MenuNav
 
 	}
 
+
 	class CPlayerCraftQueue : Panel
 	{
 		static public CPlayerCraftQueue Instance;
 
 		public CPlayerCraftQueue() : base()
 		{
-			Instance = this;
+			
 		}
 
-		public override void OnParentChanged()
+		[Event.Tick]
+		public void OnTick()
 		{
-			base.OnParentChanged();
-			Log.Error( "parent changed" );
-
-			Rebuild();
 			Instance = this;
 		}
 
 		private void Rebuild()
 		{
 			var p = Ancestors.Where( i => i.GetType() == typeof( CPlayerMenuCraft ) ).FirstOrDefault() as CPlayerMenuCraft;
-
-			Log.Info( p );
+			DeleteChildren( true );
 
 			if ( p?.ent?.queue?.Count > 0 ) {
-				Log.Info( "rebuild2" );
 
 				if ( HasClass( "hidden" ) )
 					RemoveClass( "hidden" );
