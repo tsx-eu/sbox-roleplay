@@ -97,40 +97,53 @@ namespace charleroi.client.UI.MenuNav
 
 	class CPlayerCraftQueue : Panel
 	{
-		static private CPlayerCraftQueue Instance;
+		static public CPlayerCraftQueue Instance;
 
-		public CPlayerCraftQueue() {
+		public CPlayerCraftQueue() : base()
+		{
 			Instance = this;
-			Rebuild();
 		}
 
-		private void Rebuild() {
-			DeleteChildren( true );
+		public override void OnParentChanged()
+		{
+			base.OnParentChanged();
+			Log.Error( "parent changed" );
 
+			Rebuild();
+			Instance = this;
+		}
+
+		private void Rebuild()
+		{
 			var p = Ancestors.Where( i => i.GetType() == typeof( CPlayerMenuCraft ) ).FirstOrDefault() as CPlayerMenuCraft;
 
-			if ( p?.ent?.queue != null ) {
-				if ( p.ent.queue.Count > 0 ) {
-					if ( HasClass( "hidden" ) )
-						RemoveClass( "hidden" );
+			Log.Info( p );
 
-					AddChild<Label>( "titre" ).Text = "File d'attente:";
+			if ( p?.ent?.queue?.Count > 0 ) {
+				Log.Info( "rebuild2" );
 
-					var line = AddChild<Panel>( "line" );
-					var flex = line.AddChild<Panel>( "flex-start" );
+				if ( HasClass( "hidden" ) )
+					RemoveClass( "hidden" );
 
-					foreach ( var item in ent.queue )
-						flex.AddChild<CInventoryItem>();
-				}
-				else {
-					if ( !HasClass( "hidden" ) )
-						AddClass( "hidden" );
-				}
+				AddChild<Label>( "titre" ).Text = "File d'attente:";
+
+				var line = AddChild<Panel>( "line" );
+				var flex = line.AddChild<Panel>( "flex-start" );
+
+				foreach ( var item in p.ent.queue )
+					flex.AddChild<CInventoryItem>();
 			}
+			else {
+				if ( !HasClass( "hidden" ) )
+					AddClass( "hidden" );
+			}
+
 		}
 
 		[Event(GameEvent.CraftQueueUpdate)]
-		public static void OnCraftQueueUpdate() {
+		public static void OnCraftQueueUpdate()
+		{
+			Log.Error( "got event OnCraftQueueUpdate! which is: "  + (Instance == null) + "<-- ");
 			Instance?.Rebuild();
 		}
 	}
