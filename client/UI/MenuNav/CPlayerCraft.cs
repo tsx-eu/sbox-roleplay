@@ -96,19 +96,13 @@ namespace charleroi.client.UI.MenuNav
 	}
 
 
-	class CPlayerCraftQueue : Panel
+	public partial class CPlayerCraftQueue : Panel
 	{
-		static public CPlayerCraftQueue Instance;
 
-		public CPlayerCraftQueue() : base()
-		{
-			
-		}
+		static private CPlayerCraftQueue instance = null;
 
-		[Event.Tick]
-		public void OnTick()
-		{
-			Instance = this;
+		public CPlayerCraftQueue() {
+			instance = this;
 		}
 
 		private void Rebuild()
@@ -136,11 +130,11 @@ namespace charleroi.client.UI.MenuNav
 
 		}
 
-		[Event(GameEvent.CraftQueueUpdate)]
-		public static void OnCraftQueueUpdate()
+		[ClientRpc]
+		public static void Refresh()
 		{
-			Log.Error( "got event OnCraftQueueUpdate! which is: "  + (Instance == null) + "<-- ");
-			Instance?.Rebuild();
+			Host.AssertClient();
+			instance?.Rebuild();
 		}
 	}
 }

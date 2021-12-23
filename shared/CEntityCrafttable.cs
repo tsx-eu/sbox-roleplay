@@ -1,5 +1,6 @@
 ﻿using charleroi.client;
 using charleroi.client.UI;
+using charleroi.client.UI.MenuNav;
 using charleroi.client.WorldUI;
 using Sandbox;
 using System;
@@ -108,7 +109,9 @@ namespace charleroi
 			if ( self.queue.Count < 999 && quantity > 0 && quantity <= 999 && craft != null ) {
 				Log.Info( "added to queue" );
 				self.queue.Add( new CCraftQueue { craft = craft, quantity = quantity } );
-				Event.Run( GameEvent.CraftQueueUpdate );
+
+				CPlayerCraftQueue.Refresh( To.Everyone );
+
 				Log.Info( "event sent!" );
 			}
 		}
