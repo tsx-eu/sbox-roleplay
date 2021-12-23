@@ -5,6 +5,7 @@ using charleroi.client.WorldUI;
 using Sandbox;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace charleroi
 {
@@ -12,6 +13,8 @@ namespace charleroi
 	{
 		[Net] public CCraft craft { get; set; }
 		[Net] public int quantity { get; set; }
+		[Net] public float startTime { get; set; } = -1.0f;
+		[Net] public float craftTime { get; set; } = 1.0f;
 	}
 
 	[Library( "tsx_crafttable" )]
@@ -20,9 +23,12 @@ namespace charleroi
 		public static class Type {
 			public static string none = "models/tsx/table_craft3.vmdl";
 		}
+		public static int MaxCraftQueue = 5;
+		
 		
 		[Net] public string description { get; set; } = "Table de craft V3";
 		[Net] public IList<CCraftQueue> queue { get; set; }
+		private bool queueIsRunning = false;
 
 		private IList<Entity> lightings { get; set; } = new List<Entity>();
 		public string model = Type.none;
@@ -106,14 +112,33 @@ namespace charleroi
 			var self = FindByIndex( net_id ) as CEntityCrafttable;
 			var craft = Game.Instance.DCraft[craft_id];
 
-			if ( self.queue.Count < 999 && quantity > 0 && quantity <= 999 && craft != null ) {
-				Log.Info( "added to queue" );
+			if ( self.queue.Count < MaxCraftQueue && quantity > 0 && quantity <= 999 && craft != null ) {
+
 				self.queue.Add( new CCraftQueue { craft = craft, quantity = quantity } );
+				if ( self.queue.Count == 1 && self.queueIsRunning == false )
+					_ = self.QueueStart();
 
 				CPlayerCraftQueue.Refresh( To.Everyone );
-
-				Log.Info( "event sent!" );
 			}
+		}
+		private async Task<bool> QueueStart() {
+			Host.AssertServer();
+			queueIsRunning = true;
+
+			while( queue.Count >= 1 ) {
+				var firstElement = queue[0];
+
+				firstElement.startTime = Time.Now;
+				await Task.DelaySeconds( firstElement.craftTime );
+				
+				firstElement.quantity--;
+				if( firstElement.quantity == 0 )
+					queue.RemoveAt( 0 );
+				CPlayerCraftQueue.Refresh( To.Everyone );
+			}
+
+			queueIsRunning = false;
+			return true;
 		}
 
 		[Event.Tick.Client]
