@@ -9,7 +9,6 @@ namespace charleroi.client
 		[Net] public ulong Id { get; set; }
 		[Net] public CItem Item { get; set; }
 		[Net] public string Description { get; set; }
-		[Net] public string ImageURL { get; set; }
 		[Net] public IList<CItem> Ingredients { get; set; }
 		[Net] public int Level { get; set; }
 

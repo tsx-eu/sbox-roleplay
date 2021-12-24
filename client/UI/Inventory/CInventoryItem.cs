@@ -35,7 +35,7 @@ namespace charleroi.client.UI.Inventory
 			}
 			else
 			{
-				this.Style.BackgroundImage = Texture.Load( "https://www.coteaux-nantais.com/sites/coteaux-nantais.com/files/braeburn.png" );
+				this.Style.BackgroundImage = Texture.Load( item.Item.ImageURL );
 				this.Style.BackgroundSizeX = Length.Percent( 95.0f );
 				this.Style.BackgroundSizeY = Length.Percent( 95.0f );
 

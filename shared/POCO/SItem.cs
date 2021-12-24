@@ -11,6 +11,7 @@ namespace charleroi
 		public new ulong Id { get; set; }
 		public string Name { get; set; }
 		public string ShortDescription { get; set; }
+		public string ImageURL { get; set; }
 		public float MaxCarry { get; set; }
 	}
 

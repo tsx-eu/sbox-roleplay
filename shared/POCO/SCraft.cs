@@ -11,7 +11,6 @@ namespace charleroi
 		public new ulong Id { get; set; }
 		public CItem Item { get; set; }
 		public string Description { get; set; }
-		public string ImageURL { get; set; }
 		public IList<CItem> Ingredients { get; set; }
 		public int Level { get; set; }
 	}

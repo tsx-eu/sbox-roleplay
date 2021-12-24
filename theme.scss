@@ -101,12 +101,17 @@ $hud-text-color-negative: black;
     }
 
 
+
     CInventoryItem {
         background-color: rgba(0, 0, 0, 0.25);
         backdrop-filter: blur(10px) saturate(80%);
         border: 2px solid black;
         border-radius: 10px;
         margin: 3px;
+        width: 120px;
+        height: 120px;
+        justify-content: space-around;
+        align-items: center;
 
 
         .item-name {
