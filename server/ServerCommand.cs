@@ -18,16 +18,22 @@ namespace charleroi.server
 			Entity.All.Where( i => i is CTree ).ToList().ForEach( i => i.Delete() );
 
 			var client = ConsoleSystem.Caller?.Pawn;
-			var tr = Trace.Ray( client.EyePos, client.EyePos + client.EyeRot.Forward * 100 )
+			var tr = Trace.Ray( client.EyePos, client.EyePos + client.EyeRot.Forward * 256 )
+				.UseHitboxes()
+				.Ignore( client )
+				.Run();
+
+			tr = Trace.Ray( tr.EndPos, tr.EndPos + Vector3.Down * 1024 )
 				.UseHitboxes()
 				.Ignore( client )
 				.Run();
 
 			var ent = new CTree();
 			ent.Size = new Vector3( 16, 16, 256 );
-			ent.slice = 8;
+			ent.Slice = 256/32;
+			ent.Delta = 8.0f;
 			ent.Position = tr.EndPos;
-			ent.Ratio = 0.25f;
+			ent.Ratio = 0.5f;
 			ent.Spawn();
 		}
 

@@ -9,7 +9,8 @@ namespace charleroi.server
 	{
 		public List<CTreeLog> logs { get; set; }
 		[Net] public float Ratio { get; set; } = 1.0f;
-		[Net] public int slice { get; set; } = 8;
+		[Net] public int Slice { get; set; } = 8;
+		[Net] public float Delta { get; set; } = 8.0f;
 		[Net] public Vector3 Size { get; set; }
 
 		public CTree() {
@@ -27,28 +28,34 @@ namespace charleroi.server
 			logs?.ForEach( i => i.Delete() );
 			logs = new List<CTreeLog>();
 
-			float sliceHeight = Size.z / slice;
+			float sliceHeight = Size.z / Slice;
+			var lastPos = Position - Vector3.Up * sliceHeight;
+			var lastDelta = Vector3.Zero;
 
-			for (int i=0; i<slice;i++)
+			for (int i=0; i< Slice; i++)
 			{
-				float a = MathX.LerpTo( 1, Ratio, (float)(i + 0) / slice );
-				float b = MathX.LerpTo( 1, Ratio, (float)(i + 1) / slice );
+				float a = MathX.LerpTo( 1, Ratio, (float)(i + 0) / Slice );
+				float b = MathX.LerpTo( 1, Ratio, (float)(i + 1) / Slice );
+				var delta = new Vector3( Rand.Float(-Delta, Delta), Rand.Float( -Delta, Delta ), 0.0f );
 
 				var log = new CTreeLog();
-				log.srcSize = new Vector3( Size.x * a, Size.y * a, sliceHeight );
-				log.dstSize = new Vector3( Size.x * b, Size.y * b, sliceHeight );
-				log.height = sliceHeight;
-				log.Position = new Vector3(Position.x, Position.y, Position.z + i * sliceHeight );
+				log.SrcSize = new Vector2( Size.x * a, Size.y * a );
+				log.DstSize = new Vector2( Size.x * b, Size.y * b );
+				log.Height = sliceHeight;
+				log.Position = lastPos + lastDelta + Vector3.Up * sliceHeight;
 				log.Slice = 12;
+				log.Direction = delta;
 
-				if ( i == slice-1 )
+				if ( i == Slice-1 )
 					log.TopCap = true;
 				if ( i == 0 )
 					log.BotCap = true;
 
 				log.Spawn();
+				logs.Add( log );
 
-				logs.Add(log);
+				lastPos = log.Position;
+				lastDelta = delta;
 			}
 		}
 	}
@@ -58,9 +65,12 @@ namespace charleroi.server
 		[Net, Change( nameof( CreateMesh ) )] public bool TopCap { get; set; } = false;
 		[Net, Change( nameof( CreateMesh ) )] public bool BotCap { get; set; } = false;
 		[Net, Change( nameof( CreateMesh ) )] public int Slice { get; set; } = 12;
-		[Net, Change( nameof( CreateMesh ) )] public float height { get; set; } = 32.0f;
-		[Net, Change( nameof( CreateMesh ) )] public Vector3 srcSize { get; set; }
-		[Net, Change( nameof( CreateMesh ) )] public Vector3 dstSize { get; set; }
+		[Net, Change( nameof( CreateMesh ) )] public float Height { get; set; } = 32.0f;
+
+		[Net, Change( nameof( CreateMesh ) )] public Vector2 SrcSize { get; set; }
+		[Net, Change( nameof( CreateMesh ) )] public Vector2 DstSize { get; set; }
+
+		[Net, Change( nameof( CreateMesh ) )] public Vector3 Direction { get; set; } = Vector3.Up;
 
 		public CTreeLog() {
 			
@@ -98,11 +108,12 @@ namespace charleroi.server
 			for ( int i = 0; i <= tesselation; i++ )
 			{
 				var normal = GetCircleVector( i, tesselation );
-				var texCoord = new Vector2( (float)i / (float)tesselation, 0.0f );
+				var texCoord = new Vector2( (float)i / tesselation, 0.0f );
 
-				var pos = normal + Vector3.Up * height;
-				pos.x *= dstSize.x / 2;
-				pos.y *= dstSize.y / 2;
+				var pos = normal + Vector3.Up * Height;
+				pos.x *= DstSize.x / 2;
+				pos.y *= DstSize.y / 2;
+				pos += Direction;
 				GetTangentBinormal( normal, out Vector3 u, out Vector3 v );
 
 				verts.Add( new SimpleVertex() {
@@ -112,14 +123,14 @@ namespace charleroi.server
 					texcoord = texCoord
 				} );
 
-				pos = normal + Vector3.Zero * height; // Vector3.Down
-				pos.x *= srcSize.x / 2;
-				pos.y *= srcSize.y / 2;
+				pos = normal + Vector3.Zero * Height; // Vector3.Down
+				pos.x *= SrcSize.x / 2;
+				pos.y *= SrcSize.y / 2;
 				texCoord.y = 1.0f;
 				verts.Add( new SimpleVertex() {
 					normal = normal,
 					position = pos,
-					tangent = u,
+					tangent = v, // u ?
 					texcoord = texCoord
 				} );
 			}
@@ -135,16 +146,16 @@ namespace charleroi.server
 			}
 
 			if ( TopCap ) 
-				CreateCap( tesselation, height, Vector3.Up, indices, verts, dstSize );
+				CreateCap( tesselation, Height, Vector3.Up, indices, verts, DstSize, Direction );
 			if( BotCap )
-				CreateCap( tesselation, height, Vector3.Zero, indices, verts, srcSize );
+				CreateCap( tesselation, Height, Vector3.Zero, indices, verts, SrcSize, Vector3.Zero );
 
 			mesh.CreateVertexBuffer<SimpleVertex>( verts.Count, SimpleVertex.Layout, verts.ToArray() );
 			mesh.CreateIndexBuffer( indices.Count, indices.ToArray() );
 
 
 		}
-		private void CreateCap( int tesselation, float height, Vector3 normal, List<int> indices, List<SimpleVertex> verts, Vector3 size ) {
+		private void CreateCap( int tesselation, float height, Vector3 normal, List<int> indices, List<SimpleVertex> verts, Vector2 size, Vector3 direction ) {
 			for ( int i = 0; i < tesselation - 2; i++ ) {
 				if ( normal.z > 0 ) {
 					indices.Add( verts.Count );
@@ -163,6 +174,7 @@ namespace charleroi.server
 				var pos = GetCircleVector( i, tesselation ) + normal * height;
 				pos.x *= size.x / 2;
 				pos.y *= size.y / 2;
+				pos += direction;
 				GetTangentBinormal( normal, out Vector3 u, out Vector3 v );
 
 				verts.Add( new SimpleVertex() {
