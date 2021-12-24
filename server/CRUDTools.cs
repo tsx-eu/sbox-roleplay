@@ -327,7 +327,7 @@ namespace charleroi.server
 
 						foreach ( var i in childData.EnumerateArray() )
 						{
-							ForeignReference? fk = JsonSerializer.Deserialize<ForeignReference>( i );
+							ForeignReference fk = JsonSerializer.Deserialize<ForeignReference>( i );
 							if ( fk != null )
 							{
 								var req = await CRUDTools.GetInstance().Get( fk.TypeName, "" + fk.Id );
@@ -341,7 +341,7 @@ namespace charleroi.server
 					}
 					else
 					{
-						ForeignReference? fk = JsonSerializer.Deserialize<ForeignReference>( childData );
+						ForeignReference fk = JsonSerializer.Deserialize<ForeignReference>( childData );
 						if ( fk != null )
 						{
 							var req = await CRUDTools.GetInstance().Get( fk.TypeName, "" + fk.Id );

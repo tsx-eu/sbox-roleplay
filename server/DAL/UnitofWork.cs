@@ -21,24 +21,12 @@ namespace charleroi.server.DAL
 		public async Task<bool> Seed()
 		{
 			await CRUDTools.GetInstance().WipeDB();
-			//await Seed_Items();
 			await Seed_Jobs();
 			await Seed_Crafts();
 			await Seed_Skills();
 			await Game.Instance.InitializeDB();
 
 			Log.Info( "Task complete!" );
-			return true;
-		}
-		private async Task<bool> Seed_Items()
-		{
-			Log.Info( "Creating items" );
-
-			ulong id = 1;
-
-			
-
-			Log.Info( "Creating items complete!" );
 			return true;
 		}
 		private async Task<bool> Seed_Jobs()
@@ -90,12 +78,12 @@ namespace charleroi.server.DAL
 
 			ulong id = 1;
 
-			var Bois = new CItem { Id = id++, Name = "Bois " };
-			var Planche = new CItem { Id = id++, Name = "Planche" };
-			var Baton = new CItem { Id = id++, Name = "Baton" };
-			var Chaise = new CItem { Id = id++, Name = "Chaise" };
-			var Table = new CItem { Id = id++, Name = "Table" };
-			var Lit = new CItem { Id = id++, Name = "Lit" };
+			var Bois = new CItem { Id = id++, Name = "Bois", ImageURL = "https://cdn-icons-png.flaticon.com/512/1965/1965194.png" };
+			var Planche = new CItem { Id = id++, Name = "Planche", ImageURL= "https://cdn-icons-png.flaticon.com/512/683/683456.png" };
+			var Baton = new CItem { Id = id++, Name = "Baton", ImageURL = "https://www.pikpng.com/pngl/m/240-2406829_wood-stick-png-toothpick-clipart.png" };
+			var Chaise = new CItem { Id = id++, Name = "Chaise", ImageURL = "https://cdn-icons-png.flaticon.com/512/3649/3649237.png" };
+			var Table = new CItem { Id = id++, Name = "Table", ImageURL = "https://i.pinimg.com/originals/21/53/06/215306a0c2a47bb0ede347cb36c5ddb6.png" };
+			var Lit = new CItem { Id = id++, Name = "Lit", ImageURL = "https://cdn-icons-png.flaticon.com/512/3313/3313611.png" };
 
 			await SItem.Insert( Bois );
 			await SItem.Insert( Planche );
