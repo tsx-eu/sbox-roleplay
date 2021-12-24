@@ -11,6 +11,25 @@ namespace charleroi.server
 {
 	class ServerCommand
 	{
+		[ServerCmd( "rp_tree" )]
+		public static void Cmd_Tree()
+		{
+			Entity.All.Where( i => i is CTreeLog ).ToList().ForEach( i => i.Delete() );
+			Entity.All.Where( i => i is CTree ).ToList().ForEach( i => i.Delete() );
+
+			var client = ConsoleSystem.Caller?.Pawn;
+			var tr = Trace.Ray( client.EyePos, client.EyePos + client.EyeRot.Forward * 100 )
+				.UseHitboxes()
+				.Ignore( client )
+				.Run();
+
+			var ent = new CTree();
+			ent.Size = new Vector3( 16, 16, 256 );
+			ent.slice = 8;
+			ent.Position = tr.EndPos;
+			ent.Ratio = 0.25f;
+			ent.Spawn();
+		}
 
 		[ServerCmd( "rp_health" )]
 		public static void Cmd_Health()
