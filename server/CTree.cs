@@ -85,11 +85,15 @@ namespace charleroi.server
 		}
 
 		private void CreateMesh() {
-			var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
-			BuildMesh( mesh );
+			if ( Height == 0 || SrcSize.x + SrcSize.y == 0 || DstSize.x + DstSize.y == 0 || Slice <= 3 || Direction.LengthSquared == 0 )
+				return;
+
+			var mesh = BuildMesh();
+			var collider = BuildCollider();
 
 			var model = Model.Builder
 				.AddMesh( mesh )
+				.AddCollisionHull( collider )
 				.Create();
 
 			SetModel( model );
@@ -97,7 +101,9 @@ namespace charleroi.server
 			EnableAllCollisions = true;
 		}
 
-		private void BuildMesh( Mesh mesh ) {
+		private Mesh BuildMesh( ) {
+			var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
+
 			int tesselation = Slice;
 			if ( tesselation <= 0 || tesselation > 32 )
 				tesselation = 12;
@@ -105,8 +111,7 @@ namespace charleroi.server
 			var verts = new List<SimpleVertex>();
 			var indices = new List<int>();
 
-			for ( int i = 0; i <= tesselation; i++ )
-			{
+			for ( int i = 0; i <= tesselation; i++ ) {
 				var normal = GetCircleVector( i, tesselation );
 				var texCoord = new Vector2( (float)i / tesselation, 0.0f );
 
@@ -153,8 +158,24 @@ namespace charleroi.server
 			mesh.CreateVertexBuffer<SimpleVertex>( verts.Count, SimpleVertex.Layout, verts.ToArray() );
 			mesh.CreateIndexBuffer( indices.Count, indices.ToArray() );
 
-
+			return mesh;
 		}
+		private Vector3[] BuildCollider() {
+			var vert = new List<Vector3>();
+
+			vert.Add( new Vector3( -SrcSize.x / 2, -SrcSize.y / 2, 0 ) );
+			vert.Add( new Vector3( +SrcSize.x / 2, -SrcSize.y / 2, 0 ) );
+			vert.Add( new Vector3( +SrcSize.x / 2, +SrcSize.y / 2, 0 ) );
+			vert.Add( new Vector3( -SrcSize.x / 2, +SrcSize.y / 2, 0 ) );
+
+			vert.Add( new Vector3( -DstSize.x / 2 + Direction.x, -DstSize.y / 2 + Direction.y, Height ) );
+			vert.Add( new Vector3( +DstSize.x / 2 + Direction.x, -DstSize.y / 2 + Direction.y, Height ) );
+			vert.Add( new Vector3( +DstSize.x / 2 + Direction.x, +DstSize.y / 2 + Direction.y, Height ) );
+			vert.Add( new Vector3( -DstSize.x / 2 + Direction.x, +DstSize.y / 2 + Direction.y, Height ) );
+
+			return vert.ToArray();
+		}
+
 		private void CreateCap( int tesselation, float height, Vector3 normal, List<int> indices, List<SimpleVertex> verts, Vector2 size, Vector3 direction ) {
 			for ( int i = 0; i < tesselation - 2; i++ ) {
 				if ( normal.z > 0 ) {
