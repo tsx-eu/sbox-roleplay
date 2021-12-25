@@ -17,11 +17,8 @@ namespace charleroi.server
 		public CTree() {
 		}
 
-		public override void Spawn() {
-			CreateMesh();
-		}
-
-		private void CreateMesh() {
+		[Input]
+		public void Build() {
 			Host.AssertServer();
 			logs?.ToList().ForEach( i => {
 				i.Delete();
@@ -29,7 +26,7 @@ namespace charleroi.server
 
 			var builder = new CTreeBuilder( this );
 			logs = builder.Build();
-			logs?.ToList().ForEach( i => i.Spawn());
+			logs?.ToList().ForEach( i => i.Build());
 		}
 	}
 
@@ -156,6 +153,13 @@ namespace charleroi.server
 		public override void ClientSpawn() {
 			CreateMesh();
 		}
+
+		[Input]
+		public void Build()
+		{
+			CreateMesh();
+		}
+
 		protected virtual bool HasValidProperties() {
 			if ( Height == 0 || Slice <= 2 || Slice > 32 || Direction.LengthSquared == 0 )
 				return false;

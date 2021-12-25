@@ -35,7 +35,7 @@ namespace charleroi.server
 			ent.Position = tr.EndPos;
 			ent.Ratio = 0.5f;
 			ent.Fork = 1;
-			ent.Spawn();
+			ent.Build();
 		}
 
 		[ServerCmd( "rp_health" )]
