@@ -29,11 +29,12 @@ namespace charleroi.server
 				.Run();
 
 			var ent = new CTree();
-			ent.Size = new Vector3( 16, 16, 256 );
-			ent.Slice = 256/32;
+			ent.Size = new Vector3( 16, 16, 192 );
+			ent.Slice = (int)(ent.Size.z/32);
 			ent.Delta = 8.0f;
 			ent.Position = tr.EndPos;
 			ent.Ratio = 0.5f;
+			ent.Fork = 1;
 			ent.Spawn();
 		}
 

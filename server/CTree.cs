@@ -12,6 +12,8 @@ namespace charleroi.server
 		[Net] public int Slice { get; set; } = 8;
 		[Net] public float Delta { get; set; } = 8.0f;
 		[Net] public Vector3 Size { get; set; }
+		[Net] public int Fork { get; set; } = 1;
+
 
 		public CTree() {
 			logs = new List<CTreeLog>();
@@ -26,37 +28,117 @@ namespace charleroi.server
 			Host.AssertServer();
 
 			logs?.ForEach( i => i.Delete() );
-			logs = new List<CTreeLog>();
 
-			float sliceHeight = Size.z / Slice;
-			var lastPos = Position - Vector3.Up * sliceHeight;
-			var lastDelta = Vector3.Zero;
 
-			for (int i=0; i< Slice; i++)
-			{
-				float a = MathX.LerpTo( 1, Ratio, (float)(i + 0) / Slice );
-				float b = MathX.LerpTo( 1, Ratio, (float)(i + 1) / Slice );
-				var delta = new Vector3( Rand.Float(-Delta, Delta), Rand.Float( -Delta, Delta ), 0.0f );
+			var builder = new CTreeBuilder( this );
+			logs = builder.Build();
+			logs.ForEach( i => i.Spawn() );
+		}
+	}
 
-				var log = new CTreeLog();
-				log.SrcSize = new Vector2( Size.x * a, Size.y * a );
-				log.DstSize = new Vector2( Size.x * b, Size.y * b );
-				log.Height = sliceHeight;
-				log.Position = lastPos + lastDelta + Vector3.Up * sliceHeight;
-				log.Slice = 12;
-				log.Direction = delta;
+	class CTreeBuilder {
+		private readonly CTree config;
+		private readonly float sliceHeight;
+		private CTreeBuilder parent;
+		private Vector3 lastPos;
+		private Vector3 firstDelta;
+		private Vector3 lastDelta;
+		private int fork;
+		private int start;
+		private int stop;
 
-				if ( i == Slice-1 )
-					log.TopCap = true;
-				if ( i == 0 )
-					log.BotCap = true;
+		public CTreeBuilder( CTree root) {
+			config = root;
+			parent = null;
+			sliceHeight = root.Size.z / root.Slice;
+			fork = root.Fork;
+			start = 0;
+			stop = root.Slice;
+			lastPos = root.Position - Vector3.Up * sliceHeight;
+			firstDelta = Vector3.Zero;
+			lastDelta = Vector3.Zero;
+		}
 
-				log.Spawn();
-				logs.Add( log );
+		public List<CTreeLog> Build() {
+			var logs = new List<CTreeLog>();
 
-				lastPos = log.Position;
-				lastDelta = delta;
+
+			for ( int i = start; i < stop; i++ ) {
+
+				if ( fork > 0 && i >= config.Slice / 2 )
+				{
+					var f = Fork( i );
+					logs.AddRange( f.Build() );
+
+					var d = f.firstDelta;
+					d.x = -d.x;
+					d.y = -d.y;
+					d.z = 0f;
+					d = d / d.Length * config.Delta * 2f;
+					d.z = Rand.Float( -config.Delta, config.Delta );
+					logs.Add( AddLayer( i, d ) );
+				}
+				else
+				{
+					logs.Add( AddLayer( i ) );
+				}
+
 			}
+
+			return logs;
+		}
+
+		private CTreeBuilder Fork(int position) {
+			var builder = new CTreeBuilder( config );
+			builder.lastPos = lastPos;
+			builder.lastDelta = lastDelta;
+			builder.fork = (--fork)/2;
+			builder.start = position;
+			builder.stop = stop--;
+			builder.parent = this;
+			return builder;
+		}
+
+		private CTreeLog AddLayer( int i, Vector3? delta = null ) {
+			float a = MathX.LerpTo( 1, config.Ratio, (float)(i + 0) / config.Slice );
+			float b = MathX.LerpTo( 1, config.Ratio, (float)(i + 1) / config.Slice );
+
+			if ( delta.HasValue == false ) {
+				var d = new Vector3( Rand.Float( -1, 1), Rand.Float( -1, 1), 0 );
+				d = d / d.Length * config.Delta;
+				d.x = (lastDelta.x + d.x) / 2.0f;
+				d.y = (lastDelta.y + d.y) / 2.0f;
+				d.z = Rand.Float( -config.Delta, config.Delta );
+				delta = d;
+			}
+
+			if ( i == start )
+				firstDelta = delta.Value;
+
+			var log = new CTreeLog();
+			log.SrcSize = new Vector2( config.Size.x * a, config.Size.y * a );
+			log.DstSize = new Vector2( config.Size.x * b, config.Size.y * b );
+			log.Height = sliceHeight;
+			log.Position = lastPos + lastDelta + Vector3.Up * sliceHeight;
+			log.Slice = 12;
+			log.Direction = delta.Value;
+
+			if ( parent != null )
+				log.RenderColor = Color.Red;
+			else if( fork == 0 )
+				log.RenderColor = Color.Green;
+			else
+				log.RenderColor = Color.Orange;
+
+			if ( i == config.Slice - 1 )
+				log.TopCap = true;
+			if ( i == 0 )
+				log.BotCap = true;
+
+			lastPos = log.Position;
+			lastDelta = delta.Value;
+
+			return log;
 		}
 	}
 
@@ -168,10 +250,10 @@ namespace charleroi.server
 			vert.Add( new Vector3( +SrcSize.x / 2, +SrcSize.y / 2, 0 ) );
 			vert.Add( new Vector3( -SrcSize.x / 2, +SrcSize.y / 2, 0 ) );
 
-			vert.Add( new Vector3( -DstSize.x / 2 + Direction.x, -DstSize.y / 2 + Direction.y, Height ) );
-			vert.Add( new Vector3( +DstSize.x / 2 + Direction.x, -DstSize.y / 2 + Direction.y, Height ) );
-			vert.Add( new Vector3( +DstSize.x / 2 + Direction.x, +DstSize.y / 2 + Direction.y, Height ) );
-			vert.Add( new Vector3( -DstSize.x / 2 + Direction.x, +DstSize.y / 2 + Direction.y, Height ) );
+			vert.Add( new Vector3( -DstSize.x / 2 + Direction.x, -DstSize.y / 2 + Direction.y, Height + Direction.z ) );
+			vert.Add( new Vector3( +DstSize.x / 2 + Direction.x, -DstSize.y / 2 + Direction.y, Height + Direction.z ) );
+			vert.Add( new Vector3( +DstSize.x / 2 + Direction.x, +DstSize.y / 2 + Direction.y, Height + Direction.z ) );
+			vert.Add( new Vector3( -DstSize.x / 2 + Direction.x, +DstSize.y / 2 + Direction.y, Height + Direction.z ) );
 
 			return vert.ToArray();
 		}
