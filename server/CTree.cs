@@ -63,7 +63,7 @@ namespace charleroi.server
 					d.x = -d.x;
 					d.y = -d.y;
 					d.z = 0f;
-					d = d / d.Length * config.Delta * 2f;
+					d = d.Normal * config.Delta * 2f;
 					d.z = Rand.Float( -config.Delta, config.Delta );
 					logs.AddRange( AddLayer( i, d ) );
 				}
@@ -92,8 +92,8 @@ namespace charleroi.server
 			float b = MathX.LerpTo( 1, config.Ratio, (float)(i + 1) / config.Slice );
 
 			if ( direction.HasValue == false ) {
-				var d = new Vector3( Rand.Float( -1, 1 ), Rand.Float( -1, 1 ), 0 );
-				d = d / d.Length * config.Delta;
+				var d = new Vector3( Rand.Float( -1, 1 ), Rand.Float( -1, 1 ), 0 ).Normal;
+				d *= config.Delta;
 				d.x = (lastDirection.x + d.x) / 2.0f;
 				d.y = (lastDirection.y + d.y) / 2.0f;
 				// Vector3.Reflect
@@ -111,7 +111,7 @@ namespace charleroi.server
 				Position = lastPos + lastDirection + Vector3.Up * sliceHeight,
 				Slice = 12,
 				Direction = direction.Value,
-				RenderColor = Color.Random,
+			//	RenderColor = Color.Random,
 				Parent = config
 			};
 
@@ -125,6 +125,7 @@ namespace charleroi.server
 			if ( i > config.Slice / 2 ) {
 				var stick = new CTreeStick {
 					Position = log.Position,
+					Direction = Vector3.Random,
 					Parent = log
 				};
 				ret.Add( stick );
@@ -186,15 +187,14 @@ namespace charleroi.server
 		protected virtual Mesh BuildMesh() { return null; }
 		protected virtual Vector3[] BuildCollider() { return null; }
 
-		protected static Vector3 GetCircle( int i, int tessellation )
-		{
+		protected static Vector3 GetCircleNormal( int i, int tessellation) {
 			var angle = i * (float)Math.PI * 2 / tessellation;
 
 			var dx = (float)Math.Cos( angle );
 			var dy = (float)Math.Sin( angle );
 
 			var v = new Vector3( dx, dy, 0 );
-			return v;
+			return v.Normal;
 		}
 		protected static Vector2 Planar( Vector3 pos, Vector3 uAxis, Vector3 vAxis ) {
 			return new Vector2()
@@ -222,21 +222,21 @@ namespace charleroi.server
 	{
 		protected override Mesh BuildMesh() {
 			var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
-			var Size = new Vector2( 2, 2 );
+			var Size = new Vector2( 4, 4 );
 
 			var verts = new List<SimpleVertex>();
 			var indices = new List<int>();
-			var a = Vector3.VectorAngle( Direction );
 
 			for ( int i = 0; i <= Slice; i++ )
 			{
-				var normal = GetCircle( i, Slice ).Normal;
+				var normal = GetCircleNormal( i, Slice);
 				var texCoord = new Vector2( (float)i / Slice, 0.0f );
 
 				var pos = normal + Vector3.Up * Height;
 				pos.x *= Size.x / 2;
 				pos.y *= Size.y / 2;
-				pos += Direction;
+				pos *= Rotation.LookAt( Direction.Cross(Vector3.Forward), Vector3.Up );
+
 				GetTangentBinormal( normal, out Vector3 u, out Vector3 v );
 
 				verts.Add( new SimpleVertex()
@@ -250,6 +250,8 @@ namespace charleroi.server
 				pos = normal + Vector3.Zero * Height; // Vector3.Down
 				pos.x *= Size.x / 2;
 				pos.y *= Size.y / 2;
+				pos *= Rotation.LookAt( Direction.Cross( Vector3.Forward ), Vector3.Up );
+
 				texCoord.y = 1.0f;
 				verts.Add( new SimpleVertex()
 				{
@@ -271,10 +273,49 @@ namespace charleroi.server
 				indices.Add( i * 2 + 2 );
 			}
 
+			CreateCap( Slice, Height, Vector3.Up, indices, verts, Size, Direction );
+			CreateCap( Slice, Height, Vector3.Zero, indices, verts, Size, Vector3.Zero );
+
 			mesh.CreateVertexBuffer<SimpleVertex>( verts.Count, SimpleVertex.Layout, verts.ToArray() );
 			mesh.CreateIndexBuffer( indices.Count, indices.ToArray() );
 
 			return mesh;
+		}
+		private void CreateCap( int tesselation, float height, Vector3 normal, List<int> indices, List<SimpleVertex> verts, Vector2 size, Vector3 direction )
+		{
+			for ( int i = 0; i < tesselation - 2; i++ )
+			{
+				if ( normal.z > 0 )
+				{
+					indices.Add( verts.Count );
+					indices.Add( verts.Count + (i + 1) % tesselation );
+					indices.Add( verts.Count + (i + 2) % tesselation );
+				}
+				else
+				{
+					indices.Add( verts.Count );
+					indices.Add( verts.Count + (i + 2) % tesselation );
+					indices.Add( verts.Count + (i + 1) % tesselation );
+				}
+			}
+
+			// Create cap vertices.
+			for ( int i = 0; i < tesselation; i++ )
+			{
+				var pos = GetCircleNormal( i, tesselation ) + normal * height;
+				pos.x *= size.x / 2;
+				pos.y *= size.y / 2;
+				pos *= Rotation.LookAt( Direction.Cross( Vector3.Forward ), Vector3.Up );
+				GetTangentBinormal( normal, out Vector3 u, out Vector3 v );
+
+				verts.Add( new SimpleVertex()
+				{
+					normal = normal,
+					position = pos,
+					tangent = u,
+					texcoord = Planar( (Position + pos) / 32, u, v )
+				} );
+			}
 		}
 	}
 
@@ -302,7 +343,7 @@ namespace charleroi.server
 			var indices = new List<int>();
 
 			for ( int i = 0; i <= Slice; i++ ) {
-				var normal = GetCircle( i, Slice ).Normal;
+				var normal = GetCircleNormal( i, Slice);
 				var texCoord = new Vector2( (float)i / Slice, 0.0f );
 
 				var pos = normal + Vector3.Up * Height;
@@ -382,7 +423,7 @@ namespace charleroi.server
 
 			// Create cap vertices.
 			for ( int i = 0; i < tesselation; i++ ) {
-				var pos = GetCircle( i, tesselation ).Normal + normal * height;
+				var pos = GetCircleNormal( i, tesselation ) + normal * height;
 				pos.x *= size.x / 2;
 				pos.y *= size.y / 2;
 				pos += direction;
