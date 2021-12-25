@@ -120,7 +120,7 @@ namespace charleroi.server
 			log.Slice = 12;
 			log.Direction = direction.Value;
 
-			if ( i == config.Slice - 1 )
+			if ( i == stop - 1 )
 				log.TopCap = true;
 			if ( i == 0 )
 				log.BotCap = true;
@@ -174,7 +174,8 @@ namespace charleroi.server
 		}
 
 		private Mesh BuildMesh( ) {
-			var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
+			var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_bark.vmat" ) );
+			//var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
 
 			int tesselation = Slice;
 			if ( tesselation <= 0 || tesselation > 32 )
