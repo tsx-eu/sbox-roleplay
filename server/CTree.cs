@@ -39,24 +39,22 @@ namespace charleroi.server
 	class CTreeBuilder {
 		private readonly CTree config;
 		private readonly float sliceHeight;
-		private CTreeBuilder parent;
 		private Vector3 lastPos;
-		private Vector3 firstDelta;
-		private Vector3 lastDelta;
+		private Vector3 firstDirection;
+		private Vector3 lastDirection;
 		private int fork;
 		private int start;
 		private int stop;
 
-		public CTreeBuilder( CTree root) {
+		public CTreeBuilder( CTree root ) {
 			config = root;
-			parent = null;
 			sliceHeight = root.Size.z / root.Slice;
 			fork = root.Fork;
 			start = 0;
 			stop = root.Slice;
 			lastPos = root.Position - Vector3.Up * sliceHeight;
-			firstDelta = Vector3.Zero;
-			lastDelta = Vector3.Zero;
+			firstDirection = Vector3.Zero;
+			lastDirection = Vector3.Zero;
 		}
 
 		public List<CTreeLog> Build() {
@@ -70,7 +68,7 @@ namespace charleroi.server
 					var f = Fork( i );
 					logs.AddRange( f.Build() );
 
-					var d = f.firstDelta;
+					var d = f.firstDirection;
 					d.x = -d.x;
 					d.y = -d.y;
 					d.z = 0f;
@@ -91,44 +89,36 @@ namespace charleroi.server
 		private CTreeBuilder Fork(int position) {
 			var builder = new CTreeBuilder( config );
 			builder.lastPos = lastPos;
-			builder.lastDelta = lastDelta;
+			builder.lastDirection = lastDirection;
 			builder.fork = (--fork)/2;
 			builder.start = position;
 			builder.stop = stop--;
-			builder.parent = this;
 			return builder;
 		}
 
-		private CTreeLog AddLayer( int i, Vector3? delta = null ) {
+		private CTreeLog AddLayer( int i, Vector3? direction = null ) {
 			float a = MathX.LerpTo( 1, config.Ratio, (float)(i + 0) / config.Slice );
 			float b = MathX.LerpTo( 1, config.Ratio, (float)(i + 1) / config.Slice );
 
-			if ( delta.HasValue == false ) {
+			if ( direction.HasValue == false ) {
 				var d = new Vector3( Rand.Float( -1, 1), Rand.Float( -1, 1), 0 );
 				d = d / d.Length * config.Delta;
-				d.x = (lastDelta.x + d.x) / 2.0f;
-				d.y = (lastDelta.y + d.y) / 2.0f;
+				d.x = (lastDirection.x + d.x) / 2.0f;
+				d.y = (lastDirection.y + d.y) / 2.0f;
 				d.z = Rand.Float( -config.Delta, config.Delta );
-				delta = d;
+				direction = d;
 			}
 
 			if ( i == start )
-				firstDelta = delta.Value;
+				firstDirection = direction.Value;
 
 			var log = new CTreeLog();
 			log.SrcSize = new Vector2( config.Size.x * a, config.Size.y * a );
 			log.DstSize = new Vector2( config.Size.x * b, config.Size.y * b );
 			log.Height = sliceHeight;
-			log.Position = lastPos + lastDelta + Vector3.Up * sliceHeight;
+			log.Position = lastPos + lastDirection + Vector3.Up * sliceHeight;
 			log.Slice = 12;
-			log.Direction = delta.Value;
-
-			if ( parent != null )
-				log.RenderColor = Color.Red;
-			else if( fork == 0 )
-				log.RenderColor = Color.Green;
-			else
-				log.RenderColor = Color.Orange;
+			log.Direction = direction.Value;
 
 			if ( i == config.Slice - 1 )
 				log.TopCap = true;
@@ -136,7 +126,7 @@ namespace charleroi.server
 				log.BotCap = true;
 
 			lastPos = log.Position;
-			lastDelta = delta.Value;
+			lastDirection = direction.Value;
 
 			return log;
 		}
