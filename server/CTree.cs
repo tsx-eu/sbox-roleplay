@@ -86,11 +86,11 @@ namespace charleroi.server
 			return logs;
 		}
 
-		private CTreeBuilder Fork(int position) {
+		private CTreeBuilder Fork( int position ) {
 			var builder = new CTreeBuilder( config );
 			builder.lastPos = lastPos;
 			builder.lastDirection = lastDirection;
-			builder.fork = (--fork)/2;
+			builder.fork = (--fork) / 2;
 			builder.start = position;
 			builder.stop = stop--;
 			return builder;
@@ -101,7 +101,7 @@ namespace charleroi.server
 			float b = MathX.LerpTo( 1, config.Ratio, (float)(i + 1) / config.Slice );
 
 			if ( direction.HasValue == false ) {
-				var d = new Vector3( Rand.Float( -1, 1), Rand.Float( -1, 1), 0 );
+				var d = new Vector3( Rand.Float( -1, 1 ), Rand.Float( -1, 1 ), 0 );
 				d = d / d.Length * config.Delta;
 				d.x = (lastDirection.x + d.x) / 2.0f;
 				d.y = (lastDirection.y + d.y) / 2.0f;
@@ -132,21 +132,13 @@ namespace charleroi.server
 		}
 	}
 
-	public partial class CTreeLog : ModelEntity
+	public partial class CTreePart : ModelEntity
 	{
 		[Net, Change( nameof( CreateMesh ) )] public bool TopCap { get; set; } = false;
 		[Net, Change( nameof( CreateMesh ) )] public bool BotCap { get; set; } = false;
-		[Net, Change( nameof( CreateMesh ) )] public int Slice { get; set; } = 12;
+		[Net, Change( nameof( CreateMesh ) )] public int Slice { get; set; } = 3;
 		[Net, Change( nameof( CreateMesh ) )] public float Height { get; set; } = 32.0f;
-
-		[Net, Change( nameof( CreateMesh ) )] public Vector2 SrcSize { get; set; }
-		[Net, Change( nameof( CreateMesh ) )] public Vector2 DstSize { get; set; }
-
 		[Net, Change( nameof( CreateMesh ) )] public Vector3 Direction { get; set; } = Vector3.Up;
-
-		public CTreeLog() {
-			
-		}
 
 		public override void Spawn() {
 			CreateMesh();
@@ -155,38 +147,99 @@ namespace charleroi.server
 		public override void ClientSpawn() {
 			CreateMesh();
 		}
+		protected virtual bool HasValidProperties() {
+			if ( Height == 0 || Slice <= 2 || Slice > 32 || Direction.LengthSquared == 0 )
+				return false;
+			return true;
+		}
 
-		private void CreateMesh() {
-			if ( Height == 0 || SrcSize.x + SrcSize.y == 0 || DstSize.x + DstSize.y == 0 || Slice <= 3 || Direction.LengthSquared == 0 )
+		protected virtual void CreateMesh() {
+			if ( !HasValidProperties() )
 				return;
 
 			var mesh = BuildMesh();
 			var collider = BuildCollider();
 
-			var model = Model.Builder
-				.AddMesh( mesh )
-				.AddCollisionHull( collider )
-				.Create();
+			var builder = Model.Builder.AddMesh( mesh );
+			if ( collider != null )
+				builder.AddCollisionHull( collider );
+			var model = builder.Create();
 
 			SetModel( model );
-			SetupPhysicsFromModel( PhysicsMotionType.Static );
+			if ( collider != null )
+				SetupPhysicsFromModel( PhysicsMotionType.Static );
 			EnableAllCollisions = true;
 		}
+		protected virtual Mesh BuildMesh() { return null; }
+		protected virtual Vector3[] BuildCollider() { return null; }
 
-		private Mesh BuildMesh( ) {
+		protected static Vector3 GetCircleVector( int i, int tessellation ) {
+			var angle = i * (float)Math.PI * 2 / tessellation;
+
+			var dx = (float)Math.Cos( angle );
+			var dy = (float)Math.Sin( angle );
+
+			var v = new Vector3( dx, dy, 0 );
+			return v.Normal;
+		}
+		protected static Vector2 Planar( Vector3 pos, Vector3 uAxis, Vector3 vAxis ) {
+			return new Vector2()
+			{
+				x = Vector3.Dot( uAxis, pos ),
+				y = Vector3.Dot( vAxis, pos )
+			};
+		}
+		protected static void GetTangentBinormal( Vector3 normal, out Vector3 tangent, out Vector3 binormal ) {
+			var t1 = Vector3.Cross( normal, Vector3.Forward );
+			var t2 = Vector3.Cross( normal, Vector3.Up );
+			if ( t1.Length > t2.Length )
+			{
+				tangent = t1;
+			}
+			else
+			{
+				tangent = t2;
+			}
+			binormal = Vector3.Cross( normal, tangent ).Normal;
+		}
+	}
+
+	public partial class CTreeStick : CTreePart
+	{
+		protected override Mesh BuildMesh() {
+			var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
+
+			return mesh;
+		}
+	}
+
+	public partial class CTreeLog : CTreePart
+	{
+		[Net, Change( nameof( CreateMesh ) )] public Vector2 SrcSize { get; set; }
+		[Net, Change( nameof( CreateMesh ) )] public Vector2 DstSize { get; set; }
+
+		public CTreeLog() {
+			
+		}
+
+		protected override bool HasValidProperties() {
+			if ( !base.HasValidProperties() )
+				return false;
+			if ( SrcSize.x + SrcSize.y == 0 || DstSize.x + DstSize.y == 0 )
+				return false;
+			return true;
+		}
+
+		protected override Mesh BuildMesh( ) {
 			var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_bark.vmat" ) );
 			//var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
-
-			int tesselation = Slice;
-			if ( tesselation <= 0 || tesselation > 32 )
-				tesselation = 12;
 
 			var verts = new List<SimpleVertex>();
 			var indices = new List<int>();
 
-			for ( int i = 0; i <= tesselation; i++ ) {
-				var normal = GetCircleVector( i, tesselation );
-				var texCoord = new Vector2( (float)i / tesselation, 0.0f );
+			for ( int i = 0; i <= Slice; i++ ) {
+				var normal = GetCircleVector( i, Slice );
+				var texCoord = new Vector2( (float)i / Slice, 0.0f );
 
 				var pos = normal + Vector3.Up * Height;
 				pos.x *= DstSize.x / 2;
@@ -213,7 +266,7 @@ namespace charleroi.server
 				} );
 			}
 
-			for ( int i = 0; i < tesselation; i++ ) {
+			for ( int i = 0; i < Slice; i++ ) {
 				indices.Add( i * 2 );
 				indices.Add( i * 2 + 1 );
 				indices.Add( i * 2 + 2 );
@@ -224,16 +277,16 @@ namespace charleroi.server
 			}
 
 			if ( TopCap ) 
-				CreateCap( tesselation, Height, Vector3.Up, indices, verts, DstSize, Direction );
+				CreateCap( Slice, Height, Vector3.Up, indices, verts, DstSize, Direction );
 			if( BotCap )
-				CreateCap( tesselation, Height, Vector3.Zero, indices, verts, SrcSize, Vector3.Zero );
+				CreateCap( Slice, Height, Vector3.Zero, indices, verts, SrcSize, Vector3.Zero );
 
 			mesh.CreateVertexBuffer<SimpleVertex>( verts.Count, SimpleVertex.Layout, verts.ToArray() );
 			mesh.CreateIndexBuffer( indices.Count, indices.ToArray() );
 
 			return mesh;
 		}
-		private Vector3[] BuildCollider() {
+		protected override Vector3[] BuildCollider() {
 			var vert = new List<Vector3>();
 
 			vert.Add( new Vector3( -SrcSize.x / 2, -SrcSize.y / 2, 0 ) );
@@ -278,33 +331,6 @@ namespace charleroi.server
 					texcoord = Planar( (Position + pos) / 32, u, v )
 				} );
 			}
-		}
-
-		private static Vector3 GetCircleVector( int i, int tessellation ) {
-			var angle = i * (float)Math.PI * 2 / tessellation;
-
-			var dx = (float)Math.Cos( angle );
-			var dy = (float)Math.Sin( angle );
-
-			var v = new Vector3( dx, dy, 0 );
-			return v.Normal;
-		}
-		private static Vector2 Planar( Vector3 pos, Vector3 uAxis, Vector3 vAxis ) {
-			return new Vector2() {
-				x = Vector3.Dot( uAxis, pos ),
-				y = Vector3.Dot( vAxis, pos )
-			};
-		}
-		private static void GetTangentBinormal( Vector3 normal, out Vector3 tangent, out Vector3 binormal ) {
-			var t1 = Vector3.Cross( normal, Vector3.Forward );
-			var t2 = Vector3.Cross( normal, Vector3.Up );
-			if ( t1.Length > t2.Length ) {
-				tangent = t1;
-			}
-			else {
-				tangent = t2;
-			}
-			binormal = Vector3.Cross( normal, tangent ).Normal;
 		}
 	}
 }
