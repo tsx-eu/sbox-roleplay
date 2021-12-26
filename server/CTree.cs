@@ -220,27 +220,21 @@ namespace charleroi.server
 
 	public partial class CTreeStick : CTreePart
 	{
-		protected override Mesh BuildMesh() {
-			var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
-			var Size = new Vector2( 4, 4 );
-
-			var verts = new List<SimpleVertex>();
-			var indices = new List<int>();
-
-			for ( int i = 0; i <= Slice; i++ )
-			{
-				var normal = GetCircleNormal( i, Slice);
+		void Create( ref List<SimpleVertex> verts, ref List<int> indices, Vector2 Size, Vector3 position, Vector3 direction)
+		{
+			for ( int i = 0; i <= Slice; i++ ) {
+				var normal = GetCircleNormal( i, Slice );
 				var texCoord = new Vector2( (float)i / Slice, 0.0f );
 
 				var pos = normal + Vector3.Up * Height;
 				pos.x *= Size.x / 2;
 				pos.y *= Size.y / 2;
-				pos *= Rotation.LookAt( Direction.Cross(Vector3.Forward), Vector3.Up );
+				pos *= Rotation.LookAt( direction.Cross( Vector3.Forward ), Vector3.Up );
+				pos += position;
 
 				GetTangentBinormal( normal, out Vector3 u, out Vector3 v );
 
-				verts.Add( new SimpleVertex()
-				{
+				verts.Add( new SimpleVertex() {
 					normal = normal,
 					position = pos,
 					tangent = u,
@@ -250,11 +244,11 @@ namespace charleroi.server
 				pos = normal + Vector3.Zero * Height; // Vector3.Down
 				pos.x *= Size.x / 2;
 				pos.y *= Size.y / 2;
-				pos *= Rotation.LookAt( Direction.Cross( Vector3.Forward ), Vector3.Up );
+				pos *= Rotation.LookAt( direction.Cross( Vector3.Forward ), Vector3.Up );
+				pos += position;
 
 				texCoord.y = 1.0f;
-				verts.Add( new SimpleVertex()
-				{
+				verts.Add( new SimpleVertex() {
 					normal = normal,
 					position = pos,
 					tangent = v, // u ?
@@ -262,26 +256,46 @@ namespace charleroi.server
 				} );
 			}
 
-			for ( int i = 0; i < Slice; i++ )
-			{
-				indices.Add( i * 2 );
-				indices.Add( i * 2 + 1 );
-				indices.Add( i * 2 + 2 );
+			for ( int i = 0; i < Slice; i++ ) {
+				indices.Add( verts.Count + i * 2 );
+				indices.Add( verts.Count + i * 2 + 1 );
+				indices.Add( verts.Count + i * 2 + 2 );
 
-				indices.Add( i * 2 + 1 );
-				indices.Add( i * 2 + 3 );
-				indices.Add( i * 2 + 2 );
+				indices.Add( verts.Count + i * 2 + 1 );
+				indices.Add( verts.Count + i * 2 + 3 );
+				indices.Add( verts.Count + i * 2 + 2 );
+			}
+		}
+
+		protected void Build( ref List<SimpleVertex> verts, ref List<int> indices ) {
+			var Size = new Vector2( 4, 4 );
+			var pos = Vector3.Zero;
+			var dir = Direction;
+
+			for ( int i = 0; i < 5; i++ ) {
+				dir = Vector3.Lerp( dir, Vector3.Random, 0.25f );
+				Create( ref verts, ref indices, Size, pos, dir );
+				pos += (Vector3.Up * Height) * Rotation.LookAt( dir.Cross( Vector3.Forward ), Vector3.Up );
 			}
 
-			CreateCap( Slice, Height, Vector3.Up, indices, verts, Size, Direction );
-			CreateCap( Slice, Height, Vector3.Zero, indices, verts, Size, Vector3.Zero );
+
+			//CreateCap( ref verts, ref indices, Slice, Height, Vector3.Up, Size, pos, dir );
+		}
+
+		protected override Mesh BuildMesh() {
+			var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
+
+			var verts = new List<SimpleVertex>();
+			var indices = new List<int>();
+
+			Build( ref verts, ref indices);
 
 			mesh.CreateVertexBuffer<SimpleVertex>( verts.Count, SimpleVertex.Layout, verts.ToArray() );
 			mesh.CreateIndexBuffer( indices.Count, indices.ToArray() );
 
 			return mesh;
 		}
-		private void CreateCap( int tesselation, float height, Vector3 normal, List<int> indices, List<SimpleVertex> verts, Vector2 size, Vector3 direction )
+		private void CreateCap( ref List<SimpleVertex> verts, ref List<int> indices, int tesselation, float height, Vector3 normal, Vector2 size, Vector3 position, Vector3 direction )
 		{
 			for ( int i = 0; i < tesselation - 2; i++ )
 			{
@@ -305,7 +319,8 @@ namespace charleroi.server
 				var pos = GetCircleNormal( i, tesselation ) + normal * height;
 				pos.x *= size.x / 2;
 				pos.y *= size.y / 2;
-				pos *= Rotation.LookAt( Direction.Cross( Vector3.Forward ), Vector3.Up );
+				pos *= Rotation.LookAt( direction.Cross( Vector3.Forward ), Vector3.Up );
+				pos += position;
 				GetTangentBinormal( normal, out Vector3 u, out Vector3 v );
 
 				verts.Add( new SimpleVertex()
