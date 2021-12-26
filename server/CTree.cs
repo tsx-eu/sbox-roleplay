@@ -123,12 +123,18 @@ namespace charleroi.server
 			ret.Add( log );
 
 			if ( i > config.Slice / 2 ) {
-				var stick = new CTreeStick {
-					Position = log.Position,
-					Direction = Vector3.Random,
-					Parent = log
-				};
-				ret.Add( stick );
+
+				for ( int j = 0; j < 3; j++ )
+				{
+					var stick = new CTreeStick
+					{
+						Position = log.Position,
+						Direction = Vector3.Random,
+						Iteration = stop-i+1,
+						Parent = log
+					};
+					ret.Add( stick );
+				}
 			}
 
 
@@ -220,8 +226,21 @@ namespace charleroi.server
 
 	public partial class CTreeStick : CTreePart
 	{
+		[Net, Change( nameof( CreateMesh ) )] public int Iteration { get; set; } = 1;
+
+		protected override bool HasValidProperties()
+		{
+			if ( !base.HasValidProperties() )
+				return false;
+			if ( Iteration <= 0 )
+				return false;
+			return true;
+		}
+
 		void Create( ref List<SimpleVertex> verts, ref List<int> indices, Vector2 Size, Vector3 position, Vector3 direction)
 		{
+			int s = verts.Count;
+
 			for ( int i = 0; i <= Slice; i++ ) {
 				var normal = GetCircleNormal( i, Slice );
 				var texCoord = new Vector2( (float)i / Slice, 0.0f );
@@ -229,7 +248,7 @@ namespace charleroi.server
 				var pos = normal + Vector3.Up * Height;
 				pos.x *= Size.x / 2;
 				pos.y *= Size.y / 2;
-				pos *= Rotation.LookAt( direction.Cross( Vector3.Forward ), Vector3.Up );
+				pos *= Rotation.LookAt( direction );
 				pos += position;
 
 				GetTangentBinormal( normal, out Vector3 u, out Vector3 v );
@@ -244,7 +263,7 @@ namespace charleroi.server
 				pos = normal + Vector3.Zero * Height; // Vector3.Down
 				pos.x *= Size.x / 2;
 				pos.y *= Size.y / 2;
-				pos *= Rotation.LookAt( direction.Cross( Vector3.Forward ), Vector3.Up );
+				pos *= Rotation.LookAt( direction );
 				pos += position;
 
 				texCoord.y = 1.0f;
@@ -257,13 +276,13 @@ namespace charleroi.server
 			}
 
 			for ( int i = 0; i < Slice; i++ ) {
-				indices.Add( verts.Count + i * 2 );
-				indices.Add( verts.Count + i * 2 + 1 );
-				indices.Add( verts.Count + i * 2 + 2 );
+				indices.Add( s + i * 2 );
+				indices.Add( s + i * 2 + 1 );
+				indices.Add( s + i * 2 + 2 );
 
-				indices.Add( verts.Count + i * 2 + 1 );
-				indices.Add( verts.Count + i * 2 + 3 );
-				indices.Add( verts.Count + i * 2 + 2 );
+				indices.Add( s + i * 2 + 1 );
+				indices.Add( s + i * 2 + 3 );
+				indices.Add( s + i * 2 + 2 );
 			}
 		}
 
@@ -272,10 +291,10 @@ namespace charleroi.server
 			var pos = Vector3.Zero;
 			var dir = Direction;
 
-			for ( int i = 0; i < 5; i++ ) {
+			for ( int i = 0; i < Iteration; i++ ) {
 				dir = Vector3.Lerp( dir, Vector3.Random, 0.25f );
 				Create( ref verts, ref indices, Size, pos, dir );
-				pos += (Vector3.Up * Height) * Rotation.LookAt( dir.Cross( Vector3.Forward ), Vector3.Up );
+				pos += (Vector3.Up * Height) * Rotation.LookAt( dir );
 			}
 
 
