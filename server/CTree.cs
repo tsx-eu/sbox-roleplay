@@ -237,7 +237,7 @@ namespace charleroi.server
 			return true;
 		}
 
-		void Create( ref List<SimpleVertex> verts, ref List<int> indices, Vector2 Size, Vector3 position, Vector3 direction)
+		void Create( ref List<SimpleVertex> verts, ref List<int> indices, Vector2 Size, Vector3 position, Vector3 direction, Vector3 lastDirection )
 		{
 			int s = verts.Count;
 
@@ -263,7 +263,7 @@ namespace charleroi.server
 				pos = normal + Vector3.Zero * Height; // Vector3.Down
 				pos.x *= Size.x / 2;
 				pos.y *= Size.y / 2;
-				pos *= Rotation.LookAt( direction );
+				pos *= Rotation.LookAt( lastDirection );
 				pos += position;
 
 				texCoord.y = 1.0f;
@@ -289,12 +289,15 @@ namespace charleroi.server
 		protected void Build( ref List<SimpleVertex> verts, ref List<int> indices ) {
 			var Size = new Vector2( 4, 4 );
 			var pos = Vector3.Zero;
+			var lastDir = Direction;
 			var dir = Direction;
 
 			for ( int i = 0; i < Iteration; i++ ) {
-				dir = Vector3.Lerp( dir, Vector3.Random, 0.25f );
-				Create( ref verts, ref indices, Size, pos, dir );
+				Create( ref verts, ref indices, Size, pos, dir, lastDir);
 				pos += (Vector3.Up * Height) * Rotation.LookAt( dir );
+
+				lastDir = dir;
+				dir = Vector3.Lerp( lastDir, Vector3.Random, 0.25f );
 			}
 
 
