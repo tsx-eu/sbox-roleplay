@@ -123,18 +123,14 @@ namespace charleroi.server
 			ret.Add( log );
 
 			if ( i > config.Slice / 2 ) {
-
-				for ( int j = 0; j < 3; j++ )
-				{
-					var stick = new CTreeStick
-					{
-						Position = log.Position,
-						Direction = Vector3.Random,
-						Iteration = stop-i+1,
-						Parent = log
-					};
-					ret.Add( stick );
-				}
+				var stick = new CTreeStick {
+					Position = log.Position,
+					Direction = Vector3.Random,
+					Iteration = stop-i+2,
+					Height = sliceHeight/2,
+					Parent = log
+				};
+				ret.Add( stick );
 			}
 
 
@@ -237,7 +233,7 @@ namespace charleroi.server
 			return true;
 		}
 
-		void Create( ref List<SimpleVertex> verts, ref List<int> indices, Vector2 Size, Vector3 position, Vector3 direction, Vector3 lastDirection )
+		void Create( ref List<SimpleVertex> verts, ref List<int> indices, Vector2 srcSize, Vector2 dstSize, Vector3 position, List<Vector3> directions, int dirIndex)
 		{
 			int s = verts.Count;
 
@@ -245,10 +241,12 @@ namespace charleroi.server
 				var normal = GetCircleNormal( i, Slice );
 				var texCoord = new Vector2( (float)i / Slice, 0.0f );
 
-				var pos = normal + Vector3.Up * Height;
-				pos.x *= Size.x / 2;
-				pos.y *= Size.y / 2;
-				pos *= Rotation.LookAt( direction );
+				var pos = normal;
+				pos.x *= dstSize.x / 2;
+				pos.y *= dstSize.y / 2;
+				//pos *= Rotation.LookAt( directions[dirIndex + 1] );
+				pos += Vector3.Up * Height;
+				pos *= Rotation.LookAt( directions[dirIndex + 0] );
 				pos += position;
 
 				GetTangentBinormal( normal, out Vector3 u, out Vector3 v );
@@ -260,10 +258,12 @@ namespace charleroi.server
 					texcoord = texCoord
 				} );
 
-				pos = normal + Vector3.Zero * Height; // Vector3.Down
-				pos.x *= Size.x / 2;
-				pos.y *= Size.y / 2;
-				pos *= Rotation.LookAt( lastDirection );
+				pos = normal;
+				pos.x *= srcSize.x / 2;
+				pos.y *= srcSize.y / 2;
+				//pos *= Rotation.LookAt( directions[dirIndex + 0] );
+				pos += Vector3.Up * 0;
+				pos *= Rotation.LookAt( directions[dirIndex - 1] );
 				pos += position;
 
 				texCoord.y = 1.0f;
@@ -286,22 +286,25 @@ namespace charleroi.server
 			}
 		}
 
-		protected void Build( ref List<SimpleVertex> verts, ref List<int> indices ) {
-			var Size = new Vector2( 4, 4 );
-			var pos = Vector3.Zero;
-			var lastDir = Direction.Normal;
-			var dir = lastDir;
+		protected void Build( ref List<SimpleVertex> verts, ref List<int> indices, Vector2 Size) {
 
-			for ( int i = 0; i < Iteration; i++ ) {
-				Create( ref verts, ref indices, Size, pos, dir, lastDir);
-				pos += (Vector3.Up * Height) * Rotation.LookAt( dir );
+			for ( int j = 0; j < Iteration; j++ ) {
+				var pos = Vector3.Zero;
+				var dir = new List<Vector3>();
+				dir.Add( Vector3.Random.Normal );
+				for ( int i = 0; i < Iteration + 1; i++ )
+					dir.Add( Vector3.Lerp( dir[i], Vector3.Random.Normal, 0.25f ).Normal );
 
-				lastDir = dir;
-				dir = Vector3.Lerp( lastDir, Vector3.Random, 0.25f ).Normal;
+
+				for ( int i = 1; i <= Iteration; i++ ) {
+
+					float a = MathX.LerpTo( 1, 0.0f, (float)(i - 1) / Iteration );
+					float b = MathX.LerpTo( 1, 0.0f, (float)(i + 0) / Iteration );
+
+					Create( ref verts, ref indices, Size*a, Size*b, pos, dir, i );
+					pos += (Vector3.Up * Height) * Rotation.LookAt( dir[i] );
+				}
 			}
-
-
-			//CreateCap( ref verts, ref indices, Slice, Height, Vector3.Up, Size, pos, dir );
 		}
 
 		protected override Mesh BuildMesh() {
@@ -309,50 +312,14 @@ namespace charleroi.server
 
 			var verts = new List<SimpleVertex>();
 			var indices = new List<int>();
+			var Size = new Vector2( 4, 4 );
 
-			Build( ref verts, ref indices);
+			Build( ref verts, ref indices, Size);
 
 			mesh.CreateVertexBuffer<SimpleVertex>( verts.Count, SimpleVertex.Layout, verts.ToArray() );
 			mesh.CreateIndexBuffer( indices.Count, indices.ToArray() );
 
 			return mesh;
-		}
-		private void CreateCap( ref List<SimpleVertex> verts, ref List<int> indices, int tesselation, float height, Vector3 normal, Vector2 size, Vector3 position, Vector3 direction )
-		{
-			for ( int i = 0; i < tesselation - 2; i++ )
-			{
-				if ( normal.z > 0 )
-				{
-					indices.Add( verts.Count );
-					indices.Add( verts.Count + (i + 1) % tesselation );
-					indices.Add( verts.Count + (i + 2) % tesselation );
-				}
-				else
-				{
-					indices.Add( verts.Count );
-					indices.Add( verts.Count + (i + 2) % tesselation );
-					indices.Add( verts.Count + (i + 1) % tesselation );
-				}
-			}
-
-			// Create cap vertices.
-			for ( int i = 0; i < tesselation; i++ )
-			{
-				var pos = GetCircleNormal( i, tesselation ) + normal * height;
-				pos.x *= size.x / 2;
-				pos.y *= size.y / 2;
-				pos *= Rotation.LookAt( direction.Cross( Vector3.Forward ), Vector3.Up );
-				pos += position;
-				GetTangentBinormal( normal, out Vector3 u, out Vector3 v );
-
-				verts.Add( new SimpleVertex()
-				{
-					normal = normal,
-					position = pos,
-					tangent = u,
-					texcoord = Planar( (Position + pos) / 32, u, v )
-				} );
-			}
 		}
 	}
 
