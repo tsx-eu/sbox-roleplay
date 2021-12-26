@@ -128,6 +128,7 @@ namespace charleroi.server
 					Direction = Vector3.Random,
 					Iteration = stop-i+2,
 					Height = sliceHeight/2,
+					Fork = 2,
 					Parent = log
 				};
 				ret.Add( stick );
@@ -223,12 +224,13 @@ namespace charleroi.server
 	public partial class CTreeStick : CTreePart
 	{
 		[Net, Change( nameof( CreateMesh ) )] public int Iteration { get; set; } = 1;
+		[Net, Change( nameof( CreateMesh ) )] public int Fork { get; set; } = 1;
 
 		protected override bool HasValidProperties()
 		{
 			if ( !base.HasValidProperties() )
 				return false;
-			if ( Iteration <= 0 )
+			if ( Iteration <= 0 || Fork <= 0 )
 				return false;
 			return true;
 		}
@@ -286,35 +288,42 @@ namespace charleroi.server
 			}
 		}
 
-		protected void Build( ref List<SimpleVertex> verts, ref List<int> indices, Vector2 Size) {
+		protected void Build( ref List<SimpleVertex> verts, ref List<int> indices, Vector3 startPosition, Vector2 Size, int length, int fork) {
+			if ( length <= 0 )
+				return;
+			if ( Size.Length <= 1f )
+				return;
 
-			for ( int j = 0; j < Iteration; j++ ) {
-				var pos = Vector3.Zero;
+			for ( int j = 0; j < fork; j++ ) {
+				var pos = startPosition;
 				var dir = new List<Vector3>();
 				dir.Add( Vector3.Random.Normal );
-				for ( int i = 0; i < Iteration + 1; i++ )
+				for ( int i = 0; i < length + 1; i++ )
 					dir.Add( Vector3.Lerp( dir[i], Vector3.Random.Normal, 0.25f ).Normal );
 
 
-				for ( int i = 1; i <= Iteration; i++ ) {
-
-					float a = MathX.LerpTo( 1, 0.0f, (float)(i - 1) / Iteration );
-					float b = MathX.LerpTo( 1, 0.0f, (float)(i + 0) / Iteration );
+				for ( int i = 1; i <= length; i++ ) {
+					float a = MathX.LerpTo( 1, 0.0f, (float)(i - 1) / length );
+					float b = MathX.LerpTo( 1, 0.0f, (float)(i + 0) / length );
 
 					Create( ref verts, ref indices, Size*a, Size*b, pos, dir, i );
+					if( i >= length/2 )
+						Build( ref verts, ref indices, pos, Size*(a+b)/2, length-1, 1);
+
 					pos += (Vector3.Up * Height) * Rotation.LookAt( dir[i] );
 				}
 			}
 		}
 
 		protected override Mesh BuildMesh() {
+			//var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_bark.vmat" ) );
 			var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
 
 			var verts = new List<SimpleVertex>();
 			var indices = new List<int>();
 			var Size = new Vector2( 4, 4 );
 
-			Build( ref verts, ref indices, Size);
+			Build( ref verts, ref indices, Vector3.Zero, Size, Iteration, Fork);
 
 			mesh.CreateVertexBuffer<SimpleVertex>( verts.Count, SimpleVertex.Layout, verts.ToArray() );
 			mesh.CreateIndexBuffer( indices.Count, indices.ToArray() );
