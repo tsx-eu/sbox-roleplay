@@ -289,15 +289,15 @@ namespace charleroi.server
 		protected void Build( ref List<SimpleVertex> verts, ref List<int> indices ) {
 			var Size = new Vector2( 4, 4 );
 			var pos = Vector3.Zero;
-			var lastDir = Direction;
-			var dir = Direction;
+			var lastDir = Direction.Normal;
+			var dir = lastDir;
 
 			for ( int i = 0; i < Iteration; i++ ) {
 				Create( ref verts, ref indices, Size, pos, dir, lastDir);
 				pos += (Vector3.Up * Height) * Rotation.LookAt( dir );
 
 				lastDir = dir;
-				dir = Vector3.Lerp( lastDir, Vector3.Random, 0.25f );
+				dir = Vector3.Lerp( lastDir, Vector3.Random, 0.25f ).Normal;
 			}
 
 
