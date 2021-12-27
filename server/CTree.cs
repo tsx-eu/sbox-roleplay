@@ -132,6 +132,12 @@ namespace charleroi.server
 					Parent = log
 				};
 				ret.Add( stick );
+
+				var leaf = new CTreeLeaf {
+					Position = log.Position,
+					Parent = log
+				};
+				ret.Add( leaf );
 			}
 
 
@@ -144,8 +150,6 @@ namespace charleroi.server
 
 	public partial class CTreePart : ModelEntity
 	{
-		[Net, Change( nameof( CreateMesh ) )] public bool TopCap { get; set; } = false;
-		[Net, Change( nameof( CreateMesh ) )] public bool BotCap { get; set; } = false;
 		[Net, Change( nameof( CreateMesh ) )] public int Slice { get; set; } = 6;
 		[Net, Change( nameof( CreateMesh ) )] public float Height { get; set; } = 32.0f;
 		[Net, Change( nameof( CreateMesh ) )] public Vector3 Direction { get; set; } = Vector3.Up;
@@ -218,6 +222,167 @@ namespace charleroi.server
 				tangent = t2;
 			}
 			binormal = Vector3.Cross( normal, tangent ).Normal;
+		}
+	}
+
+	public partial class CTreeLeaf : CTreePart
+	{
+		private List<List<Vector2>> Tiles() {
+			List<Vector2> Tile_1() {
+				var pos = new List<Vector2>();
+				pos.Add( new Vector2( 700, 512 ) );
+				pos.Add( new Vector2( 950, 446 ) );
+				pos.Add( new Vector2( 1520, 0 ) );
+				pos.Add( new Vector2( 2048, 0 ) );
+				pos.Add( new Vector2( 2048, 950 ) );
+				pos.Add( new Vector2( 1520, 950 ) );
+				pos.Add( new Vector2( 950, 632 ) );
+				pos.Add( new Vector2( 700, 632 ) );
+				return pos;
+			}
+			List<Vector2> Tile_2() {
+				var pos = new List<Vector2>();
+				pos.Add( new Vector2( 1214, 64 ) );
+				pos.Add( new Vector2( 960, 8 ) );
+				pos.Add( new Vector2( 0, 8 ) );
+				pos.Add( new Vector2( 0, 700 ) );
+
+				pos.Add( new Vector2( 440, 640 ) );
+				pos.Add( new Vector2( 700, 512 ) );
+				pos.Add( new Vector2( 950, 446 ) );
+
+				pos.Add( new Vector2( 1214, 128 ) );
+				return pos;
+			}
+			List<Vector2> Tile_3() {
+				var pos = new List<Vector2>();
+				pos.Add( new Vector2( 380, 2048 ) );
+				pos.Add( new Vector2( 185, 1470 ) );
+				pos.Add( new Vector2( 0, 1470 ) );
+				pos.Add( new Vector2( 0, 1920 ) );
+				pos.Add( new Vector2( 256, 2048 ) );
+
+				return pos;
+			}
+			List<Vector2> Tile_4() {
+				var pos = new List<Vector2>();
+				pos.Add( new Vector2( 356, 1985 ) );
+				pos.Add( new Vector2( 192, 1466 ) );
+				pos.Add( new Vector2( 0, 1280 ) );
+				pos.Add( new Vector2( 0, 700 ) );
+				pos.Add( new Vector2( 440, 640 ) );
+				pos.Add( new Vector2( 760, 640 ) );
+				pos.Add( new Vector2( 700, 1024 ) );
+				pos.Add( new Vector2( 570, 1466 ) );
+				pos.Add( new Vector2( 448, 1985 ) );
+
+				return pos;
+			}
+			List<Vector2> Tile_5() {
+				var pos = new List<Vector2>();
+				pos.Add( new Vector2( 570, 1466 ) );
+				pos.Add( new Vector2( 700, 1024 ) );
+				pos.Add( new Vector2( 760, 640 ) );
+				pos.Add( new Vector2( 950, 632 ) );
+				pos.Add( new Vector2( 1452, 900 ) );
+				pos.Add( new Vector2( 700, 1466 ) );
+
+				return pos;
+			}
+			List<Vector2> Tile_6() {
+				var pos = new List<Vector2>();
+				pos.Add( new Vector2( 650, 1600 ) );
+				pos.Add( new Vector2( 1215, 1850 ) );
+				pos.Add( new Vector2( 1215, 2048 ) );
+				pos.Add( new Vector2( 570, 2048 ) );
+				pos.Add( new Vector2( 570, 1661 ) );
+
+				return pos;
+			}
+			List<Vector2> Tile_7() {
+				var pos = new List<Vector2>();
+				pos.Add( new Vector2( 700, 1466 ) );
+				pos.Add( new Vector2( 1470, 950 ) );
+				pos.Add( new Vector2( 2048, 950 ) );
+				pos.Add( new Vector2( 2048, 2048 ) );
+				pos.Add( new Vector2( 1215, 2048 ) );
+				pos.Add( new Vector2( 1215, 1850 ) );
+				pos.Add( new Vector2( 700, 1600 ) );
+
+				return pos;
+			}
+
+			var list = new List<List<Vector2>>();
+			list.Add( Tile_1() );
+			list.Add( Tile_2() );
+			list.Add( Tile_3() );
+			list.Add( Tile_4() );
+			list.Add( Tile_5() );
+			list.Add( Tile_6() );
+			list.Add( Tile_7() );
+			return list;
+		}
+
+		private void Create( ref List<SimpleVertex> verts, ref List<int> indices )
+		{
+			GetTangentBinormal( Vector3.Left, out Vector3 u, out Vector3 v );
+
+			var tiles = Tiles();
+			var tile = tiles[Rand.Int( 0, tiles.Count - 1 )];
+
+			float scale = 32.0f;
+			Vector2 size = new Vector2( 2048, 2048 );
+
+			Vector2 min = tile[0];
+			Vector2 attach = Vector2.Lerp( tile[0], tile[tile.Count-1], 0.5f );
+			Vector2 direction = Vector2.Lerp( tile[tile.Count / 2], tile[tile.Count / 2 + 1], 0.5f ) - attach;
+
+			foreach ( var t in tile ) {
+				if ( t.x < min.x )
+					min.x = t.x;
+				if ( t.y < min.y )
+					min.y = t.y;
+			}
+
+			var rot = Rotation.LookAt( new Vector3( direction.x, 0, direction.y ).Normal );
+			var pivot = new Vector3( (attach.x - min.x) / scale, 0, -(attach.y - min.y) / scale );
+
+			foreach (var p in tile) {
+				var pos = new Vector3( (p.x - min.x) / scale, 0, -(p.y - min.y) / scale );
+				pos = (pos-pivot) * rot;
+
+				verts.Add( new SimpleVertex() {
+					normal = Vector3.Left,
+					position = pos,
+					tangent = u,
+					texcoord = new Vector2( p.x / size.x, p.y / size.y )
+				} );
+			}
+
+			for(int i=0; i<=verts.Count/3; i++) {
+				indices.Add( i+0 );
+				indices.Add( i+1 );
+				indices.Add( verts.Count-2-i );
+
+				indices.Add( verts.Count-2-i );
+				indices.Add( verts.Count-1-i );
+				indices.Add( i+0 );
+			}
+		}
+
+		protected override Mesh BuildMesh()
+		{
+			var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_branch.vmat" ) );
+
+			var verts = new List<SimpleVertex>();
+			var indices = new List<int>();
+
+			Create(ref verts, ref indices);
+
+			mesh.CreateVertexBuffer<SimpleVertex>( verts.Count, SimpleVertex.Layout, verts.ToArray() );
+			mesh.CreateIndexBuffer( indices.Count, indices.ToArray() );
+
+			return mesh;
 		}
 	}
 
@@ -335,6 +500,8 @@ namespace charleroi.server
 	public partial class CTreeLog : CTreePart {
 		[Net, Change( nameof( CreateMesh ) )] public Vector2 SrcSize { get; set; }
 		[Net, Change( nameof( CreateMesh ) )] public Vector2 DstSize { get; set; }
+		[Net, Change( nameof( CreateMesh ) )] public bool TopCap { get; set; } = false;
+		[Net, Change( nameof( CreateMesh ) )] public bool BotCap { get; set; } = false;
 
 		public CTreeLog() {
 			
