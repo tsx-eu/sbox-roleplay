@@ -373,6 +373,8 @@ namespace charleroi.server
 		protected override Mesh BuildMesh()
 		{
 			var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_branch.vmat" ) );
+			//var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_branch_dry.vmat" ) );
+			//var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_branch_dead.vmat" ) );
 
 			var verts = new List<SimpleVertex>();
 			var indices = new List<int>();
@@ -481,8 +483,8 @@ namespace charleroi.server
 		}
 
 		protected override Mesh BuildMesh() {
-			//var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_bark.vmat" ) );
-			var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
+			var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_bark.vmat" ) );
+			//var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
 
 			var verts = new List<SimpleVertex>();
 			var indices = new List<int>();
