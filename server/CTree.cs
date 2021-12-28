@@ -132,12 +132,6 @@ namespace charleroi.server
 					Parent = log
 				};
 				ret.Add( stick );
-
-				var leaf = new CTreeLeaf {
-					Position = log.Position,
-					Parent = log
-				};
-				ret.Add( leaf );
 			}
 
 
@@ -145,6 +139,38 @@ namespace charleroi.server
 			lastDirection = direction.Value;
 
 			return ret;
+		}
+	}
+
+	public class ProceduralMesh {
+		private Mesh mesh;
+		private List<SimpleVertex> verts;
+		private List<int> indices;
+
+		public int Count { get { return verts.Count; } }
+
+		public ProceduralMesh(Material mat) {
+			mesh = new Mesh( mat );
+			verts = new List<SimpleVertex>();
+			indices = new List<int>();
+		}
+
+		public void Add( SimpleVertex vertex ) {
+			verts.Add( vertex );
+		}
+		public void Add( int a ) {
+			indices.Add( a );
+		}
+		public void Add(int a, int b, int c) {
+			indices.Add( a );
+			indices.Add( b );
+			indices.Add( c );
+		}
+
+		public Mesh Build() {
+			mesh.CreateVertexBuffer<SimpleVertex>( verts.Count, SimpleVertex.Layout, verts.ToArray() );
+			mesh.CreateIndexBuffer( indices.Count, indices.ToArray() );
+			return mesh;
 		}
 	}
 
@@ -178,20 +204,22 @@ namespace charleroi.server
 			if ( !HasValidProperties() )
 				return;
 
-			var mesh = BuildMesh();
+			var meshes = BuildMesh();
 			var collider = BuildCollider();
 
-			var builder = Model.Builder.AddMesh( mesh );
+			var builder = Model.Builder;
+			foreach(var mesh in meshes )
+				builder.AddMesh( mesh );
 			if ( collider != null )
 				builder.AddCollisionHull( collider );
-			var model = builder.Create();
 
+			var model = builder.Create();
 			SetModel( model );
 			if ( collider != null )
 				SetupPhysicsFromModel( PhysicsMotionType.Static );
 			EnableAllCollisions = true;
 		}
-		protected virtual Mesh BuildMesh() { return null; }
+		protected virtual List<Mesh> BuildMesh() { return null; }
 		protected virtual Vector3[] BuildCollider() { return null; }
 
 		protected static Vector3 GetCircleNormal( int i, int tessellation) {
@@ -225,8 +253,19 @@ namespace charleroi.server
 		}
 	}
 
-	public partial class CTreeLeaf : CTreePart
+	public partial class CTreeStick : CTreePart
 	{
+		[Net, Change( nameof( CreateMesh ) )] public int Iteration { get; set; } = 1;
+		[Net, Change( nameof( CreateMesh ) )] public int Fork { get; set; } = 1;
+
+		protected override bool HasValidProperties() {
+			if ( !base.HasValidProperties() )
+				return false;
+			if ( Iteration <= 0 || Fork <= 0 )
+				return false;
+			return true;
+		}
+
 		private List<List<Vector2>> Tiles() {
 			List<Vector2> Tile_1() {
 				var pos = new List<Vector2>();
@@ -323,8 +362,7 @@ namespace charleroi.server
 			return list;
 		}
 
-		private void Create( ref List<SimpleVertex> verts, ref List<int> indices )
-		{
+		private void CreateLeaf( ProceduralMesh mesh ) {
 			GetTangentBinormal( Vector3.Left, out Vector3 u, out Vector3 v );
 
 			var tiles = Tiles();
@@ -334,7 +372,7 @@ namespace charleroi.server
 			Vector2 size = new Vector2( 2048, 2048 );
 
 			Vector2 min = tile[0];
-			Vector2 attach = Vector2.Lerp( tile[0], tile[tile.Count-1], 0.5f );
+			Vector2 attach = Vector2.Lerp( tile[0], tile[tile.Count - 1], 0.5f );
 			Vector2 direction = Vector2.Lerp( tile[tile.Count / 2], tile[tile.Count / 2 + 1], 0.5f ) - attach;
 
 			foreach ( var t in tile ) {
@@ -347,11 +385,11 @@ namespace charleroi.server
 			var rot = Rotation.LookAt( new Vector3( direction.x, 0, direction.y ).Normal );
 			var pivot = new Vector3( (attach.x - min.x) / scale, 0, -(attach.y - min.y) / scale );
 
-			foreach (var p in tile) {
+			foreach ( var p in tile ) {
 				var pos = new Vector3( (p.x - min.x) / scale, 0, -(p.y - min.y) / scale );
-				pos = (pos-pivot) * rot;
+				pos = (pos - pivot) * rot;
 
-				verts.Add( new SimpleVertex() {
+				mesh.Add( new SimpleVertex() {
 					normal = Vector3.Left,
 					position = pos,
 					tangent = u,
@@ -359,52 +397,19 @@ namespace charleroi.server
 				} );
 			}
 
-			for(int i=0; i<=verts.Count/3; i++) {
-				indices.Add( i+0 );
-				indices.Add( i+1 );
-				indices.Add( verts.Count-2-i );
+			for ( int i = 0; i <= mesh.Count / 3; i++ ) {
+				mesh.Add( i + 0 );
+				mesh.Add( i + 1 );
+				mesh.Add( mesh.Count - 2 - i );
 
-				indices.Add( verts.Count-2-i );
-				indices.Add( verts.Count-1-i );
-				indices.Add( i+0 );
+				mesh.Add( mesh.Count - 2 - i );
+				mesh.Add( mesh.Count - 1 - i );
+				mesh.Add( i + 0 );
 			}
 		}
-
-		protected override Mesh BuildMesh()
+		private void CreateStick( ProceduralMesh mesh, Vector2 srcSize, Vector2 dstSize, Vector3 position, List<Vector3> directions, int dirIndex)
 		{
-			var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_branch.vmat" ) );
-			//var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_branch_dry.vmat" ) );
-			//var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_branch_dead.vmat" ) );
-
-			var verts = new List<SimpleVertex>();
-			var indices = new List<int>();
-
-			Create(ref verts, ref indices);
-
-			mesh.CreateVertexBuffer<SimpleVertex>( verts.Count, SimpleVertex.Layout, verts.ToArray() );
-			mesh.CreateIndexBuffer( indices.Count, indices.ToArray() );
-
-			return mesh;
-		}
-	}
-
-	public partial class CTreeStick : CTreePart
-	{
-		[Net, Change( nameof( CreateMesh ) )] public int Iteration { get; set; } = 1;
-		[Net, Change( nameof( CreateMesh ) )] public int Fork { get; set; } = 1;
-
-		protected override bool HasValidProperties()
-		{
-			if ( !base.HasValidProperties() )
-				return false;
-			if ( Iteration <= 0 || Fork <= 0 )
-				return false;
-			return true;
-		}
-
-		void Create( ref List<SimpleVertex> verts, ref List<int> indices, Vector2 srcSize, Vector2 dstSize, Vector3 position, List<Vector3> directions, int dirIndex)
-		{
-			int s = verts.Count;
+			int s = mesh.Count;
 
 			for ( int i = 0; i <= Slice; i++ ) {
 				var normal = GetCircleNormal( i, Slice );
@@ -420,7 +425,7 @@ namespace charleroi.server
 
 				GetTangentBinormal( normal, out Vector3 u, out Vector3 v );
 
-				verts.Add( new SimpleVertex() {
+				mesh.Add( new SimpleVertex() {
 					normal = normal,
 					position = pos,
 					tangent = u,
@@ -436,7 +441,7 @@ namespace charleroi.server
 				pos += position;
 
 				texCoord.y = 1.0f;
-				verts.Add( new SimpleVertex() {
+				mesh.Add( new SimpleVertex() {
 					normal = normal,
 					position = pos,
 					tangent = v, // u ?
@@ -445,17 +450,17 @@ namespace charleroi.server
 			}
 
 			for ( int i = 0; i < Slice; i++ ) {
-				indices.Add( s + i * 2 );
-				indices.Add( s + i * 2 + 1 );
-				indices.Add( s + i * 2 + 2 );
+				mesh.Add( s + i * 2 );
+				mesh.Add( s + i * 2 + 1 );
+				mesh.Add( s + i * 2 + 2 );
 
-				indices.Add( s + i * 2 + 1 );
-				indices.Add( s + i * 2 + 3 );
-				indices.Add( s + i * 2 + 2 );
+				mesh.Add( s + i * 2 + 1 );
+				mesh.Add( s + i * 2 + 3 );
+				mesh.Add( s + i * 2 + 2 );
 			}
 		}
 
-		protected void Build( ref List<SimpleVertex> verts, ref List<int> indices, Vector3 startPosition, Vector2 Size, int length, int fork) {
+		protected void Build( ProceduralMesh stick, ProceduralMesh leaf, Vector3 startPosition, Vector2 Size, int length, int fork) {
 			if ( length <= 0 )
 				return;
 			if ( Size.Length <= 1f )
@@ -473,27 +478,27 @@ namespace charleroi.server
 					float a = MathX.LerpTo( 1, 0.0f, (float)(i - 1) / length );
 					float b = MathX.LerpTo( 1, 0.0f, (float)(i + 0) / length );
 
-					Create( ref verts, ref indices, Size*a, Size*b, pos, dir, i );
+					CreateStick( stick, Size*a, Size*b, pos, dir, i );
 					if( i >= length/2 )
-						Build( ref verts, ref indices, pos, Size*(a+b)/2, length-1, 1);
+						Build( stick, leaf, pos, Size*(a+b)/2, length-1, 1);
 
 					pos += (Vector3.Up * Height) * Rotation.LookAt( dir[i] );
 				}
 			}
 		}
 
-		protected override Mesh BuildMesh() {
-			var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_bark.vmat" ) );
-			//var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
+		protected override List<Mesh> BuildMesh() {
+			var stick = new ProceduralMesh( Material.Load( "models/sbox_props/trees/oak/oak_bark.vmat" ) );
+			var leaf = new ProceduralMesh( Material.Load( "models/sbox_props/trees/oak/oak_branch.vmat" ) );
 
-			var verts = new List<SimpleVertex>();
-			var indices = new List<int>();
 			var Size = new Vector2( 4, 4 );
 
-			Build( ref verts, ref indices, Vector3.Zero, Size, Iteration, Fork);
+			Build( stick, leaf, Vector3.Zero, Size, Iteration, Fork );
+			CreateLeaf( leaf );
 
-			mesh.CreateVertexBuffer<SimpleVertex>( verts.Count, SimpleVertex.Layout, verts.ToArray() );
-			mesh.CreateIndexBuffer( indices.Count, indices.ToArray() );
+			var mesh = new List<Mesh>();
+			mesh.Add( stick.Build() );
+			mesh.Add( leaf.Build() );
 
 			return mesh;
 		}
@@ -517,12 +522,9 @@ namespace charleroi.server
 			return true;
 		}
 
-		protected override Mesh BuildMesh( ) {
-			var mesh = new Mesh( Material.Load( "models/sbox_props/trees/oak/oak_bark.vmat" ) );
-			//var mesh = new Mesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
-
-			var verts = new List<SimpleVertex>();
-			var indices = new List<int>();
+		protected override List<Mesh> BuildMesh( ) {
+			var mesh = new ProceduralMesh( Material.Load( "models/sbox_props/trees/oak/oak_bark.vmat" ) );
+			//var mesh = new ProceduralMesh( Material.Load( "materials/dev/reflectivity_30.vmat" ) );
 
 			for ( int i = 0; i <= Slice; i++ ) {
 				var normal = GetCircleNormal( i, Slice);
@@ -534,7 +536,7 @@ namespace charleroi.server
 				pos += Direction;
 				GetTangentBinormal( normal, out Vector3 u, out Vector3 v );
 
-				verts.Add( new SimpleVertex() {
+				mesh.Add( new SimpleVertex() {
 					normal = normal,
 					position = pos,
 					tangent = u,
@@ -545,7 +547,7 @@ namespace charleroi.server
 				pos.x *= SrcSize.x / 2;
 				pos.y *= SrcSize.y / 2;
 				texCoord.y = 1.0f;
-				verts.Add( new SimpleVertex() {
+				mesh.Add( new SimpleVertex() {
 					normal = normal,
 					position = pos,
 					tangent = v, // u ?
@@ -554,24 +556,21 @@ namespace charleroi.server
 			}
 
 			for ( int i = 0; i < Slice; i++ ) {
-				indices.Add( i * 2 );
-				indices.Add( i * 2 + 1 );
-				indices.Add( i * 2 + 2 );
+				mesh.Add( i * 2 );
+				mesh.Add( i * 2 + 1 );
+				mesh.Add( i * 2 + 2 );
 
-				indices.Add( i * 2 + 1 );
-				indices.Add( i * 2 + 3 );
-				indices.Add( i * 2 + 2 );
+				mesh.Add( i * 2 + 1 );
+				mesh.Add( i * 2 + 3 );
+				mesh.Add( i * 2 + 2 );
 			}
 
 			if ( TopCap ) 
-				CreateCap( Slice, Height, Vector3.Up, indices, verts, DstSize, Direction );
+				CreateCap( mesh, Slice, Height, Vector3.Up, DstSize, Direction );
 			if( BotCap )
-				CreateCap( Slice, Height, Vector3.Zero, indices, verts, SrcSize, Vector3.Zero );
+				CreateCap( mesh, Slice, Height, Vector3.Zero, SrcSize, Vector3.Zero );
 
-			mesh.CreateVertexBuffer<SimpleVertex>( verts.Count, SimpleVertex.Layout, verts.ToArray() );
-			mesh.CreateIndexBuffer( indices.Count, indices.ToArray() );
-
-			return mesh;
+			return new List<Mesh> { mesh.Build() };
 		}
 		protected override Vector3[] BuildCollider() {
 			var vert = new List<Vector3>();
@@ -589,17 +588,17 @@ namespace charleroi.server
 			return vert.ToArray();
 		}
 
-		private void CreateCap( int tesselation, float height, Vector3 normal, List<int> indices, List<SimpleVertex> verts, Vector2 size, Vector3 direction ) {
+		private void CreateCap( ProceduralMesh mesh, int tesselation, float height, Vector3 normal,Vector2 size, Vector3 direction ) {
 			for ( int i = 0; i < tesselation - 2; i++ ) {
 				if ( normal.z > 0 ) {
-					indices.Add( verts.Count );
-					indices.Add( verts.Count + (i + 1) % tesselation );
-					indices.Add( verts.Count + (i + 2) % tesselation );
+					mesh.Add( mesh.Count );
+					mesh.Add( mesh.Count + (i + 1) % tesselation );
+					mesh.Add( mesh.Count + (i + 2) % tesselation );
 				}
 				else {
-					indices.Add( verts.Count );
-					indices.Add( verts.Count + (i + 2) % tesselation );
-					indices.Add( verts.Count + (i + 1) % tesselation );
+					mesh.Add( mesh.Count );
+					mesh.Add( mesh.Count + (i + 2) % tesselation );
+					mesh.Add( mesh.Count + (i + 1) % tesselation );
 				}
 			}
 
@@ -611,7 +610,7 @@ namespace charleroi.server
 				pos += direction;
 				GetTangentBinormal( normal, out Vector3 u, out Vector3 v );
 
-				verts.Add( new SimpleVertex() {
+				mesh.Add( new SimpleVertex() {
 					normal = normal,
 					position = pos,
 					tangent = u,
