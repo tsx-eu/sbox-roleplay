@@ -28,13 +28,16 @@ namespace charleroi.server
 				.Ignore( client )
 				.Run();
 
+			int w = Rand.Int( 14, 20 );
+			int f = Rand.Int( 0, 3 );
+
 			var ent = new CTree();
-			ent.Size = new Vector3( 16, 16, 192 );
+			ent.Size = new Vector3( w, w, 128 + f*32 );
 			ent.Slice = (int)(ent.Size.z/32);
-			ent.Delta = 8.0f;
+			ent.Delta = Rand.Float( 8.0f, 16.0f );
 			ent.Position = tr.EndPos;
-			ent.Ratio = 0.5f;
-			ent.Fork = 1;
+			ent.Ratio = Rand.Float( 0.1f, 0.25f );
+			ent.Fork = f;
 			ent.Build();
 		}
 
