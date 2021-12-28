@@ -127,7 +127,7 @@ namespace charleroi.server
 					Position = log.Position,
 					Direction = Vector3.Random,
 					Iteration = stop-i+2,
-					Height = sliceHeight/2,
+					Height = sliceHeight,
 					Fork = 2,
 					Parent = log
 				};
@@ -362,7 +362,7 @@ namespace charleroi.server
 			return list;
 		}
 
-		private void CreateLeaf( ProceduralMesh mesh ) {
+		private void CreateLeaf( ProceduralMesh mesh, Vector3 position, List<Vector3> directions, int dirIndex ) {
 			GetTangentBinormal( Vector3.Left, out Vector3 u, out Vector3 v );
 
 			var tiles = Tiles();
@@ -374,6 +374,7 @@ namespace charleroi.server
 			Vector2 min = tile[0];
 			Vector2 attach = Vector2.Lerp( tile[0], tile[tile.Count - 1], 0.5f );
 			Vector2 direction = Vector2.Lerp( tile[tile.Count / 2], tile[tile.Count / 2 + 1], 0.5f ) - attach;
+			int s = mesh.Count;
 
 			foreach ( var t in tile ) {
 				if ( t.x < min.x )
@@ -382,12 +383,17 @@ namespace charleroi.server
 					min.y = t.y;
 			}
 
-			var rot = Rotation.LookAt( new Vector3( direction.x, 0, direction.y ).Normal );
+			var rot1 = Rotation.LookAt( new Vector3( direction.x, 0, direction.y ).Normal );
+			var rot2 = Rotation.LookAt( directions[dirIndex + 0] );
+
 			var pivot = new Vector3( (attach.x - min.x) / scale, 0, -(attach.y - min.y) / scale );
 
 			foreach ( var p in tile ) {
 				var pos = new Vector3( (p.x - min.x) / scale, 0, -(p.y - min.y) / scale );
-				pos = (pos - pivot) * rot;
+				pos = (pos - pivot) * rot1;
+				pos *= rot2;
+
+				pos += position;
 
 				mesh.Add( new SimpleVertex() {
 					normal = Vector3.Left,
@@ -397,17 +403,17 @@ namespace charleroi.server
 				} );
 			}
 
-			for ( int i = 0; i <= mesh.Count / 3; i++ ) {
-				mesh.Add( i + 0 );
-				mesh.Add( i + 1 );
-				mesh.Add( mesh.Count - 2 - i );
+			for ( int i = 0; i <= tile.Count / 3; i++ ) {
+				mesh.Add( s + i + 0 );
+				mesh.Add( s + i + 1 );
+				mesh.Add( s + tile.Count - 2 - i );
 
-				mesh.Add( mesh.Count - 2 - i );
-				mesh.Add( mesh.Count - 1 - i );
-				mesh.Add( i + 0 );
+				mesh.Add( s + tile.Count - 2 - i );
+				mesh.Add( s + tile.Count - 1 - i );
+				mesh.Add( s + i + 0 );
 			}
 		}
-		private void CreateStick( ProceduralMesh mesh, Vector2 srcSize, Vector2 dstSize, Vector3 position, List<Vector3> directions, int dirIndex)
+		private void CreateStick( ProceduralMesh mesh, Vector3 position, List<Vector3> directions, int dirIndex, Vector2 srcSize, Vector2 dstSize)
 		{
 			int s = mesh.Count;
 
@@ -478,8 +484,10 @@ namespace charleroi.server
 					float a = MathX.LerpTo( 1, 0.0f, (float)(i - 1) / length );
 					float b = MathX.LerpTo( 1, 0.0f, (float)(i + 0) / length );
 
-					CreateStick( stick, Size*a, Size*b, pos, dir, i );
-					if( i >= length/2 )
+					CreateStick( stick, pos, dir, i, Size * a, Size * b);
+					CreateLeaf( leaf, pos, dir, i );
+
+					if ( i >= length/2 )
 						Build( stick, leaf, pos, Size*(a+b)/2, length-1, 1);
 
 					pos += (Vector3.Up * Height) * Rotation.LookAt( dir[i] );
@@ -494,7 +502,6 @@ namespace charleroi.server
 			var Size = new Vector2( 4, 4 );
 
 			Build( stick, leaf, Vector3.Zero, Size, Iteration, Fork );
-			CreateLeaf( leaf );
 
 			var mesh = new List<Mesh>();
 			mesh.Add( stick.Build() );
