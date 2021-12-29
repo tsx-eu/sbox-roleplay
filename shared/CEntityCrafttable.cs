@@ -103,7 +103,7 @@ namespace charleroi
 			return false;
 		}
 		public virtual bool IsUsable( Entity user ) {
-			return user is Player;
+			return user is CPlayer;
 		}
 
 		[ServerCmd]

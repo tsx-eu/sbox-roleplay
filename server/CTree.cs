@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using charleroi.client;
 using Sandbox;
 
 namespace charleroi.server
 {
-	public partial class CTree : ModelEntity
+	public partial class CTree : ModelEntity, IUse
 	{
 		[Net] public IList<CTreePart> logs { get; set; }
+		private TimeSince startMoving;
+		private float lastZ;
+
 		[Net] public float Ratio { get; set; } = 1.0f;
 		[Net] public int Slice { get; set; } = 8;
 		[Net] public float Delta { get; set; } = 8.0f;
@@ -32,31 +36,59 @@ namespace charleroi.server
 						collider.Add( c + i.Position - Position );
 					colliders.Add( collider );
 				}
-
 			} );
 
+			PhysicsClear();
 			PhysicsEnabled = false;
 			if ( colliders.Count > 0 ) {
 				var model = Model.Builder;
 				foreach(var collider in colliders )
 					model.AddCollisionHull(collider.ToArray());
+				model.WithMass( 1 );
 
 				SetModel( model.Create() );
-				SetupPhysicsFromModel( PhysicsMotionType.Dynamic, true );
+
+				SetupPhysicsFromModel( PhysicsMotionType.Static, true );
 			}
 		}
 
 		[Input]
-		public void Wake() {
-
+		public void Wake()
+		{
+			startMoving = 0;
 			PhysicsEnabled = true;
+			EnableAllCollisions = true;
+			UsePhysicsCollision = true;
 		}
 
 		[Input]
 		public void Break()
 		{
 			PhysicsClear();
+			PhysicsEnabled = false;
 			logs?.ToList().ForEach( i => i.Wake() );
+		}
+
+
+		[Event.Tick]
+		protected void OnTick() {
+			if ( IsServer && PhysicsEnabled ) {
+				var z = Math.Abs( Rotation.Up.z );
+				var deltaZ = Math.Abs( lastZ - z );
+				lastZ = z;
+
+				if ( z < 0.1f || startMoving > 10.0f || (startMoving > 1.0f && deltaZ < 0.1f ) )
+					Break();
+			}
+		}
+
+		public virtual bool OnUse( Entity user ) {
+			Wake();
+			Velocity = (Vector3.Up + Vector3.Random) * 1024.0f;
+			return false;
+		}
+		public virtual bool IsUsable( Entity user ) {
+			return user is CPlayer;
 		}
 	}
 
@@ -204,7 +236,7 @@ namespace charleroi.server
 		}
 	}
 
-	public partial class CTreePart : AnimEntity
+	public partial class CTreePart : AnimEntity, IUse
 	{
 		public List<Mesh> lastMeshes { get; private set; }
 		public Vector3[] lastCollider { get; private set; }
@@ -222,6 +254,17 @@ namespace charleroi.server
 			//CreateMesh();
 		}
 
+		public virtual bool OnUse( Entity user ) {
+			Host.AssertServer();
+			Wake();
+			return false;
+		}
+		public virtual bool IsUsable( Entity user ) {
+			if ( Parent != null )
+				return false;
+			return user is CPlayer;
+		}
+
 		[Input]
 		public void Build() {
 			CreateMesh();
@@ -231,6 +274,8 @@ namespace charleroi.server
 		public virtual void Wake() {
 			SetParent( null );
 			PhysicsEnabled = true;
+			EnableAllCollisions = true;
+			UsePhysicsCollision = true;
 		}
 
 		protected virtual bool HasValidProperties() {

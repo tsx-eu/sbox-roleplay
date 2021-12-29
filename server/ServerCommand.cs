@@ -39,16 +39,6 @@ namespace charleroi.server
 			ent.Ratio = Rand.Float( 0.1f, 0.25f );
 			ent.Fork = f;
 			ent.Build();
-
-			_ = Wake( ent );
-		}
-
-		public static async Task<bool> Wake( CTree tree ) {
-			await Task.Delay( 1000 );
-			tree.Wake();
-			await Task.Delay( 1000 );
-			tree.Break();
-			return true;
 		}
 
 		[ServerCmd( "rp_health" )]
