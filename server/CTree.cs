@@ -5,7 +5,7 @@ using Sandbox;
 
 namespace charleroi.server
 {
-	public partial class CTree : Entity
+	public partial class CTree : ModelEntity
 	{
 		[Net] public IList<CTreePart> logs { get; set; }
 		[Net] public float Ratio { get; set; } = 1.0f;
@@ -14,19 +14,49 @@ namespace charleroi.server
 		[Net] public Vector3 Size { get; set; }
 		[Net] public int Fork { get; set; } = 1;
 
-		public CTree() {
-		}
-
 		[Input]
 		public void Build() {
 			Host.AssertServer();
-			logs?.ToList().ForEach( i => {
-				i.Delete();
-			});
+			logs?.ToList().ForEach( i => i.Delete() );
+
+
+			List<List<Vector3>> colliders = new ();
 
 			var builder = new CTreeBuilder( this );
 			logs = builder.Build();
-			logs?.ToList().ForEach( i => i.Build());
+			logs?.ToList().ForEach( i => {
+				i.Build();
+				if ( i.lastCollider != null && i.lastCollider.Length > 0 ) {
+					List<Vector3> collider = new List<Vector3>();
+					foreach ( var c in i.lastCollider )
+						collider.Add( c + i.Position - Position );
+					colliders.Add( collider );
+				}
+
+			} );
+
+			PhysicsEnabled = false;
+			if ( colliders.Count > 0 ) {
+				var model = Model.Builder;
+				foreach(var collider in colliders )
+					model.AddCollisionHull(collider.ToArray());
+
+				SetModel( model.Create() );
+				SetupPhysicsFromModel( PhysicsMotionType.Dynamic, true );
+			}
+		}
+
+		[Input]
+		public void Wake() {
+
+			PhysicsEnabled = true;
+		}
+
+		[Input]
+		public void Break()
+		{
+			PhysicsClear();
+			logs?.ToList().ForEach( i => i.Wake() );
 		}
 	}
 
@@ -174,24 +204,33 @@ namespace charleroi.server
 		}
 	}
 
-	public partial class CTreePart : ModelEntity
+	public partial class CTreePart : AnimEntity
 	{
+		public List<Mesh> lastMeshes { get; private set; }
+		public Vector3[] lastCollider { get; private set; }
 		[Net, Change( nameof( CreateMesh ) )] public int Slice { get; set; } = 6;
 		[Net, Change( nameof( CreateMesh ) )] public float Height { get; set; } = 32.0f;
 		[Net, Change( nameof( CreateMesh ) )] public Vector3 Direction { get; set; } = Vector3.Up;
 
 		public override void Spawn() {
-			CreateMesh();
+			base.Spawn();
+			//CreateMesh();
 		}
 
 		public override void ClientSpawn() {
+			base.ClientSpawn();
+			//CreateMesh();
+		}
+
+		[Input]
+		public void Build() {
 			CreateMesh();
 		}
 
 		[Input]
-		public void Build()
-		{
-			CreateMesh();
+		public virtual void Wake() {
+			SetParent( null );
+			PhysicsEnabled = true;
 		}
 
 		protected virtual bool HasValidProperties() {
@@ -204,20 +243,22 @@ namespace charleroi.server
 			if ( !HasValidProperties() )
 				return;
 
-			var meshes = BuildMesh();
-			var collider = BuildCollider();
+			lastMeshes = BuildMesh();
+			lastCollider = BuildCollider();
 
 			var builder = Model.Builder;
-			foreach(var mesh in meshes )
+			foreach(var mesh in lastMeshes )
 				builder.AddMesh( mesh );
-			if ( collider != null )
-				builder.AddCollisionHull( collider );
+			if ( lastCollider != null )
+				builder.AddCollisionHull( lastCollider );
+
 
 			var model = builder.Create();
 			SetModel( model );
-			if ( collider != null )
-				SetupPhysicsFromModel( PhysicsMotionType.Static );
-			EnableAllCollisions = true;
+
+			PhysicsEnabled = false;
+			if ( lastCollider != null )
+				SetupPhysicsFromModel( PhysicsMotionType.Dynamic, true );
 		}
 		protected virtual List<Mesh> BuildMesh() { return null; }
 		protected virtual Vector3[] BuildCollider() { return null; }
@@ -264,6 +305,11 @@ namespace charleroi.server
 			if ( Iteration <= 0 || Fork <= 0 )
 				return false;
 			return true;
+		}
+
+		[Input]
+		public override void Wake() {
+			Delete();
 		}
 
 		private List<List<Vector2>> Tiles() {
@@ -519,12 +565,8 @@ namespace charleroi.server
 	public partial class CTreeLog : CTreePart {
 		[Net, Change( nameof( CreateMesh ) )] public Vector2 SrcSize { get; set; }
 		[Net, Change( nameof( CreateMesh ) )] public Vector2 DstSize { get; set; }
-		[Net, Change( nameof( CreateMesh ) )] public bool TopCap { get; set; } = false;
-		[Net, Change( nameof( CreateMesh ) )] public bool BotCap { get; set; } = false;
-
-		public CTreeLog() {
-			
-		}
+		[Net, Change( nameof( CreateMesh ) )] public bool TopCap { get; set; }
+		[Net, Change( nameof( CreateMesh ) )] public bool BotCap { get; set; }
 
 		protected override bool HasValidProperties() {
 			if ( !base.HasValidProperties() )
@@ -532,6 +574,13 @@ namespace charleroi.server
 			if ( SrcSize.x + SrcSize.y == 0 || DstSize.x + DstSize.y == 0 )
 				return false;
 			return true;
+		}
+
+		[Input]
+		public override void Wake() {
+			BotCap = TopCap = true;
+			CreateMesh();
+			base.Wake();
 		}
 
 		protected override List<Mesh> BuildMesh( ) {

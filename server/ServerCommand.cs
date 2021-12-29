@@ -32,13 +32,23 @@ namespace charleroi.server
 			int f = Rand.Int( 0, 3 );
 
 			var ent = new CTree();
-			ent.Size = new Vector3( w, w, 128 + f*32 );
+			ent.Size = new Vector3( w, w, 128 + f * 32 );
 			ent.Slice = (int)(ent.Size.z/32);
 			ent.Delta = Rand.Float( 8.0f, 16.0f );
 			ent.Position = tr.EndPos;
 			ent.Ratio = Rand.Float( 0.1f, 0.25f );
 			ent.Fork = f;
 			ent.Build();
+
+			_ = Wake( ent );
+		}
+
+		public static async Task<bool> Wake( CTree tree ) {
+			await Task.Delay( 1000 );
+			tree.Wake();
+			await Task.Delay( 1000 );
+			tree.Break();
+			return true;
 		}
 
 		[ServerCmd( "rp_health" )]
