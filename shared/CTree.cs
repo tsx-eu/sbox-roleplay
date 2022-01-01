@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using charleroi.client;
+using charleroi.shared;
 using Sandbox;
 
 namespace charleroi.server
 {
+	[Library( "tsx_tree" )]
 	public partial class CTree : ModelEntity, IUse
 	{
 		[Net] public IList<CTreePart> logs { get; set; }
 		private TimeSince startMoving;
 		private float lastZ;
 
-		[Net] public float Ratio { get; set; } = 1.0f;
+		[Net] public float Ratio { get; set; } = 0.25f;
 		[Net] public int Slice { get; set; } = 8;
 		[Net] public float Delta { get; set; } = 8.0f;
-		[Net] public Vector3 Size { get; set; }
-		[Net] public int Fork { get; set; } = 1;
+		[Net, Property] public Vector3 Size { get; set; }
+		[Net, Property] public int Fork { get; set; } = 1;
 
 		[Input]
 		public void Build() {
@@ -50,6 +52,12 @@ namespace charleroi.server
 
 				SetupPhysicsFromModel( PhysicsMotionType.Static, true );
 			}
+		}
+
+		public override void ClientSpawn()
+		{
+			//SceneObject.Flags.NeedsLightProbe = false;
+			base.ClientSpawn();
 		}
 
 		[Input]
@@ -201,38 +209,6 @@ namespace charleroi.server
 			lastDirection = direction.Value;
 
 			return ret;
-		}
-	}
-
-	public class ProceduralMesh {
-		private Mesh mesh;
-		private List<SimpleVertex> verts;
-		private List<int> indices;
-
-		public int Count { get { return verts.Count; } }
-
-		public ProceduralMesh(Material mat) {
-			mesh = new Mesh( mat );
-			verts = new List<SimpleVertex>();
-			indices = new List<int>();
-		}
-
-		public void Add( SimpleVertex vertex ) {
-			verts.Add( vertex );
-		}
-		public void Add( int a ) {
-			indices.Add( a );
-		}
-		public void Add(int a, int b, int c) {
-			indices.Add( a );
-			indices.Add( b );
-			indices.Add( c );
-		}
-
-		public Mesh Build() {
-			mesh.CreateVertexBuffer<SimpleVertex>( verts.Count, SimpleVertex.Layout, verts.ToArray() );
-			mesh.CreateIndexBuffer( indices.Count, indices.ToArray() );
-			return mesh;
 		}
 	}
 
