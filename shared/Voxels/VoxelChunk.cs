@@ -86,7 +86,8 @@ namespace Voxels
 					{
 						if ( _mesh == null )
 						{
-							var material = Material.Load( "materials/voxeltest.vmat" );
+							//var material = Material.Load( "materials/voxeltest.vmat" );
+							var material = Material.Load( "materials/dev/reflectivity_30.vmat" );
 
 							_mesh = new Mesh( material )
 							{
