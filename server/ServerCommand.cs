@@ -11,6 +11,12 @@ namespace charleroi.server
 {
 	class ServerCommand
 	{
+		[ServerCmd( "rp_stone" )]
+		public static void Cmd_Stone()
+		{
+			Entity.All.OfType<CStone>().ToList().ForEach( i => i.Build() );
+		}
+
 		[ServerCmd( "rp_tree" )]
 		public static void Cmd_Tree()
 		{

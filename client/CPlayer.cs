@@ -93,6 +93,27 @@ namespace charleroi.client
 			if ( IsServer ) {
 				CurrentXP = (Noise.Turbulence( 1, Time.Now ) + 1.0f) / 2.0f;
 				CurrentItemCount = (Noise.Turbulence( 1, Time.Now ) + 1.0f) / 2.0f;  // ItemsBag.Count / 40.0f;
+
+
+
+				if ( Input.Down( InputButton.Attack1 ) )
+				{
+					var tr = Trace.Ray( cl.Pawn.EyePos, cl.Pawn.EyePos + cl.Pawn.EyeRot.Forward * 1024 )
+						.UseHitboxes()
+						.Ignore( cl.Pawn )
+						.Run();
+
+					if ( tr.Hit ) {
+
+						var ent = tr.Entity;
+						while ( ent != null ) {
+							if ( ent is IAttackable i )
+								i.OnAttack( cl.Pawn, tr.EndPos );
+
+							ent = ent.Parent;
+						}
+					}
+				}
 			}
 
 			TickPlayerUse();
