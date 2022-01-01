@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using charleroi.client;
-using charleroi.shared;
 using Sandbox;
 using Voxels;
 
@@ -15,6 +14,8 @@ namespace charleroi.server
 		private Vector3 mins, maxs;
 		private ISignedDistanceField shape;
 		private float size = 32f;
+		private TimeSince lastAttack;
+		private HashSet<string> dig;
 
 		[Net] public VoxelVolume Voxels { get; private set; }
 
@@ -25,12 +26,19 @@ namespace charleroi.server
 			maxs = CollisionBounds.Maxs;
 
 			if ( Voxels == null ) {
-				shape = new BBoxSdf( new Vector3( -size, -size, -size ) / 4, new Vector3( size, size, size ) / 4, size );
-				Voxels = new VoxelVolume( new Vector3( 32_768f, 32_768f, 32_768f ), 256f, 4, NormalStyle.Smooth ); // NormalStyle.Smooth
+				shape = new BBoxSdf(Vector3.One * -size/2, Vector3.One * size / 2, size );
+				Voxels = new VoxelVolume( new Vector3( 32_768f, 32_768f, 32_768f ), 256f, 4, NormalStyle.Smooth );
 				Voxels.SetParent( this );
 			}
+			dig = new HashSet<string>();
+
+			Transmit = TransmitType.Always;
 
 			Build();
+		}
+
+		private Vector3 AlignPositionToGrid(Vector3 pos) {
+			return pos.SnapToGrid( size*2 );
 		}
 
 		[Input]
@@ -44,7 +52,13 @@ namespace charleroi.server
 
 			for ( float x = mins.x; x <= maxs.x; x += size ) {
 				for ( float y = mins.y; y <= maxs.y; y += size ) {
-					Voxels.Add( shape, Matrix.CreateTranslation( Position + new Vector3( x, y, maxs.z ) ), 0 );
+					var pos = AlignPositionToGrid( Position + new Vector3( x, y, maxs.z ) );
+					var hash = pos.ToString();
+
+					if ( dig.Contains( hash ) )
+						continue;
+
+					Voxels.Add( shape, Matrix.CreateTranslation(pos), 0 );
 					cpt++;
 
 					if ( cpt >= 32 ) {
@@ -59,26 +73,41 @@ namespace charleroi.server
 		public void OnAttack( Entity user, Vector3 hitpos ) {
 			Host.AssertServer();
 
-			for ( int x = -1; x <= 1; x++ )
-			{
-				for ( int y = -1; y <= 1; y++ )
-				{
-					for ( int z = -1; z <= 1; z++ )
-					{
-						var pos = hitpos + new Vector3( size * x, size * y, size * z - size/2 );
+			if ( lastAttack <= 0.1f )
+				return;
+			lastAttack = 0f;
 
-						if ( x == 0 && y == 0 && z == 0 ) {
-							Voxels.Subtract( shape, Matrix.CreateTranslation( pos ), 0 );
+			var scale = new Vector3( size, size, size );
+			hitpos.z -= size;
+
+
+			var digPos = AlignPositionToGrid( hitpos + Vector3.Zero - (scale / 2) );
+			dig.Add( digPos.ToString() );
+
+			Voxels.Subtract( shape, Matrix.CreateTranslation( digPos ), 0 );
+
+			for ( int x = -2; x <= 2; x++ ) {
+				for ( int y = -2; y <= 2; y++ ) {
+					for ( int z = -2; z <= 2; z++ ) {
+						var vec = new Vector3( x, y, z ) * scale;
+
+						var pos = AlignPositionToGrid(hitpos + vec - (scale/2));
+
+						if ( x == 0 && y == 0 && z == 0 )
 							continue;
-						}
 
 						if ( pos.z >= Position.z + maxs.z )
-							continue; 
+							continue;
 
-						//Voxels.Add( shape, Matrix.CreateTranslation( pos ), 0 );
+						if ( dig.Contains( pos.ToString() ) )
+							continue;
+
+						Voxels.Add( shape, Matrix.CreateTranslation( pos ), 0 );
 					}
 				}
 			}
+
+			Voxels.Subtract( shape, Matrix.CreateTranslation( digPos ), 0 );
 		}
 	}
 }
