@@ -24,7 +24,7 @@ namespace charleroi.server
 			Entity.All.Where( i => i is CTree ).ToList().ForEach( i => i.Delete() );
 
 			var client = ConsoleSystem.Caller?.Pawn;
-			var tr = Trace.Ray( client.EyePos, client.EyePos + client.EyeRot.Forward * 256 )
+			var tr = Trace.Ray( client.EyePos, client.EyePos + client.EyeRot.Forward * 512 )
 				.UseHitboxes()
 				.Ignore( client )
 				.Run();
@@ -34,8 +34,8 @@ namespace charleroi.server
 				.Ignore( client )
 				.Run();
 
-			int w = Rand.Int( 14, 20 );
-			int f = Rand.Int( 0, 3 );
+			int f = 1 + Rand.Int( 0, 3 );
+			int w = Rand.Int( 14, 20 ) + f*2;
 
 			var ent = new CTree();
 			ent.Size = new Vector3( w, w, 128 + f * 32 );

@@ -8,7 +8,7 @@ using Sandbox;
 namespace charleroi.server
 {
 	[Library( "tsx_tree" )]
-	public partial class CTree : ModelEntity, IUse
+	public partial class CTree : ModelEntity, IAttackable
 	{
 		[Net] public IList<CTreePart> logs { get; set; }
 		private TimeSince startMoving;
@@ -59,19 +59,14 @@ namespace charleroi.server
 			}
 		}
 
-		public override void ClientSpawn()
-		{
-			//SceneObject.Flags.NeedsLightProbe = false;
-			base.ClientSpawn();
-		}
-
 		[Input]
 		public void Wake()
 		{
-			startMoving = 0;
-			PhysicsEnabled = true;
-			EnableAllCollisions = true;
-			UsePhysicsCollision = true;
+			if ( PhysicsEnabled == false ) {
+				startMoving = 0;
+				PhysicsEnabled = true;
+				UsePhysicsCollision = true;
+			}
 		}
 
 		[Input]
@@ -82,15 +77,28 @@ namespace charleroi.server
 			logs?.ToList().ForEach( i => i.Wake() );
 		}
 
+		public void OnAttack( Entity user, Vector3 hitpos, Vector3 normal )
+		{
+			Host.AssertServer();
+			Wake();
+		}
+
 
 		[Event.Tick]
 		protected void OnTick() {
 			if ( IsServer && PhysicsEnabled ) {
+
+				if( PhysicsBody.Velocity.Length < 1.0f )
+					PhysicsGroup.ApplyImpulse( Vector3.Random * 32f, true );
+
+				if ( PhysicsBody.Velocity.Length < 32.0f )
+					PhysicsGroup.ApplyImpulse( PhysicsBody.Velocity.Normal * 32f, true );
+
 				var z = Math.Abs( Rotation.Up.z );
 				var deltaZ = Math.Abs( lastZ - z );
 				lastZ = z;
 
-				if ( z < 0.1f || startMoving > 10.0f || (startMoving > 1.0f && deltaZ < 0.1f ) )
+				if ( z < 0.1f || startMoving > 10.0f || (startMoving > 1.0f && deltaZ < 0.0001f) )
 					Break();
 			}
 		}
@@ -217,7 +225,7 @@ namespace charleroi.server
 		}
 	}
 
-	public partial class CTreePart : AnimEntity, IUse
+	public partial class CTreePart : AnimEntity
 	{
 		public List<Mesh> lastMeshes { get; private set; }
 		public Vector3[] lastCollider { get; private set; }
@@ -227,17 +235,6 @@ namespace charleroi.server
 
 		public override void Spawn() {
 			Transmit = TransmitType.Always;
-		}
-
-		public virtual bool OnUse( Entity user ) {
-			Host.AssertServer();
-			Wake();
-			return false;
-		}
-		public virtual bool IsUsable( Entity user ) {
-			if ( Parent != null )
-				return false;
-			return user is CPlayer;
 		}
 
 		[Input]

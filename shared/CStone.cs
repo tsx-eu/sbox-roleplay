@@ -97,8 +97,6 @@ namespace charleroi.server
 
 			var dst = AlignPositionToGrid( hitpos - normal * size);
 
-			var scale = new Vector3( size, size, size );
-
 			dig.Add( dst.ToString() );
 			Voxels.Subtract( shape, Matrix.CreateTranslation( dst ), 0 );
 
@@ -189,7 +187,7 @@ namespace charleroi.server
 					{
 						if ( _mesh == null )
 						{
-							var material = Material.Load( "materials/dev/reflectivity_30.vmat" );
+							var material = Material.Load( "materials/dev/reflectivity_10.vmat" );
 
 							_mesh = new Mesh( material )
 							{
