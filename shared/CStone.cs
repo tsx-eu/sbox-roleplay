@@ -30,12 +30,10 @@ namespace charleroi.server
 			if ( Voxels == null )
 			{
 				shape = new BBoxSdf( Vector3.One * -size / 2, Vector3.One * size / 2, size );
-				//				shape = new SphereSdf( Vector3.Zero, size, size );
 				Voxels = new OurVoxelVolume( new Vector3( 32_768f, 32_768f, 32_768f ), 256f, 4, NormalStyle.Smooth );
 				Voxels.SetParent( this );
 			}
 			dig = new HashSet<string>();
-
 			Transmit = TransmitType.Always;
 
 			Build();
@@ -151,6 +149,8 @@ namespace charleroi.server
 			chunk.SetParent( this );
 			chunk.LocalPosition = _chunkOffset + (Vector3)index3 * ChunkSize;
 
+			Transmit = TransmitType.Always;
+
 			return chunk;
 		}
 	}
@@ -165,6 +165,9 @@ namespace charleroi.server
 
 		public override void UpdateMesh( bool render, bool collision )
 		{
+
+			Transmit = TransmitType.Always;
+
 			var writer = MarchingCubesMeshWriter.Rent();
 
 			writer.Scale = Size;

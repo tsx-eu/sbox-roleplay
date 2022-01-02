@@ -20,6 +20,11 @@ namespace charleroi.server
 		[Net, Property] public Vector3 Size { get; set; }
 		[Net, Property] public int Fork { get; set; } = 1;
 
+		public override void Spawn()
+		{
+			Transmit = TransmitType.Always;
+		}
+
 		[Input]
 		public void Build() {
 			Host.AssertServer();
@@ -221,13 +226,7 @@ namespace charleroi.server
 		[Net, Change( nameof( CreateMesh ) )] public Vector3 Direction { get; set; } = Vector3.Up;
 
 		public override void Spawn() {
-			base.Spawn();
-			//CreateMesh();
-		}
-
-		public override void ClientSpawn() {
-			base.ClientSpawn();
-			//CreateMesh();
+			Transmit = TransmitType.Always;
 		}
 
 		public virtual bool OnUse( Entity user ) {
