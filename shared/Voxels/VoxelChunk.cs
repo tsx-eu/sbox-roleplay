@@ -8,8 +8,8 @@ namespace Voxels
 		[Net] public ArrayVoxelData Data { get; private set; }
 		[Net] public float Size { get; private set; }
 
-		private Mesh _mesh;
-		private Model _model;
+		protected Mesh _mesh;
+		protected Model _model;
 
 		private bool _meshInvalid;
 		private int _lastNetReadCount;
@@ -63,7 +63,7 @@ namespace Voxels
 			}
 		}
 
-		public void UpdateMesh( bool render, bool collision )
+		public virtual void UpdateMesh( bool render, bool collision )
 		{
 			var writer = MarchingCubesMeshWriter.Rent();
 
@@ -86,8 +86,7 @@ namespace Voxels
 					{
 						if ( _mesh == null )
 						{
-							//var material = Material.Load( "materials/voxeltest.vmat" );
-							var material = Material.Load( "materials/dev/reflectivity_30.vmat" );
+							var material = Material.Load( "materials/voxeltest.vmat" );
 
 							_mesh = new Mesh( material )
 							{

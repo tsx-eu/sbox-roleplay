@@ -12,11 +12,11 @@ namespace Voxels
 
 		private float _chunkScale;
 		private Vector3i _chunkCount;
-		private Vector3 _chunkOffset;
+		protected Vector3 _chunkOffset;
 
 		private int _margin;
 
-		private readonly Dictionary<Vector3i, VoxelChunk> _chunks = new Dictionary<Vector3i, VoxelChunk>();
+		protected readonly Dictionary<Vector3i, VoxelChunk> _chunks = new Dictionary<Vector3i, VoxelChunk>();
 
 		public VoxelVolume()
 		{
@@ -73,7 +73,7 @@ namespace Voxels
 			maxChunkIndex = Vector3i.Ceiling( chunkBounds.Maxs ) + 1;
 		}
 
-		private VoxelChunk GetOrCreateChunk( Vector3i index3 )
+		protected virtual VoxelChunk GetOrCreateChunk( Vector3i index3 )
 		{
 			if ( _chunks.TryGetValue( index3, out var chunk ) ) return chunk;
 
