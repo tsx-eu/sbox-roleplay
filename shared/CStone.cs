@@ -90,7 +90,6 @@ namespace charleroi.server
 			var scale = new Vector3( size, size, size );
 			hitpos.z -= size;
 
-
 			var digPos = AlignPositionToGrid( hitpos + Vector3.Zero - (scale / 2) );
 			dig.Add( digPos.ToString() );
 
@@ -126,6 +125,8 @@ namespace charleroi.server
 
 	public partial class OurVoxelVolume : VoxelVolume
 	{
+		public OurVoxelVolume() : base() { }
+
 		public OurVoxelVolume( Vector3 size, float chunkSize, int chunkSubdivisions = 4, NormalStyle normalStyle = NormalStyle.Smooth )
 			: base ( size, chunkSize, chunkSubdivisions, normalStyle )
 		{
@@ -147,6 +148,8 @@ namespace charleroi.server
 	}
 	public partial class OurVoxelChunk : Voxels.VoxelChunk
 	{
+		public OurVoxelChunk() : base() { }
+
 		public OurVoxelChunk( ArrayVoxelData data, float size )
 			: base( data, size )
 		{
@@ -160,10 +163,10 @@ namespace charleroi.server
 
 			try
 			{
+				Data.UpdateMesh( writer, 0, render, collision );
+
 				if ( render )
 				{
-					Data.UpdateMesh( writer, 0, true, false );
-
 					if ( writer.Vertices.Count == 0 )
 					{
 						EnableDrawing = false;
@@ -213,8 +216,6 @@ namespace charleroi.server
 
 				if ( collision )
 				{
-					Data.UpdateMesh( writer, 1, false, true );
-
 					if ( writer.CollisionVertices.Count == 0 )
 					{
 						if ( PhysicsBody != null && PhysicsBody.IsValid() && PhysicsBody.ShapeCount > 0 )
