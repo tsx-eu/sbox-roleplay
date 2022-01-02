@@ -108,7 +108,7 @@ namespace charleroi.client
 						var ent = tr.Entity;
 						while ( ent != null ) {
 							if ( ent is IAttackable i )
-								i.OnAttack( cl.Pawn, tr.EndPos );
+								i.OnAttack( cl.Pawn, tr.EndPos, tr.Normal );
 
 							ent = ent.Parent;
 						}

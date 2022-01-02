@@ -30,6 +30,7 @@ namespace charleroi.server
 			if ( Voxels == null )
 			{
 				shape = new BBoxSdf( Vector3.One * -size / 2, Vector3.One * size / 2, size );
+				//				shape = new SphereSdf( Vector3.Zero, size, size );
 				Voxels = new OurVoxelVolume( new Vector3( 32_768f, 32_768f, 32_768f ), 256f, 4, NormalStyle.Smooth );
 				Voxels.SetParent( this );
 			}
@@ -42,7 +43,16 @@ namespace charleroi.server
 
 		private Vector3 AlignPositionToGrid( Vector3 pos )
 		{
-			return pos.SnapToGrid( size * 2 );
+			var tmp = pos.SnapToGrid( size*2 );
+
+			if ( MathF.Abs( tmp.x ) < 0.001f )
+				tmp.x = 0;
+			if ( MathF.Abs( tmp.y ) < 0.001f )
+				tmp.y = 0;
+			if ( MathF.Abs( tmp.z ) < 0.001f )
+				tmp.z = 0;
+
+			return tmp;
 		}
 
 		[Input]
@@ -79,7 +89,7 @@ namespace charleroi.server
 			return true;
 		}
 
-		public void OnAttack( Entity user, Vector3 hitpos )
+		public void OnAttack( Entity user, Vector3 hitpos, Vector3 normal )
 		{
 			Host.AssertServer();
 
@@ -87,13 +97,12 @@ namespace charleroi.server
 				return;
 			lastAttack = 0f;
 
+			var dst = AlignPositionToGrid( hitpos - normal * size);
+
 			var scale = new Vector3( size, size, size );
-			hitpos.z -= size;
 
-			var digPos = AlignPositionToGrid( hitpos + Vector3.Zero - (scale / 2) );
-			dig.Add( digPos.ToString() );
-
-			Voxels.Subtract( shape, Matrix.CreateTranslation( digPos ), 0 );
+			dig.Add( dst.ToString() );
+			Voxels.Subtract( shape, Matrix.CreateTranslation( dst ), 0 );
 
 			for ( int x = -2; x <= 2; x++ )
 			{
@@ -101,9 +110,7 @@ namespace charleroi.server
 				{
 					for ( int z = -2; z <= 2; z++ )
 					{
-						var vec = new Vector3( x, y, z ) * scale;
-
-						var pos = AlignPositionToGrid( hitpos + vec - (scale / 2) );
+						var pos = AlignPositionToGrid( dst + new Vector3( x * size, y * size, z * size ) );
 
 						if ( x == 0 && y == 0 && z == 0 )
 							continue;
@@ -119,7 +126,8 @@ namespace charleroi.server
 				}
 			}
 
-			Voxels.Subtract( shape, Matrix.CreateTranslation( digPos ), 0 );
+			Voxels.Subtract( shape, Matrix.CreateTranslation( dst ), 0 );
+
 		}
 	}
 
