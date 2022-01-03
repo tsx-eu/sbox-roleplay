@@ -1,3 +1,6 @@
 [submodule "external/websocket-datastore"]
 	path = external/websocket-datastore
 	url = git@github.com:Hellhium/websocket-datastore.git
+[submodule "external/sbox-voxeltest"]
+	path = external/sbox-voxeltest
+	url = https://github.com/tsx-eu/sbox-voxeltest.git
