@@ -1,12 +1,13 @@
 ﻿using charleroi.client.UI;
 using charleroi.client.WorldUI;
 using Sandbox;
+using SWB_Base;
 using System;
 using System.Collections.Generic;
 
 namespace charleroi.client
 {
-	public partial class CPlayer : Player, SPlayer
+	public partial class CPlayer : PlayerBase, SPlayer
 	{
 		public ulong SteamID { get { return Id; } set { Id = value; } }
 		public ulong Id { get; set; }
@@ -23,7 +24,7 @@ namespace charleroi.client
 
 		public Clothing.Container Clothing = new();
 
-		public CPlayer() {
+		public CPlayer() : base() {
 
 		}
 
