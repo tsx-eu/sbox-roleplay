@@ -5,3 +5,7 @@
 	path = shared/Voxels
 	url = https://github.com/tsx-eu/sbox-voxeltest.git
 	branch = split
+[submodule "shared/Weapons"]
+	path = shared/Weapons
+	url = https://github.com/tsx-eu/external-sbox-simple-weapon-base.git
+	branch = split
