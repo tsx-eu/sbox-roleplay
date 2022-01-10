@@ -1,6 +1,6 @@
 ﻿@import '/theme.scss';
 
-.pagejob {
+.page {
 
     .menujob {
         width: 20%;
@@ -9,7 +9,7 @@
         border-radius: 10px;
         background-color: $hud-background-color;
 
-        .jobname {
+        .skillname {
             justify-content: center;
             align-items: center;
             text-align: center;

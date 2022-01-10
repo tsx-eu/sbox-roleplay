@@ -26,6 +26,7 @@
   <PropertyGroup>
 	<OutputPath>../.vs/output/</OutputPath>
 	<DocumentationFile>../.vs/output/charleroi.xml</DocumentationFile>
+	<RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
 
 	<ItemGroup>
